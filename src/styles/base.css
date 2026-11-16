@@ -1,0 +1,9 @@
+/* Estilos base mínimos usando os tokens */
+.ds-root,
+body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  line-height: var(--font-line-height-base);
+  color: var(--color-text-default);
+  background: var(--color-background-default);
+}
