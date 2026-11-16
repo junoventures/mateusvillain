@@ -8,6 +8,13 @@
     },
     "storybook": {
       "serverUrl": "http://localhost:6006/mcp"
+    },
+    "magoo": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@acessibilidade/magoo-mcp@1.6.1"
+      ]
     }
   }
 }

@@ -35,13 +35,14 @@ style-dictionary.config.js
 
 ## MCPs (agentes de IA)
 
-O repo já vem com três MCPs configurados para Claude Code (`.mcp.json`), VS Code (`.vscode/mcp.json`), Cursor (`.cursor/mcp.json`) e Antigravity (`.agents/mcp_config.json`):
+O repo já vem com quatro MCPs configurados para Claude Code (`.mcp.json`), VS Code (`.vscode/mcp.json`), Cursor (`.cursor/mcp.json`) e Antigravity (`.agents/mcp_config.json`):
 
 | MCP | Como ativar |
 |---|---|
 | **Figma** | Faça login na sua conta do Figma quando a ferramenta pedir |
 | **Penpot** | Rode `npm run mcp:penpot`, abra o arquivo no Penpot, carregue o plugin `http://localhost:4400/manifest.json` e clique em *Connect to MCP server* |
 | **Storybook** | Rode `npm run storybook` (o MCP fica em `http://localhost:6006/mcp`) |
+| **[Magoo](https://magoo.cc/pt-br)** | Nada a fazer: a ferramenta inicia sozinha. Traz diretrizes de interação e acessibilidade para 37 componentes. Precisa de Node.js 20.19 ou superior |
 
 Na primeira vez, a ferramenta pede para aprovar os MCPs do projeto.
 
