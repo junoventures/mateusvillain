@@ -1,3 +1,6 @@
 /* Ponto de entrada da biblioteca: tudo que é publicado no npm sai daqui. */
 @import './styles/tokens.css';
 @import './styles/base.css';
+
+/* Componentes */
+@import './components/button/button.css';
