@@ -1,0 +1,32 @@
+import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
+import tokens from '../styles/tokens.json';
+
+<Meta title="Fundamentos/Cores" />
+
+export const group = (prefix) =>
+  Object.fromEntries(
+    Object.entries(tokens).filter(([name]) => name.startsWith(prefix)).map(([name]) => [
+      name.replace(prefix, ''),
+      `var(--${name})`,
+    ])
+  );
+
+# Cores
+
+Gerado automaticamente a partir da pasta `tokens/`. Use sempre as variáveis **semânticas** nos componentes.
+
+## Primitivas
+
+<ColorPalette>
+  <ColorItem title="Brand" subtitle="--color-brand-*" colors={group('color-brand-')} />
+  <ColorItem title="Neutral" subtitle="--color-neutral-*" colors={group('color-neutral-')} />
+  <ColorItem title="Red" subtitle="--color-red-*" colors={group('color-red-')} />
+</ColorPalette>
+
+## Semânticas
+
+<ColorPalette>
+  <ColorItem title="Background" subtitle="--color-background-*" colors={group('color-background-')} />
+  <ColorItem title="Text" subtitle="--color-text-*" colors={group('color-text-')} />
+  <ColorItem title="Action" subtitle="--color-action-*" colors={group('color-action-')} />
+</ColorPalette>

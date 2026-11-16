@@ -1,0 +1,37 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import tokens from '../styles/tokens.json';
+
+<Meta title="Fundamentos/Espaçamentos e raios" />
+
+export const Scale = ({ prefix, kind }) => (
+  <table>
+    <thead>
+      <tr><th>Token</th><th>Valor</th><th>Exemplo</th></tr>
+    </thead>
+    <tbody>
+      {Object.entries(tokens)
+        .filter(([name]) => name.startsWith(prefix))
+        .map(([name, value]) => (
+          <tr key={name}>
+            <td><code>--{name}</code></td>
+            <td>{value}</td>
+            <td>
+              {kind === 'spacing' ? (
+                <div style={{ width: `var(--${name})`, height: 16, background: 'var(--color-brand-500)' }} />
+              ) : (
+                <div style={{ width: 48, height: 48, borderRadius: `var(--${name})`, background: 'var(--color-brand-500)' }} />
+              )}
+            </td>
+          </tr>
+        ))}
+    </tbody>
+  </table>
+);
+
+# Espaçamentos
+
+<Scale prefix="spacing-" kind="spacing" />
+
+# Raios
+
+<Scale prefix="radius-" kind="radius" />

@@ -1,0 +1,33 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Introdução" />
+
+# Biblioteca de componentes
+
+Biblioteca em **HTML + CSS** criada no workshop, do design (Figma/Penpot) ao npm.
+
+## Como funciona
+
+1. **Tokens**: exportados do Figma ou Penpot em JSON (formato W3C DTCG) para a pasta `tokens/`.
+2. **Style Dictionary**: converte os tokens em variáveis CSS (`npm run tokens`).
+3. **Componentes**: cada componente é um arquivo CSS em `src/components/` que usa só as variáveis dos tokens.
+4. **Storybook**: documenta cada componente com stories em HTML.
+5. **npm**: `npm publish` publica o CSS final da pasta `dist/`.
+
+## Como usar
+
+```bash
+npm install @seu-usuario/ui
+```
+
+```html
+<link rel="stylesheet" href="node_modules/@seu-usuario/ui/dist/index.css" />
+
+<button class="ds-button ds-button--primary">Salvar</button>
+```
+
+Ou, com um bundler:
+
+```js
+import '@seu-usuario/ui';
+```
