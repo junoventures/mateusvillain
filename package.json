@@ -19,6 +19,7 @@
   "scripts": {
     "tokens": "style-dictionary build --config style-dictionary.config.js",
     "storybook": "npm run tokens && storybook dev -p 6006",
+    "mcp:penpot": "npx -y @penpot/mcp@latest",
     "build": "npm run tokens && npm run build:css",
     "build:css": "lightningcss --bundle src/index.css -o dist/index.css && lightningcss src/styles/tokens.css -o dist/tokens.css && cp src/styles/tokens.json dist/tokens.json",
     "build-storybook": "npm run tokens && storybook build",

@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "figma": {
+      "url": "https://mcp.figma.com/mcp"
+    },
+    "penpot": {
+      "url": "http://localhost:4401/mcp"
+    },
+    "storybook": {
+      "url": "http://localhost:6006/mcp"
+    }
+  }
+}

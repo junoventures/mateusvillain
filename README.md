@@ -33,6 +33,18 @@ style-dictionary.config.js
 3. Importe o CSS em `src/index.css`.
 4. Crie `<nome>.stories.js` com as variantes como `args`.
 
+## MCPs (agentes de IA)
+
+O repo já vem com três MCPs configurados para Claude Code (`.mcp.json`), VS Code (`.vscode/mcp.json`), Cursor (`.cursor/mcp.json`) e Antigravity (`.agents/mcp_config.json`):
+
+| MCP | Como ativar |
+|---|---|
+| **Figma** | Faça login na sua conta do Figma quando a ferramenta pedir |
+| **Penpot** | Rode `npm run mcp:penpot`, abra o arquivo no Penpot, carregue o plugin `http://localhost:4400/manifest.json` e clique em *Connect to MCP server* |
+| **Storybook** | Rode `npm run storybook` (o MCP fica em `http://localhost:6006/mcp`) |
+
+Na primeira vez, a ferramenta pede para aprovar os MCPs do projeto.
+
 ## Antes de publicar
 
 Troque `@seu-usuario` pelo seu usuário do npm no `package.json`.
