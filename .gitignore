@@ -1,0 +1,9 @@
+node_modules/
+dist/
+storybook-static/
+*.log
+.DS_Store
+
+# Gerados pelo Style Dictionary (a fonte da verdade fica em /tokens)
+src/styles/tokens.css
+src/styles/tokens.json
