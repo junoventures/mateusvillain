@@ -1,0 +1,28 @@
+# Traz as atualizações do repositório original (mateusvillain/library)
+# para este fork, uma vez por mês.
+#
+# Usa a API "merge-upstream" do GitHub: se não houver conflito, faz
+# fast-forward ou cria um commit de merge na main. Se houver conflito,
+# o job falha (o GitHub avisa por e-mail) e o merge deve ser feito à mão:
+#   git fetch upstream && git merge upstream/main
+name: Sincronizar com o original
+
+on:
+  schedule:
+    - cron: "0 9 1 * *" # dia 1 de cada mês, 09:00 UTC (06:00 em Brasília)
+  workflow_dispatch: # permite rodar manualmente pela aba Actions
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mesclar mateusvillain/library na main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api -X POST "repos/${{ github.repository }}/merge-upstream" \
+            -f branch=main \
+            --jq '"Resultado: \(.merge_type) — \(.message)"'
