@@ -7,3 +7,8 @@ storybook-static/
 # Gerados pelo Style Dictionary (a fonte da verdade fica em /tokens)
 src/styles/tokens.css
 src/styles/tokens.json
+
+# Variáveis locais (segredos, ex.: chave do Penpot)
+.env
+.env.*
+!.env.example

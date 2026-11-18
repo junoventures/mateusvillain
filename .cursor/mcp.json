@@ -4,7 +4,7 @@
       "url": "https://mcp.figma.com/mcp"
     },
     "penpot": {
-      "url": "http://localhost:4401/mcp"
+      "url": "https://design.penpot.app/mcp/stream?userToken=${env:PENPOT_ACCESS_TOKEN}"
     },
     "storybook": {
       "url": "http://localhost:6006/mcp"
