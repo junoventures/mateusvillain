@@ -1,0 +1,74 @@
+/*
+ * Avatar
+ * Espelha o componente Avatar do Penpot (arquivo Library):
+ *   Size: sm (32px) | md (40px) | lg (64px)  →  .ds-avatar--sm / (padrão) / .ds-avatar--lg
+ *   Conteúdo: iniciais (desenhadas no Penpot) ou foto (definida aqui)
+ *            →  <span class="ds-avatar__initials"> ou <img class="ds-avatar__img">
+ *
+ * O tamanho e a fonte de cada tamanho ficam em propriedades locais
+ * (--_size, --_font) para não repetir regras.
+ *
+ * Nome acessível (ver doc):
+ *   sozinho          →  role="img" + aria-label="Nome completo" (ou alt na foto)
+ *   ao lado do nome  →  decorativo, aria-hidden="true"
+ */
+.ds-avatar {
+  --_size: var(--size-avatar-md);
+  --_font: var(--font-size-sm);
+
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--_size);
+  height: var(--_size);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  background: var(--color-accent-bg);
+  color: var(--color-accent-text);
+  font-family: var(--font-family-sans);
+  font-size: var(--_font);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--font-line-height-tight);
+  letter-spacing: var(--font-letter-spacing-normal);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/*
+ * Iniciais. Compensação óptica: a caixa do texto é cortada na altura das
+ * maiúsculas e na linha de base. Assim o centro geométrico passa a ser o
+ * centro das letras, e não o da linha (que reserva espaço para acentos e
+ * descendentes). Navegadores sem suporte a text-box ignoram a regra e
+ * centralizam pela linha, com diferença de cerca de 1px.
+ */
+.ds-avatar__initials {
+  text-box: trim-both cap alphabetic;
+}
+
+/* Tamanhos */
+.ds-avatar--sm {
+  --_size: var(--size-avatar-sm);
+  --_font: var(--font-size-xs);
+}
+
+.ds-avatar--lg {
+  --_size: var(--size-avatar-lg);
+  --_font: var(--font-size-xl);
+}
+
+/* Foto: preenche o círculo sem distorcer o rosto. */
+.ds-avatar__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Alto contraste (Windows): o fundo some, a borda mantém o círculo visível. */
+@media (forced-colors: active) {
+  .ds-avatar {
+    border: var(--border-width-default) solid currentColor;
+  }
+}

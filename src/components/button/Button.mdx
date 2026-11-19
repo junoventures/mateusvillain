@@ -20,16 +20,16 @@ export const Row = ({ children }) => (
 );
 
 export const Marker = ({ n, style }) => (
-  <span style={{ position: 'absolute', display: 'grid', placeItems: 'center', width: 22, height: 22, borderRadius: 'var(--radius-full)', background: 'var(--color-text-default)', color: 'var(--color-background-default)', fontFamily: 'var(--font-family-base)', fontSize: 12, fontWeight: 700, ...style }}>{n}</span>
+  <span style={{ position: 'absolute', display: 'grid', placeItems: 'center', width: 22, height: 22, borderRadius: 'var(--radius-full)', background: 'var(--color-text-default)', color: 'var(--color-bg-default)', fontFamily: 'var(--font-family-sans)', fontSize: 12, fontWeight: 700, ...style }}>{n}</span>
 );
 
 export const DoDont = ({ type, children, caption }) => {
   const isDo = type === 'do';
-  const color = isDo ? 'var(--color-action-primary-default)' : 'var(--color-action-danger-hover)';
+  const color = isDo ? 'var(--color-action-primary-bg)' : 'var(--color-action-danger-bg-hover)';
   return (
     <figure style={{ margin: 0, border: '1px solid var(--color-border-default)', borderTop: `4px solid ${color}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center', justifyContent: 'center', minHeight: 96, padding: 'var(--spacing-6)', background: 'var(--color-background-subtle)' }}>{children}</div>
-      <figcaption style={{ padding: 'var(--spacing-3) var(--spacing-4)', fontFamily: 'var(--font-family-base)', fontSize: 14 }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center', justifyContent: 'center', minHeight: 96, padding: 'var(--spacing-6)', background: 'var(--color-bg-muted)' }}>{children}</div>
+      <figcaption style={{ padding: 'var(--spacing-3) var(--spacing-4)', fontFamily: 'var(--font-family-sans)', fontSize: 14 }}>
         <strong style={{ color }}>{isDo ? 'Faça' : 'Não faça'}</strong> · {caption}
       </figcaption>
     </figure>
@@ -59,9 +59,9 @@ Aciona uma ação na tela atual: salvar, enviar, abrir um diálogo, excluir. O t
 
 ## Anatomia
 
-<div className="sb-unstyled" style={{ position: 'relative', display: 'flex', justifyContent: 'center', padding: '48px 24px', background: 'var(--color-background-subtle)', borderRadius: 'var(--radius-md)', margin: '16px 0' }}>
+<div className="sb-unstyled" style={{ position: 'relative', display: 'flex', justifyContent: 'center', padding: '48px 24px', background: 'var(--color-bg-muted)', borderRadius: 'var(--radius-md)', margin: '16px 0' }}>
   <div style={{ position: 'relative' }}>
-    <button type="button" className="ds-button ds-button--primary ds-button--lg" style={{ outline: '2px dashed var(--color-focus)', outlineOffset: 4 }}>
+    <button type="button" className="ds-button ds-button--primary ds-button--lg" style={{ outline: '2px dashed var(--color-border-focus)', outlineOffset: 4 }}>
       <Plus position="start" />
       Adicionar item
       <Arrow position="end" />
@@ -76,23 +76,23 @@ Aciona uma ação na tela atual: salvar, enviar, abrir um diálogo, excluir. O t
 
 | # | Parte | Obrigatória | Token |
 |---|---|---|---|
-| 1 | **Contêiner**: fundo, raio e respiro interno | Sim | `--color-action-*`, `--radius-md`, `--spacing-*` |
+| 1 | **Contêiner**: fundo, raio, altura e respiro interno | Sim | `--color-action-*`, `--radius-control-default`, `--size-control-*`, `--space-*` |
 | 2 | **Ícone inicial**: reforça a ação | Não | herda a cor do texto |
-| 3 | **Rótulo**: verbo que descreve a ação | Sim, exceto no botão só com ícone | `--font-family-base`, `--font-weight-medium`, `--font-size-*` |
+| 3 | **Rótulo**: verbo que descreve a ação | Sim, exceto no botão só com ícone | `--typography-label-md` ou `--typography-label-lg` |
 | 4 | **Ícone final**: indica direção ou continuidade | Não | herda a cor do texto |
-| 5 | **Anel de foco**: aparece só na navegação por teclado | Sim | `--color-focus` |
+| 5 | **Anel de foco**: aparece só na navegação por teclado | Sim | `--color-border-focus`, `--border-width-focus` |
 
-O espaço entre ícone e rótulo é sempre `--spacing-2` (8px).
+O espaço entre ícone e rótulo é sempre `--space-gap-sm` (8px).
 
 ---
 
 ## Propriedades
 
-As propriedades espelham o componente no Figma e no Penpot.
+As propriedades espelham o componente **Button** do Penpot (arquivo Library), que tem 4 variantes × 3 tamanhos × 3 estados (padrão, hover e desabilitado). Pressionado e foco foram definidos no código.
 
 | Propriedade | Valores | Classe ou atributo | Padrão |
 |---|---|---|---|
-| Variant | `primary`, `secondary`, `danger` | `.ds-button--{variant}` | obrigatório |
+| Variant | `primary`, `secondary`, `outline`, `danger` | `.ds-button--{variant}` | obrigatório |
 | Size | `sm`, `md`, `lg` | `.ds-button--sm`, `.ds-button--lg` | `md` (sem classe) |
 | Icon | início, fim ou só ícone | `.ds-button__icon--start`, `.ds-button__icon--end`, `.ds-button--icon-only` | sem ícone |
 | Disabled | `true`, `false` | atributo `disabled` | `false` |
@@ -104,20 +104,21 @@ As propriedades espelham o componente no Figma e no Penpot.
 | Variante | Use para | Quantidade por área |
 |---|---|---|
 | **Primary** | A ação principal da tela ou do bloco | Uma |
-| **Secondary** | Ações de apoio ou alternativas, como Cancelar ou Voltar | Várias |
+| **Secondary** | Ações de apoio com algum destaque, como Voltar ou Pular | Várias |
+| **Outline** | Ações neutras ou de saída, como Cancelar | Várias |
 | **Danger** | Ações destrutivas ou irreversíveis, como Excluir ou Remover acesso | Só quando a ação destrói algo |
 
 ### Tamanhos
 
 <Canvas of={ButtonStories.Tamanhos} />
 
-| Tamanho | Altura | Respiro (vertical × horizontal) | Fonte | Ícone | Use em |
+| Tamanho | Altura | Respiro lateral | Rótulo | Ícone | Use em |
 |---|---|---|---|---|---|
-| `sm` | ~25px | 4 × 12px | 14px | ~17px | Tabelas, barras de ferramentas, interfaces densas |
-| `md` | ~35px | 8 × 16px | 16px | ~19px | Padrão para formulários e telas em geral |
-| `lg` | ~46px | 12 × 24px | 18px | ~22px | Chamada principal de uma página e telas de toque |
+| `sm` | 32px (`--size-control-sm`) | 12px (`--space-gap-md`) | 14px semibold (`--typography-label-md`) | 16px | Tabelas, barras de ferramentas, interfaces densas |
+| `md` | 40px (`--size-control-md`) | 16px (`--space-inset-md`) | 14px semibold (`--typography-label-md`) | 16px | Padrão para formulários e telas em geral |
+| `lg` | 48px (`--size-control-lg`) | 24px (`--space-inset-lg`) | 16px semibold (`--typography-label-lg`) | 20px | Chamada principal de uma página e telas de toque |
 
-A altura vem do tamanho da fonte × altura de linha (`--font-line-height-tight`, 1.2) somado ao respiro vertical.
+A altura é fixa por tamanho (`min-height`), igual à do Penpot, e o rótulo fica centralizado na vertical.
 
 ### Ícones
 
@@ -160,11 +161,11 @@ Passe o mouse, clique e navegue com Tab no exemplo acima para ver cada estado.
 
 | Estado | Como acontece | O que muda | Token ou regra |
 |---|---|---|---|
-| **Padrão** | Em repouso | — | `--color-action-{variant}-default` |
-| **Hover** | Ponteiro sobre o botão | O fundo escurece | `--color-action-{variant}-hover` |
-| **Pressionado** | Durante o clique ou o toque | O botão desce 1px | `transform: translateY(1px)` |
-| **Foco** | Navegação por teclado (Tab) | Anel de 2px, afastado 2px do botão | `--color-focus`, `:focus-visible` |
-| **Desabilitado** | Atributo `disabled` | Fundo cinza, texto apagado, cursor de bloqueio. Não recebe foco nem clique | `--color-action-disabled`, `--color-text-muted` |
+| **Padrão** | Em repouso | — | `--color-action-{variant}-bg` e `-text` |
+| **Hover** | Ponteiro sobre o botão | O fundo escurece (no outline, ganha fundo cinza) | `--color-action-{variant}-bg-hover` |
+| **Pressionado** | Durante o clique ou o toque | O botão desce 1px; no primary, o fundo escurece mais | `transform: translateY(1px)`, `--color-action-primary-bg-pressed` |
+| **Foco** | Navegação por teclado (Tab) | Anel de 2px, afastado 2px do botão | `--color-border-focus`, `--border-width-focus`, `:focus-visible` |
+| **Desabilitado** | Atributo `disabled` | Fundo cinza, texto apagado, cursor de bloqueio. Não recebe foco nem clique | `--color-action-disabled-bg`, `--color-action-disabled-text` |
 
 O anel de foco usa `:focus-visible`, então aparece na navegação por teclado e não a cada clique com o mouse.
 
@@ -197,15 +198,15 @@ O anel de foco usa `:focus-visible`, então aparece na navegação por teclado e
 
 | Sinal | Como aparece |
 |---|---|
-| **Forma de contêiner** | Fundo sólido e cantos arredondados (`--radius-md`) separam o botão do texto corrido |
-| **Peso do rótulo** | Fonte `medium` (500), mais pesada que o texto ao redor |
+| **Forma de contêiner** | Fundo sólido (ou borda, no outline) e cantos arredondados (`--radius-control-default`) separam o botão do texto corrido |
+| **Peso do rótulo** | Fonte `semibold` (600), mais pesada que o texto ao redor |
 | **Cor de ação** | Primary e danger usam cores fortes, que contrastam com a página |
 | **Cursor** | Mãozinha (`pointer`) ao passar o mouse; bloqueio (`not-allowed`) quando desabilitado |
 | **Resposta ao toque** | Hover escurece e o clique afunda o botão: o botão "responde" como um objeto físico |
 
 Cuidados para não enfraquecer esses sinais:
 
-- **Secondary depende do fundo.** O lilás claro (`--color-action-secondary-default`) tem só **1,23:1** de contraste com a página branca. Quem sustenta a affordance é a cor do rótulo, então evite usar o secondary sobre fundos lilás ou cinza-claro, onde ele some.
+- **Secondary e outline dependem do fundo.** O lilás do secondary (`--color-action-secondary-bg`) tem só **1,12:1** de contraste com a página branca, e a borda do outline (`--color-action-outline-border`) tem **1,48:1**. Quem sustenta a affordance é o rótulo em semibold, então evite usá-los sobre fundos lilás ou cinza-claro, onde somem.
 - **Não imite um botão com texto ou card clicável.** Se é clicável, use o Button. Se não é, não dê aparência de botão.
 - **Desabilitado também é sinal.** O cinza mostra que a ação existe, mas não está disponível agora. Sempre que possível, diga perto do botão o que falta para liberá-lo.
 
@@ -219,17 +220,17 @@ Medidas matematicamente iguais nem sempre parecem iguais. O Button faz três aju
 
 | Tamanho | Lado com texto | Lado com ícone |
 |---|---|---|
-| `sm` | 12px (`--spacing-3`) | 8px (`--spacing-2`) |
-| `md` | 16px (`--spacing-4`) | 12px (`--spacing-3`) |
-| `lg` | 24px (`--spacing-6`) | 16px (`--spacing-4`) |
+| `sm` | 12px (`--space-gap-md`) | 8px (`--space-inset-sm`) |
+| `md` | 16px (`--space-inset-md`) | 12px (`--space-gap-md`) |
+| `lg` | 24px (`--space-inset-lg`) | 16px (`--space-inset-md`) |
 
 <Canvas of={ButtonStories.IconesPorTamanho} />
 
 O ajuste é automático: o CSS detecta o ícone com `:has(> .ds-button__icon--start)` ou `--end`.
 
-**2. O ícone acompanha a linha de texto.** O ícone tem o tamanho da linha (`1em × --font-line-height-tight`). Assim, o botão tem a mesma altura com ou sem ícone, e botões lado a lado ficam alinhados.
+**2. O ícone tem tamanho fixo por botão.** 16px (`--size-icon-sm`) no `sm` e no `md`, e 20px (`--size-icon-md`) no `lg`, um pouco maior que a altura das letras do rótulo, para ter o mesmo peso visual. Como a altura do botão é fixa, ela não muda com ou sem ícone.
 
-**3. O botão só com ícone é quadrado.** Ele usa o respiro vertical nos quatro lados. Ícones assimétricos, como setas e o play, podem parecer descentralizados: quando acontecer, ajuste o desenho dentro do `viewBox` do SVG, não o padding do botão.
+**3. O botão só com ícone é quadrado.** A largura é igual à altura do tamanho (32, 40 ou 48px). Ícones assimétricos, como setas e o play, podem parecer descentralizados: quando acontecer, ajuste o desenho dentro do `viewBox` do SVG, não o padding do botão.
 
 ---
 
@@ -294,24 +295,25 @@ Calculado com a fórmula da WCAG 2.2. O texto do botão precisa de **4,5:1** (cr
 |---|---|---|
 | Primary: texto × fundo | 6,29:1 | ✅ Passa |
 | Primary hover: texto × fundo | 7,90:1 | ✅ Passa |
-| Secondary: texto × fundo | 5,10:1 | ✅ Passa |
-| Secondary hover: texto × fundo | **3,15:1** | ❌ Abaixo de 4,5:1 |
-| Danger: texto × fundo | **3,76:1** | ❌ Abaixo de 4,5:1 |
-| Danger hover: texto × fundo | 4,83:1 | ✅ Passa |
+| Primary pressionado: texto × fundo | 9,93:1 | ✅ Passa |
+| Secondary: texto × fundo | 7,07:1 | ✅ Passa |
+| Secondary hover: texto × fundo | 6,41:1 | ✅ Passa |
+| Outline: texto × página | 17,72:1 | ✅ Passa |
+| Outline hover: texto × fundo | 16,12:1 | ✅ Passa |
+| Danger: texto × fundo | 4,83:1 | ✅ Passa |
+| Danger hover: texto × fundo | 6,47:1 | ✅ Passa |
 | Anel de foco × página branca | 4,47:1 | ✅ Passa (mínimo 3:1) |
-| Desabilitado: texto × fundo | 6,09:1 | Isento (critério não se aplica a desabilitados) |
+| Desabilitado: texto × fundo | 2,33:1 | Isento (critério não se aplica a desabilitados) |
 
-**Pendências nos tokens** (correção em `tokens/semantic/color.json`, a partir do Penpot):
-- `action.danger.default` usa `red.500`. Trocar por `red.600`, que hoje é o hover, resolve com 4,83:1. Aí o hover precisa de um vermelho ainda mais escuro.
-- `action.secondary.hover` usa `brand.300`, claro demais para o texto `brand.600`. Um tom entre `brand.100` e `brand.300` resolve.
+Com os tokens do Penpot, todas as combinações de texto passam. A borda do outline (1,48:1) fica abaixo de 3:1, mas o rótulo é o que identifica o botão; se for usado sem rótulo (só ícone), prefira outra variante.
 
 ### Área de toque
 
 | Tamanho | Altura | WCAG 2.5.8 (mínimo 24×24px) | Recomendado para toque (44×44px) |
 |---|---|---|---|
-| `sm` | ~25px | ✅ No limite | ❌ |
-| `md` | ~35px | ✅ | ❌ |
-| `lg` | ~46px | ✅ | ✅ |
+| `sm` | 32px | ✅ | ❌ |
+| `md` | 40px | ✅ | ❌ (quase) |
+| `lg` | 48px | ✅ | ✅ |
 
 Em telas de toque, prefira `lg`. Se usar `sm` ou `md`, deixe pelo menos 8px de espaço entre botões vizinhos.
 
@@ -341,8 +343,8 @@ Cada item do checklist de *Botão* (Magoo v1.6.1) foi testado nas stories, no Ch
 |---|---|---|
 | É possível perceber que o botão é acionável | Fundo sólido, cor de ação, cursor `pointer` | ✅ |
 | Desabilitado é percebido como não acionável | Fundo cinza, cursor `not-allowed`, estado `disabled` na árvore de acessibilidade | ✅ |
-| Feedback visual ao passar o mouse | O fundo muda para `--color-action-*-hover` | ✅ |
-| Feedback visual ao clicar ou tocar | O botão desce 1px enquanto pressionado | ✅ |
+| Feedback visual ao passar o mouse | O fundo muda para `--color-action-*-bg-hover` | ✅ |
+| Feedback visual ao clicar ou tocar | O botão desce 1px enquanto pressionado; o primary também escurece | ✅ |
 | Foco visível no teclado | Anel de 2px, afastado 2px, só com `:focus-visible` | ✅ |
 | Aciona com Enter e com Espaço | Teclas simuladas disparam o clique | ✅ |
 | Desabilitado não recebe foco nem executa ação | O Tab pula o botão; o clique não dispara | ✅ |
@@ -352,8 +354,8 @@ Cada item do checklist de *Botão* (Magoo v1.6.1) foi testado nas stories, no Ch
 | Botão que abre algo informa o estado, antes e depois | `aria-expanded` muda de `false` para `true` ao acionar | ✅ |
 | Rótulos sem ambiguidade entre vários botões | Depende do uso: ver "Faça e não faça" e "Rótulos únicos" | Regra de uso |
 | É possível perceber que a ação foi executada | Depende da tela que usa o botão | Regra de uso |
-| Desenhar padrão, hover, pressionado, foco e desabilitado | O componente no Penpot tem só o estado padrão | ⚠️ Falta no design |
-| Contraste do texto (fora do Magoo, WCAG 1.4.3) | Danger e secondary hover abaixo de 4,5:1 | ⚠️ Falta nos tokens |
+| Desenhar padrão, hover, pressionado, foco e desabilitado | O Penpot tem padrão, hover e desabilitado; pressionado e foco foram desenhados na página "Estados" do Penpot | ✅ |
+| Contraste do texto (fora do Magoo, WCAG 1.4.3) | Todas as variantes com os tokens do Penpot | ✅ |
 
 O teste automatizado cobre o comportamento das stories. Antes de publicar, ainda vale testar com um leitor de tela real (NVDA, VoiceOver ou TalkBack).
 

@@ -1,0 +1,251 @@
+import { Meta, Title, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as BadgeStories from './badge.stories';
+
+<Meta of={BadgeStories} />
+
+export const Row = ({ children }) => (
+  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center' }}>{children}</div>
+);
+
+export const Marker = ({ n, style }) => (
+  <span style={{ position: 'absolute', display: 'grid', placeItems: 'center', width: 22, height: 22, borderRadius: 'var(--radius-full)', background: 'var(--color-text-default)', color: 'var(--color-bg-default)', fontFamily: 'var(--font-family-sans)', fontSize: 12, fontWeight: 700, ...style }}>{n}</span>
+);
+
+export const DoDont = ({ type, children, caption }) => {
+  const isDo = type === 'do';
+  const color = isDo ? 'var(--color-feedback-success-text)' : 'var(--color-feedback-error-text)';
+  return (
+    <figure className="sb-unstyled" style={{ margin: 0, border: '1px solid var(--color-border-default)', borderTop: `4px solid ${color}`, borderRadius: 'var(--radius-control-default)', overflow: 'hidden' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center', justifyContent: 'center', minHeight: 96, padding: 'var(--space-inset-lg)', background: 'var(--color-bg-subtle)', fontFamily: 'var(--font-family-sans)', color: 'var(--color-text-default)' }}>{children}</div>
+      <figcaption style={{ padding: 'var(--space-gap-md) var(--space-inset-md)', fontFamily: 'var(--font-family-sans)', fontSize: 14 }}>
+        <strong style={{ color }}>{isDo ? 'Faça' : 'Não faça'}</strong> · {caption}
+      </figcaption>
+    </figure>
+  );
+};
+
+export const Grid = ({ children }) => (
+  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16, margin: '16px 0 32px' }}>{children}</div>
+);
+
+<Title />
+
+Selo curto que classifica ou dá o status de um conteúdo: "Novo", "Aprovado", "Pendente". É **só informativo**: não tem clique, foco nem hover. O texto diz o que o selo significa, e a cor reforça.
+
+<Canvas of={BadgeStories.Padrao} />
+<Controls of={BadgeStories.Padrao} />
+
+```html
+<span class="ds-badge ds-badge--success">Aprovado</span>
+```
+
+**Quando usar:** para marcar o status ou a categoria de um item com uma ou duas palavras, perto do conteúdo que ele qualifica (título de um card, linha de uma tabela, item de lista).
+
+**Quando não usar:**
+- Para filtrar, remover ou selecionar algo. Isso é um botão ou um *chip* interativo, que tem foco e estado.
+- Para mensagens com frases. Use o Alert.
+- Para contagem que muda sozinha (notificações). Ela precisa ser anunciada ao leitor de tela, e o Badge não anuncia mudanças.
+
+> **Sem orientação do Magoo.** O Magoo não tem um comportamento específico para Badge, porque ele não é interativo. Esta página se baseia na WCAG 2.2 (contraste, uso de cor, texto).
+
+---
+
+## Anatomia
+
+<div className="sb-unstyled" style={{ position: 'relative', display: 'flex', justifyContent: 'center', padding: '48px 24px', background: 'var(--color-bg-subtle)', borderRadius: 'var(--radius-control-default)', margin: '16px 0' }}>
+  <div style={{ position: 'relative' }}>
+    <span className="ds-badge ds-badge--success" style={{ outline: '2px dashed var(--color-border-focus)', outlineOffset: 4, fontSize: 'var(--font-size-xs)' }}>Aprovado</span>
+    <Marker n="1" style={{ top: -32, left: -16 }} />
+    <Marker n="2" style={{ bottom: -32, left: '50%', transform: 'translateX(-50%)' }} />
+  </div>
+</div>
+
+| # | Parte | Obrigatória | Token |
+|---|---|---|---|
+| 1 | **Contêiner**: pílula com fundo claro | Sim | `--color-feedback-*-bg`, `--color-accent-bg` ou `--color-bg-muted`; `--radius-pill-default`; respiro `--space-inset-2xs` × `--space-inset-sm` (2 × 8px) |
+| 2 | **Rótulo**: uma ou duas palavras | Sim | `--typography-label-sm` (12px, 600, altura de linha 1,2); `--color-feedback-*-text`, `--color-accent-text` ou `--color-text-muted` |
+
+Altura total: 12px × 1,2 + 2 × 2px ≈ **18,4px** (19px no Penpot).
+
+---
+
+## Propriedades
+
+| Propriedade | Valores | Classe ou atributo | Padrão |
+|---|---|---|---|
+| Variant | `info`, `success`, `warning`, `error`, `brand`, `neutral` | `.ds-badge--{variant}` | `neutral` (sem classe) |
+| Label | texto curto | conteúdo do `<span>` | obrigatório |
+| Contexto para leitor de tela | texto opcional, como "Status:" | `<span class="ds-visually-hidden">` dentro do selo | sem prefixo |
+
+### Variantes
+
+<Canvas of={BadgeStories.Variantes} />
+
+| Variante | Use para | Fundo / texto |
+|---|---|---|
+| **Info** | Algo em andamento ou neutro com destaque ("Em análise") | `--color-feedback-info-bg` / `-text` |
+| **Success** | Concluído ou aprovado ("Aprovado", "Entregue") | `--color-feedback-success-bg` / `-text` |
+| **Warning** | Pede atenção, mas não bloqueia ("Pendente") | `--color-feedback-warning-bg` / `-text` |
+| **Error** | Falhou ou foi recusado ("Recusado", "Vencido") | `--color-feedback-error-bg` / `-text` |
+| **Brand** | Destaque editorial ("Novo", "Beta") | `--color-accent-bg` / `--color-accent-text` |
+| **Neutral** | Categoria sem juízo de valor ("Rascunho", "Arquivado") | `--color-bg-muted` / `--color-text-muted` |
+
+No Penpot, os exemplos estão em inglês ("Info", "Error", "Warning"…). Aqui os exemplos estão em português, como o resto da biblioteca. Se um produto precisar de um selo em outro idioma, marque com `lang` (por exemplo, `<span class="ds-badge" lang="en">Beta</span>`) para o leitor de tela pronunciar certo.
+
+### Em contexto
+
+<Canvas of={BadgeStories.EmContexto} />
+
+Quando o selo sozinho pode ficar ambíguo para quem ouve a página (o leitor de tela lê "Pedido nº 1234 Entregue"), acrescente um prefixo invisível:
+
+```html
+<span class="ds-badge ds-badge--success">
+  <span class="ds-visually-hidden">Status: </span>Entregue
+</span>
+```
+
+### Texto longo
+
+<Canvas of={BadgeStories.TextoLongo} />
+
+O selo não quebra linha (`white-space: nowrap`). Com texto longo ele fica largo e pode empurrar o layout em telas pequenas. Prefira uma ou duas palavras.
+
+---
+
+## Estados e interação
+
+O Badge **não tem estados** (hover, foco, pressionado, desabilitado) e **não responde** a mouse, toque nem teclado. É texto estilizado:
+
+| Entrada | Comportamento |
+|---|---|
+| **Mouse** | Nenhum. O cursor continua o padrão, sem mãozinha |
+| **Toque** | Nenhum |
+| **Teclado** | O Tab passa direto: o selo não é uma parada de foco |
+| **Leitor de tela** | Lê o texto do selo junto com o conteúdo ao redor, sem anunciar papel ("botão", "link") |
+
+Se o selo precisar abrir, filtrar ou remover algo, ele deixa de ser Badge: use um Button (ação) ou um link (navegação).
+
+---
+
+## Affordance
+
+Aqui a affordance é ao contrário: o Badge precisa parecer **não clicável**.
+
+| Sinal | Como aparece |
+|---|---|
+| **Fundo claro e texto escuro** | Inverte o padrão do botão primary (fundo forte, texto claro) |
+| **Tamanho pequeno** | 12px e ~19px de altura, bem menor que qualquer controle (mínimo 32px) |
+| **Sem borda, sombra ou hover** | Nada muda ao passar o mouse |
+| **Cursor padrão** | Sem `pointer` |
+
+Não coloque o Badge num `<a>` ou `<button>` e não adicione `cursor: pointer`. Um selo que às vezes é clicável e às vezes não ensina a pessoa a desconfiar de todos.
+
+---
+
+## Compensação óptica
+
+**O respiro lateral é 4× o vertical** (8px × 2px). As pontas arredondadas da pílula "comem" parte do espaço horizontal: com respiro igual dos dois eixos, o texto pareceria encostado nas pontas. Com 8px, o texto fica a cerca de 1 raio da curva e parece centrado.
+
+**A altura vem do texto, não de um valor fixo.** Com `display: inline-flex` e `align-items: center`, o rótulo fica no centro da linha, e o selo acompanha a altura do texto em qualquer zoom.
+
+---
+
+## Faça e não faça
+
+<Grid>
+  <DoDont type="do" caption="Uma ou duas palavras que dizem o status.">
+    <span className="ds-badge ds-badge--success">Aprovado</span>
+  </DoDont>
+  <DoDont type="dont" caption="Frases longas. Para mensagens, use o Alert.">
+    <span className="ds-badge ds-badge--success">Seu pedido foi aprovado e será enviado</span>
+  </DoDont>
+</Grid>
+
+<Grid>
+  <DoDont type="do" caption="Texto diferente para cada status: a cor só reforça.">
+    <span className="ds-badge ds-badge--success">Pago</span>
+    <span className="ds-badge ds-badge--error">Vencido</span>
+  </DoDont>
+  <DoDont type="dont" caption="Mesmo texto e só a cor mudando: quem não distingue cores perde a informação.">
+    <span className="ds-badge ds-badge--success">Status</span>
+    <span className="ds-badge ds-badge--error">Status</span>
+  </DoDont>
+</Grid>
+
+<Grid>
+  <DoDont type="do" caption="Selo informativo, ao lado do conteúdo que ele qualifica.">
+    <span style={{ font: 'var(--typography-label-md)' }}>Relatório anual</span>
+    <span className="ds-badge ds-badge--brand">Novo</span>
+  </DoDont>
+  <DoDont type="dont" caption="Selo usado como botão ou filtro, com cursor de clique.">
+    <span className="ds-badge ds-badge--info" style={{ cursor: 'pointer', textDecoration: 'underline' }}>Filtrar por pendentes</span>
+  </DoDont>
+</Grid>
+
+<Grid>
+  <DoDont type="do" caption="Rótulos em português, como o resto da interface.">
+    <span className="ds-badge ds-badge--warning">Pendente</span>
+  </DoDont>
+  <DoDont type="dont" caption="Misturar idiomas sem marcar com lang.">
+    <span className="ds-badge ds-badge--warning">Warning</span>
+  </DoDont>
+</Grid>
+
+---
+
+## Acessibilidade
+
+### Contraste dos tokens atuais
+
+Calculado com a fórmula da WCAG 2.2. O rótulo precisa de **4,5:1** (critério 1.4.3), porque 12px em peso 600 não é "texto grande".
+
+| Variante | Texto × fundo | Contraste | Resultado |
+|---|---|---|---|
+| Info | `#1e40af` × `#eff6ff` | 8,01:1 | ✅ Passa |
+| Success | `#166534` × `#f0fdf4` | 6,81:1 | ✅ Passa |
+| Warning | `#92400e` × `#fffbeb` | 6,84:1 | ✅ Passa |
+| Error | `#991b1b` × `#fef2f2` | 7,60:1 | ✅ Passa |
+| Brand | `#4338ca` × `#e0e7ff` | 6,41:1 | ✅ Passa |
+| Neutral | `#52525b` × `#f4f4f5` | 7,03:1 | ✅ Passa |
+
+O fundo do selo contra a página branca fica entre 1,0 e 1,3:1, mas isso não é problema: o contorno do selo é decorativo (não identifica um controle), e o que precisa ser lido é o texto.
+
+### Regras
+
+- **Elemento:** `<span>`, sem `role`, sem `tabindex`, fora de `<a>` e `<button>`.
+- **Significado no texto** (WCAG 1.4.1, Uso de cor): cada status tem um texto próprio. Nunca use a cor como única diferença.
+- **Contexto para leitor de tela:** quando o selo sozinho for ambíguo, use um prefixo em `.ds-visually-hidden` ("Status: ").
+- **Idioma** (WCAG 3.1.2): texto em outro idioma leva `lang`.
+- **Texto pequeno:** 12px é o mínimo prático. Não diminua e não use frases.
+- **Mudança de status ao vivo:** o Badge não anuncia nada sozinho. Se o status mudar sem recarregar a página e a pessoa precisar saber, anuncie numa região `role="status"` à parte.
+- **Alto contraste do Windows:** os fundos somem no modo de cores forçadas; o selo ganha uma borda para manter o formato.
+
+### Revisão de acessibilidade (WCAG)
+
+O Magoo não tem orientação para Badge. Cada item abaixo vem da WCAG 2.2 e da revisão do Penpot (`docs/revisao-magoo.md`), e foi testado nas stories, no Chrome headless, com teclado simulado e com a árvore de acessibilidade, que é o que o leitor de tela recebe. Revisão de novembro de 2026: **10 de 10 verificações passaram**.
+
+| Item | Como foi verificado | Resultado |
+|---|---|---|
+| Não recebe foco (não parece nem age como controle) | Tab pela story Variantes: nenhuma parada | ✅ |
+| Sem papel interativo | Nenhum `button` ou `link` na árvore de acessibilidade | ✅ |
+| Cursor não sugere clique | `cursor: auto` em todas as variantes | ✅ |
+| Texto do selo chega ao leitor de tela | Os 6 rótulos aparecem como texto na árvore | ✅ |
+| Significado sem depender só da cor (1.4.1) | Cada variante tem um texto diferente | ✅ |
+| Contraste do texto (1.4.3) | Medido no navegador: 6,41 a 8,01:1 | ✅ |
+| Medidas do Penpot | 12px/600, respiro 2 × 8px, 18,4px de altura | ✅ |
+| Prefixo invisível é lido | "Status:" aparece 3 vezes na árvore e mede 1px na tela | ✅ |
+| Texto longo não corta | `scrollWidth` igual à largura visível | ✅ |
+| Rótulos em português | Exemplos em português; `lang` documentado para outros idiomas | ✅ |
+| Tamanho do texto (12px) | Mínimo prático, sem critério WCAG de tamanho | Regra de uso |
+
+O teste automatizado cobre o comportamento das stories. Antes de publicar, ainda vale ouvir o selo com um leitor de tela real (NVDA, VoiceOver ou TalkBack).
+
+---
+
+## Referências
+
+- [WCAG 2.2: Uso de cor (1.4.1)](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html)
+- [WCAG 2.2: Contraste mínimo (1.4.3)](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)
+- [WCAG 2.2: Idioma de partes (3.1.2)](https://www.w3.org/WAI/WCAG22/Understanding/language-of-parts.html)
+- [WCAG 2.2: Mensagens de status (4.1.3)](https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html)
+- Revisão do Penpot: `docs/revisao-magoo.md`, seção Badge

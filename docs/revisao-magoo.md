@@ -4,37 +4,35 @@ Revisão dos 8 componentes da biblioteca do Penpot (arquivo **Library**, página
 
 ## Como ler esta revisão
 
-- **O que foi revisado:** o **design** no Penpot (estados desenhados, rótulos, cores, tamanhos). Só o Button existe em código; ele teve também o comportamento testado no navegador (veja a [página do Button no Storybook](../src/components/button/Button.mdx)).
-- **O que o Magoo é:** uma biblioteca de orientações educacionais. Ela não testa nada nem certifica acessibilidade. Teclado, leitor de tela e anúncios só podem ser verificados quando o componente existir em código.
+- **Duas etapas.** A revisão original (abaixo, por componente) olhou o **design** no Penpot. Depois, todos os pontos foram resolvidos nos tokens, no Penpot e no código. A tabela **Resumo** mostra a situação atual; as seções por componente guardam o diagnóstico original.
+- **O que o Magoo é:** uma biblioteca de orientações educacionais. Ela não testa nada nem certifica acessibilidade. Os componentes em código foram testados no Chrome (teclado, mouse e árvore de acessibilidade); um teste com leitor de tela real ainda é recomendado antes de publicar.
 - **Contraste:** texto precisa de **4,5:1** (WCAG 1.4.3). Bordas e ícones que identificam um controle ou um estado precisam de **3:1** (WCAG 1.4.11). Elementos desabilitados são isentos.
 
 ## Resumo
 
-| Componente | Orientação do Magoo | Em código | Pendências principais |
-|---|---|---|---|
-| Button | Botão | ✅ | Estados não desenhados no Penpot; contraste do danger e do hover do secondary; tamanho diferente do código |
-| Input | Input "text" | — | Borda com 1,48:1; sem estados de hover, somente leitura e obrigatório |
-| Checkbox | Checkbox | — | Borda com 1,48:1; sem foco, desabilitado, hover e misto |
-| Switch | Switch | — | Rótulo muda com o estado; trilho desligado com 1,48:1; sem foco, desabilitado e hover |
-| Alert | Alertas | — | Ícones de aviso e sucesso no limite de 3:1; definir `role="alert"` ou `role="status"` |
-| Card | Cards | — | Ação "Ver mais" genérica; definir se é link ou botão, título e texto alternativo da capa |
-| Badge | Sem orientação | — | Texto de 12px; deixar claro que não é clicável |
-| Avatar | Sem orientação | — | Definir nome acessível ou ocultar quando decorativo |
+| Componente | Orientação do Magoo | Penpot | Código e documentação | Teste no navegador |
+|---|---|---|---|---|
+| Button | Botão | ✅ 4 variantes × 3 tamanhos × 5 estados (pressionado e foco adicionados) | ✅ Alinhado ao Penpot: 32/40/48px, variante outline | 19/19 |
+| Input | Input "text" | ✅ Hover, somente leitura, obrigatório e erro que explica a correção | ✅ | 28/28 |
+| Checkbox | Checkbox | ✅ Marcado, desmarcado e misto × padrão, hover, foco e desabilitado | ✅ | 35/35 |
+| Switch | Switch | ✅ Rótulo estável, marca no pino ligado, hover, foco e desabilitado | ✅ | 29/29 |
+| Alert | Alertas | ✅ Variante com botão de fechar | ✅ `role="alert"`/`role="status"`, foco previsível ao fechar | 33/33 |
+| Card | Cards | ✅ Anotação de acessibilidade; ⚠️ falta a variante com título longo | ✅ "Ver mais" é link com o título no nome acessível | 30/30 |
+| Badge | Sem orientação (WCAG) | ✅ Rótulos em português | ✅ | 10/10 |
+| Avatar | Sem orientação (WCAG) | ✅ Anotação de acessibilidade | ✅ Nome acessível ou decorativo; variante com foto | 11/11 |
 
-Pendência geral: **as cores de status (info, sucesso, aviso e erro) e os cinzas `#d4d4d8` e `#71717a` usados no Penpot não existem nos tokens** (`tokens/`). Antes de implementar Alert, Badge, Input, Checkbox e Switch em código, essas cores precisam virar tokens.
+**Tokens.** O Penpot já tinha 213 tokens, incluindo as cores de status. A pasta `tokens/` do repositório estava desatualizada e foi trocada pela exportação completa do Penpot. Quatro tokens foram corrigidos no Penpot para passar na WCAG:
 
----
+| Token | Antes | Depois |
+|---|---|---|
+| `color.border.strong` | `neutral.300` (1,48:1) | `neutral.500` (4,83:1) |
+| `color.control.track` | `neutral.300` (1,48:1) | `neutral.500` (4,83:1) |
+| `color.feedback.warning.icon` | `amber.600` (3,07:1) | `amber.700` (4,84:1) |
+| `color.feedback.success.icon` | `green.600` (3,15:1) | `green.700` (4,79:1) |
 
-## Button
+Com os tokens do Penpot, o danger (`red.600`, 4,83:1) e o hover do secondary (texto `brand.700` sobre `brand.100`, 6,41:1) também passam. A borda do somente leitura do Input usa `color.border.strong`.
 
-Revisão completa, com teste no navegador, na [página do Button](../src/components/button/Button.mdx). Do lado do design:
-
-| Item | Situação |
-|---|---|
-| Desenhar padrão, hover, pressionado, foco e desabilitado (Magoo: "O que desenhar") | ⚠️ O Penpot só tem o estado padrão |
-| Variantes e tamanhos | ⚠️ O Penpot tem um único botão. O código tem 3 variantes e 3 tamanhos |
-| Medidas | ⚠️ Penpot: 32px de altura, 12px de respiro lateral, texto de 14px. Código (`md`): ~35px, 16px, texto de 16px |
-| Contraste do texto primary (6,29:1) | ✅ |
+**Correção desta revisão:** a primeira versão dizia que o Button do Penpot tinha só o estado padrão. Na verdade ele já tinha 36 variantes (4 variantes × 3 tamanhos × padrão, hover e desabilitado). Faltavam só pressionado e foco.
 
 ---
 
@@ -195,8 +193,9 @@ O botão do card tem 32px de altura e texto de 14px, como o Button do Penpot, e 
 
 ---
 
-## Próximos passos sugeridos
+## O que ainda falta
 
-1. **Tokens:** criar tokens para as cores de status e para os cinzas usados no Penpot, e corrigir os contrastes reprovados (bordas de Input, Checkbox e Switch; danger e hover do secondary do Button).
-2. **Penpot:** desenhar os estados que faltam, principalmente **foco** e **desabilitado** em Button, Checkbox e Switch, e trocar os rótulos do Switch.
-3. **Código:** implementar os componentes seguindo esta revisão e repetir o teste no navegador feito com o Button.
+1. **Penpot:** desenhar a variante do Card com título longo (o código já trata).
+2. **Leitor de tela real:** testar com NVDA, VoiceOver e TalkBack. O teste automático lê a árvore de acessibilidade, mas não substitui a escuta.
+3. **Toque:** o Switch e o Checkbox têm 24px de altura de linha (passam no mínimo de 24px da WCAG 2.5.8, mas ficam abaixo dos 44px recomendados para toque). Avaliar uma variante maior para telas de toque.
+4. **Tokens:** para atualizar `tokens/` depois de mudar algo no Penpot, exporte de novo o conjunto `tokens` (pelo MCP do Penpot) mantendo a separação entre primitivos e semânticos.

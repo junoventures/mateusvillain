@@ -1,0 +1,10 @@
+{
+  "opacity": {
+    "disabled": {
+      "default": {
+        "$type": "number",
+        "$value": "{opacity.40}"
+      }
+    }
+  }
+}

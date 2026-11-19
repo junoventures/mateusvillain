@@ -1,9 +1,23 @@
 /* Estilos base mínimos usando os tokens */
 .ds-root,
 body {
-  font-family: var(--font-family-base);
+  font-family: var(--font-family-sans);
   font-size: var(--font-size-md);
-  line-height: var(--font-line-height-base);
+  line-height: var(--font-line-height-normal);
   color: var(--color-text-default);
-  background: var(--color-background-default);
+  background: var(--color-bg-default);
+}
+
+/* Texto só para leitores de tela: some da tela, mas continua no nome acessível. */
+.ds-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }

@@ -1,0 +1,189 @@
+/*
+ * Checkbox
+ * Espelha o componente Checkbox do Penpot (arquivo Library):
+ *   State:       unchecked | checked | indeterminate
+ *   Interaction: default | hover | focus | disabled
+ *   (as 12 combinações estão desenhadas no Penpot; o erro, o texto de ajuda
+ *    e o grupo foram definidos aqui, a partir do checklist do Magoo)
+ *
+ * Estrutura:
+ *   <label class="ds-checkbox">                 linha: caixa + rótulo (24px)
+ *     <input type="checkbox" class="ds-checkbox__input">   caixa de 20px
+ *     <span class="ds-checkbox__label">Rótulo</span>
+ *   </label>
+ *
+ * O <input> nativo continua no HTML e só perde a aparência padrão
+ * (appearance: none). Assim papel, nome, estado, foco e a tecla Espaço vêm
+ * do navegador. A marca (✓ ou –) é desenhada no ::before com máscara SVG,
+ * pintada com a cor do token, sem depender de fonte de ícones.
+ */
+.ds-checkbox {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--space-gap-sm);
+  font: var(--typography-body-md);
+  color: var(--color-text-default);
+  cursor: pointer;
+}
+
+.ds-checkbox__input {
+  /* Tira o visual nativo, mas mantém o elemento e a semântica. */
+  appearance: none;
+  box-sizing: border-box;
+  display: grid;
+  place-content: center;
+  flex-shrink: 0;
+  width: var(--size-control-xs);
+  height: var(--size-control-xs);
+  /*
+   * Compensação óptica: a linha do rótulo tem 24px e a caixa 20px.
+   * Descer 2px centraliza a caixa na primeira linha, mesmo quando o
+   * rótulo quebra em várias linhas (align-items: flex-start).
+   */
+  margin: var(--spacing-0-5) 0 0;
+  border: var(--border-width-default) solid var(--color-border-strong);
+  border-radius: var(--radius-control-sm);
+  background: var(--color-field-bg);
+  cursor: inherit;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+
+/* Marca: ✓ no marcado, – no misto. Escondida enquanto desmarcado. */
+.ds-checkbox__input::before {
+  content: '';
+  width: var(--size-icon-sm);
+  height: var(--size-icon-sm);
+  background: var(--color-action-primary-text);
+  -webkit-mask: var(--_mark) center / contain no-repeat;
+  mask: var(--_mark) center / contain no-repeat;
+  transform: scale(0);
+  transition: transform 100ms ease;
+}
+
+.ds-checkbox__input {
+  --_mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5l3 3 6-7'/%3E%3C/svg%3E");
+}
+.ds-checkbox__input:indeterminate {
+  --_mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M4 8h8'/%3E%3C/svg%3E");
+}
+
+/* Marcado e misto: caixa cheia na cor de ação, sem borda visível. */
+.ds-checkbox__input:checked,
+.ds-checkbox__input:indeterminate {
+  border-color: var(--color-action-primary-bg);
+  background: var(--color-action-primary-bg);
+}
+.ds-checkbox__input:checked::before,
+.ds-checkbox__input:indeterminate::before {
+  transform: scale(1);
+}
+
+/* Hover: vale para a linha inteira, porque o rótulo também é clicável. */
+.ds-checkbox:hover .ds-checkbox__input:not(:disabled) {
+  border-color: var(--color-text-muted);
+}
+.ds-checkbox:hover .ds-checkbox__input:checked:not(:disabled),
+.ds-checkbox:hover .ds-checkbox__input:indeterminate:not(:disabled) {
+  border-color: var(--color-action-primary-bg-hover);
+  background: var(--color-action-primary-bg-hover);
+}
+
+/* Foco: o mesmo anel do Button, só na navegação por teclado. */
+.ds-checkbox__input:focus-visible {
+  outline: var(--border-width-focus) solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+/* Erro: aria-invalid="true" no input. A mensagem fica no __hint--error. */
+.ds-checkbox__input[aria-invalid='true']:not(:checked):not(:indeterminate) {
+  border-color: var(--color-feedback-error-icon);
+}
+
+/* Desabilitado: não recebe foco nem clique (atributo disabled). */
+.ds-checkbox:has(.ds-checkbox__input:disabled) {
+  color: var(--color-action-disabled-text);
+  cursor: not-allowed;
+}
+.ds-checkbox__input:disabled {
+  border-color: var(--color-border-default);
+  background: var(--color-action-disabled-bg);
+}
+.ds-checkbox__input:disabled:checked,
+.ds-checkbox__input:disabled:indeterminate {
+  border-color: var(--color-action-disabled-text);
+  background: var(--color-action-disabled-text);
+}
+
+/*
+ * Campo com texto de ajuda ou erro. O texto fica fora do <label> (para não
+ * entrar no nome acessível) e é ligado ao input por aria-describedby.
+ * Ele começa alinhado ao rótulo, não à caixa.
+ */
+.ds-checkbox-field {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-gap-xs);
+}
+
+.ds-checkbox__hint {
+  margin: 0;
+  padding-inline-start: calc(var(--size-control-xs) + var(--space-gap-sm));
+  font: var(--typography-body-sm);
+  color: var(--color-text-muted);
+}
+.ds-checkbox__hint--error {
+  color: var(--color-feedback-error-text);
+}
+
+/* Grupo: <fieldset> com <legend> dá o nome do grupo ao leitor de tela. */
+.ds-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-gap-md);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.ds-checkbox-group__legend {
+  margin-bottom: var(--space-gap-md);
+  padding: 0;
+  font: var(--typography-label-lg);
+  color: var(--color-text-default);
+}
+
+.ds-checkbox-group > .ds-checkbox__hint {
+  padding-inline-start: 0;
+}
+
+/* Lista aninhada de "Selecionar todos": recuo para mostrar a hierarquia. */
+.ds-checkbox-group__children {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-gap-md);
+  padding-inline-start: calc(var(--size-control-xs) + var(--space-gap-sm));
+}
+
+/* Alto contraste do Windows: as cores do sistema substituem os tokens. */
+@media (forced-colors: active) {
+  .ds-checkbox__input::before {
+    background: CanvasText;
+  }
+  .ds-checkbox__input:disabled::before {
+    background: GrayText;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-checkbox__input,
+  .ds-checkbox__input::before {
+    transition: none;
+  }
+}

@@ -1,0 +1,350 @@
+import { Meta, Title, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as CheckboxStories from './checkbox.stories';
+
+<Meta of={CheckboxStories} />
+
+export const Cb = ({ label, checked, indeterminate, disabled, invalid, style }) => (
+  <label className="ds-checkbox">
+    <input
+      type="checkbox"
+      className="ds-checkbox__input"
+      defaultChecked={checked}
+      disabled={disabled}
+      aria-invalid={invalid ? 'true' : undefined}
+      ref={(el) => { if (el) el.indeterminate = !!indeterminate; }}
+      style={style}
+    />
+    <span className="ds-checkbox__label">{label}</span>
+  </label>
+);
+
+export const Marker = ({ n, style }) => (
+  <span style={{ position: 'absolute', display: 'grid', placeItems: 'center', width: 22, height: 22, borderRadius: 'var(--radius-full)', background: 'var(--color-text-default)', color: 'var(--color-bg-default)', fontFamily: 'var(--font-family-sans)', fontSize: 12, fontWeight: 700, ...style }}>{n}</span>
+);
+
+export const DoDont = ({ type, children, caption }) => {
+  const isDo = type === 'do';
+  const color = isDo ? 'var(--color-action-primary-bg)' : 'var(--color-feedback-error-icon)';
+  return (
+    <figure style={{ margin: 0, border: '1px solid var(--color-border-default)', borderTop: `4px solid ${color}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+      <div className="sb-unstyled" style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'flex-start', justifyContent: 'center', minHeight: 96, padding: 'var(--spacing-6)', background: 'var(--color-bg-subtle)' }}>{children}</div>
+      <figcaption style={{ padding: 'var(--spacing-3) var(--spacing-4)', fontFamily: 'var(--font-family-sans)', fontSize: 14 }}>
+        <strong style={{ color }}>{isDo ? 'Faça' : 'Não faça'}</strong> · {caption}
+      </figcaption>
+    </figure>
+  );
+};
+
+export const Grid = ({ children }) => (
+  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16, margin: '16px 0 32px' }}>{children}</div>
+);
+
+<Title />
+
+Permite marcar uma ou mais opções independentes, como aceitar os termos ou escolher por quais canais receber notificações. Cada caixa liga ou desliga uma escolha, sem afetar as outras.
+
+<Canvas of={CheckboxStories.Padrao} />
+<Controls of={CheckboxStories.Padrao} />
+
+```html
+<label class="ds-checkbox">
+  <input type="checkbox" class="ds-checkbox__input" />
+  <span class="ds-checkbox__label">Aceito os termos</span>
+</label>
+```
+
+**Origem dos estados.** No Penpot (arquivo Library), o contêiner de variantes do Checkbox tem as propriedades **State** (`Checked`, `Unchecked`, `Indeterminate`) × **Interaction** (`Default`, `Hover`, `Focus`, `Disabled`): as 12 combinações estão desenhadas lá e o código usa os mesmos tokens. **Definidos no código**, a partir do checklist do Magoo: o estado de erro, o texto de ajuda, o grupo com `<fieldset>`/`<legend>` e a regra de "Selecionar todos".
+
+**Quando usar:** para escolhas independentes, em que a pessoa pode marcar nenhuma, uma ou várias opções, e para um consentimento isolado ("Aceito os termos"). A escolha vale quando o formulário é enviado.
+
+**Quando não usar:**
+
+| Situação | Use em vez disso |
+|---|---|
+| Só uma opção pode ser escolhida dentro do grupo | **Radio** (`<input type="radio">`) |
+| A mudança vale na hora, como ligar uma configuração, sem botão de enviar | **Switch** |
+| Muitas opções (mais de ~7) ou espaço curto | Lista de seleção ou campo com busca |
+| Disparar uma ação, como "Excluir" | **Button** |
+
+---
+
+## Anatomia
+
+<div className="sb-unstyled" style={{ position: 'relative', display: 'flex', justifyContent: 'center', padding: '56px 24px', background: 'var(--color-bg-subtle)', borderRadius: 'var(--radius-md)', margin: '16px 0' }}>
+  <div style={{ position: 'relative' }}>
+    <span style={{ position: 'absolute', inset: -4, outline: '1px dashed var(--color-border-focus)', borderRadius: 4, pointerEvents: 'none' }} />
+    <Cb label="Aceito os termos" checked />
+    <Marker n="1" style={{ top: -34, left: -5 }} />
+    <Marker n="2" style={{ bottom: -34, left: -5 }} />
+    <Marker n="3" style={{ bottom: -30, left: '45%' }} />
+    <Marker n="4" style={{ top: -30, right: -12 }} />
+  </div>
+</div>
+
+| # | Parte | Obrigatória | Medida e token |
+|---|---|---|---|
+| 1 | **Caixa**: o `<input type="checkbox">` nativo, redesenhado | Sim | 20×20px `--size-control-xs`, raio `--radius-control-sm` (4px), fundo `--color-field-bg`, borda `--border-width-default` `--color-border-strong` |
+| 2 | **Marca**: ✓ no marcado, – no misto. SVG em máscara, não fonte | Só marcado ou misto | 16px `--size-icon-sm`, cor `--color-action-primary-text` sobre `--color-action-primary-bg` |
+| 3 | **Rótulo**: diz o que a opção liga | Sim | `--typography-body-md` (16/400/1.5), `--color-text-default` |
+| 4 | **Área clicável**: o `<label>` inteiro, caixa + espaço + rótulo | Sim | linha de 24px, espaço `--space-gap-sm` (8px) |
+
+Partes opcionais: **texto de ajuda ou de erro** (`.ds-checkbox__hint`, `--typography-body-sm`) abaixo do rótulo, e **título do grupo** (`<legend>`, `--typography-label-lg`).
+
+---
+
+## Propriedades
+
+| Propriedade no Penpot | Valores | Classe ou atributo no código | Padrão |
+|---|---|---|---|
+| State | `Unchecked`, `Checked`, `Indeterminate` | atributo `checked`; propriedade `indeterminate` (JavaScript) | `Unchecked` |
+| Interaction | `Default`, `Hover`, `Focus`, `Disabled` | `:hover` na linha, `:focus-visible`, atributo `disabled` | `Default` |
+| — (só no código) | erro | `aria-invalid="true"` + `.ds-checkbox__hint--error` | sem erro |
+| — (só no código) | texto de ajuda | `.ds-checkbox-field` + `.ds-checkbox__hint`, ligado por `aria-describedby` | sem ajuda |
+
+### Com texto de ajuda
+
+<Canvas of={CheckboxStories.ComAjuda} />
+
+O texto fica **fora** do `<label>`, para não ser lido como parte do nome, e é ligado ao input por `aria-describedby`. O leitor de tela lê o nome, o estado e depois a ajuda.
+
+```html
+<div class="ds-checkbox-field">
+  <label class="ds-checkbox">
+    <input type="checkbox" class="ds-checkbox__input" aria-describedby="news-ajuda" />
+    <span class="ds-checkbox__label">Receber novidades por e-mail</span>
+  </label>
+  <p class="ds-checkbox__hint" id="news-ajuda">No máximo uma mensagem por semana.</p>
+</div>
+```
+
+### Grupo
+
+<Canvas of={CheckboxStories.Grupo} />
+
+Opções relacionadas ficam num `<fieldset>` com `<legend>`. O leitor de tela anuncia o título do grupo ao entrar nele ("Notificações, grupo") e cada opção mantém o próprio rótulo.
+
+```html
+<fieldset class="ds-checkbox-group">
+  <legend class="ds-checkbox-group__legend">Notificações</legend>
+  <label class="ds-checkbox">
+    <input type="checkbox" class="ds-checkbox__input" name="notificacoes" value="email" checked />
+    <span class="ds-checkbox__label">E-mail</span>
+  </label>
+  <!-- … -->
+</fieldset>
+```
+
+---
+
+## Estados
+
+<Canvas of={CheckboxStories.Estados} />
+
+Passe o mouse e navegue com Tab no exemplo acima para ver hover e foco.
+
+| Estado | Como acontece | O que muda | Token |
+|---|---|---|---|
+| **Desmarcado** | Em repouso | Caixa branca com borda | `--color-field-bg`, `--color-border-strong` |
+| **Marcado** | Atributo `checked`, clique, toque ou Espaço | Caixa cheia, sem borda aparente, com ✓ branco | `--color-action-primary-bg`, `--color-action-primary-text` |
+| **Misto** | Propriedade `indeterminate = true` (só por JavaScript) | Caixa cheia com – branco | `--color-action-primary-bg`, `--color-action-primary-text` |
+| **Hover, desmarcado** | Ponteiro sobre a caixa **ou o rótulo** | Borda escurece | `--color-text-muted` |
+| **Hover, marcado ou misto** | Ponteiro sobre a caixa ou o rótulo | Fundo escurece | `--color-action-primary-bg-hover` |
+| **Foco** | Navegação por teclado (Tab) | Anel de 2px, afastado 2px da caixa | `--border-width-focus`, `--color-border-focus`, `:focus-visible` |
+| **Desabilitado, desmarcado** | Atributo `disabled` | Caixa cinza-clara, borda clara, rótulo apagado, cursor de bloqueio | `--color-action-disabled-bg`, `--color-border-default`, `--color-action-disabled-text` |
+| **Desabilitado, marcado ou misto** | `disabled` + `checked` ou `indeterminate` | Caixa cinza com marca branca | `--color-action-disabled-text`, `--color-action-primary-text` |
+| **Erro** *(só no código)* | `aria-invalid="true"` + mensagem | Borda vermelha na caixa desmarcada e mensagem abaixo | `--color-feedback-error-icon`, `--color-feedback-error-text` |
+
+<Canvas of={CheckboxStories.ComErro} />
+
+O erro não depende só da cor: a mensagem escrita diz o que fazer, e o leitor de tela anuncia "inválido" e lê a mensagem pelo `aria-describedby`.
+
+### Misto e "Selecionar todos"
+
+<Canvas of={CheckboxStories.SelecionarTodos} />
+
+O estado misto só faz sentido num checkbox que **resume outros**. Regra de alternância, previsível:
+
+| Situação dos filhos | Estado do pai | Clicar no pai |
+|---|---|---|
+| Nenhum marcado | Desmarcado | Marca todos |
+| Alguns marcados | **Misto** | Marca todos |
+| Todos marcados | Marcado | Desmarca todos |
+
+Não há atributo HTML para o misto: defina `input.indeterminate = true` em JavaScript e recalcule sempre que um filho mudar. O navegador limpa o misto quando a pessoa clica no pai.
+
+---
+
+## Interação
+
+| Entrada | Como alterna | Retorno |
+|---|---|---|
+| **Mouse** | Clique na caixa **ou no rótulo** | Hover na linha inteira; a marca aparece ou some |
+| **Toque** | Toque na caixa ou no rótulo | A marca aparece ou some |
+| **Teclado** | **Tab** chega a cada opção, **Espaço** alterna, **Shift+Tab** volta | Anel de foco na caixa |
+| **Leitor de tela** | Espaço ou toque duplo | Anuncia "caixa de seleção", o rótulo e "marcada", "não marcada" ou "mista" |
+
+- **Use sempre `<input type="checkbox">`.** Ele entrega papel, estado, foco e Espaço. Um `<div role="checkbox">` exige recriar tudo isso à mão.
+- **Enter não alterna o checkbox.** É o comportamento nativo: dentro de um formulário, Enter envia o formulário.
+- **Cada opção é uma parada de Tab.** Diferente do Radio, as setas não movem entre opções de um grupo de checkboxes.
+- **A mudança não dispara ações sozinha.** Se marcar precisa valer na hora, é um Switch.
+
+---
+
+## Affordance
+
+| Sinal | Como aparece |
+|---|---|
+| **Forma de caixa** | Quadrado com cantos de 4px, o desenho que as pessoas reconhecem como "pode marcar". O Radio é redondo, o Switch é um trilho |
+| **Borda forte** | `--color-border-strong` (4,83:1) deixa a caixa vazia visível mesmo em telas ruins |
+| **Marca clara** | ✓ e – brancos sobre a cor de ação: marcado e misto são distintos entre si e do desmarcado, sem depender só da cor |
+| **Cursor** | Mãozinha na linha inteira; bloqueio quando desabilitado |
+| **Hover na linha** | A borda escurece também com o ponteiro sobre o rótulo, mostrando que ele faz parte do alvo |
+
+---
+
+## Compensação óptica
+
+**A caixa acompanha a primeira linha do rótulo.** A linha do texto tem 24px (16px × 1.5) e a caixa 20px. Centralizar com `align-items: center` funciona numa linha só, mas em rótulos longos joga a caixa para o meio do parágrafo. Por isso a linha usa `align-items: flex-start` e a caixa desce `--spacing-0-5` (2px): fica centrada na primeira linha em qualquer comprimento.
+
+<Canvas of={CheckboxStories.RotuloLongo} />
+
+**A marca é menor que a caixa.** O ✓ ocupa 16px (`--size-icon-sm`) dentro dos 20px, com traço de 2px, e o vértice fica um pouco abaixo do centro: um ✓ centralizado pela caixa delimitadora parece subir.
+
+---
+
+## Faça e não faça
+
+<Grid>
+  <DoDont type="do" caption="Rótulo afirmativo, que diz o que acontece quando está marcado.">
+    <Cb label="Receber novidades por e-mail" />
+  </DoDont>
+  <DoDont type="dont" caption="Rótulo negativo: marcar para não fazer algo confunde.">
+    <Cb label="Não quero deixar de receber novidades" />
+  </DoDont>
+</Grid>
+
+<Grid>
+  <DoDont type="do" caption="Opções relacionadas num fieldset com legend.">
+    <fieldset className="ds-checkbox-group">
+      <legend className="ds-checkbox-group__legend">Notificações</legend>
+      <Cb label="E-mail" checked />
+      <Cb label="SMS" />
+    </fieldset>
+  </DoDont>
+  <DoDont type="dont" caption="Opções soltas, sem título de grupo: o leitor de tela não sabe a que se referem.">
+    <Cb label="E-mail" checked />
+    <Cb label="SMS" />
+  </DoDont>
+</Grid>
+
+<Grid>
+  <DoDont type="do" caption="Checkbox para escolhas que se somam.">
+    <Cb label="Queijo" checked />
+    <Cb label="Tomate" checked />
+  </DoDont>
+  <DoDont type="dont" caption="Checkbox para escolha única: isso é um Radio.">
+    <Cb label="Entrega normal" checked />
+    <Cb label="Entrega expressa" />
+  </DoDont>
+</Grid>
+
+<Grid>
+  <DoDont type="do" caption="Misto só no pai que resume outras opções.">
+    <Cb label="Selecionar todas" indeterminate />
+  </DoDont>
+  <DoDont type="dont" caption="Misto como 'talvez' numa opção isolada.">
+    <Cb label="Aceito os termos" indeterminate />
+  </DoDont>
+</Grid>
+
+---
+
+## Acessibilidade
+
+### Contraste dos tokens
+
+Calculado com a fórmula da WCAG 2.2. O rótulo precisa de **4,5:1** (critério 1.4.3); a borda da caixa, a marca e o anel de foco precisam de **3:1** (critério 1.4.11).
+
+| Combinação | Cores | Contraste | Resultado |
+|---|---|---|---|
+| Rótulo × página | `#18181b` × `#ffffff` | 17,72:1 | ✅ Passa |
+| Borda da caixa desmarcada × página | `#71717a` × `#ffffff` | 4,83:1 | ✅ Passa (antes, `#d4d4d8`: 1,48:1) |
+| Borda no hover × página | `#52525b` × `#ffffff` | 7,73:1 | ✅ Passa |
+| Caixa marcada × página | `#4f46e5` × `#ffffff` | 6,29:1 | ✅ Passa |
+| Marca ✓ ou – × caixa marcada | `#ffffff` × `#4f46e5` | 6,29:1 | ✅ Passa |
+| Marca × caixa marcada no hover | `#ffffff` × `#4338ca` | 7,90:1 | ✅ Passa |
+| Anel de foco × página | `#6366f1` × `#ffffff` | 4,47:1 | ✅ Passa |
+| Borda de erro × página | `#dc2626` × `#ffffff` | 4,83:1 | ✅ Passa |
+| Mensagem de erro × página | `#991b1b` × `#ffffff` | 8,31:1 | ✅ Passa |
+| Texto de ajuda × página | `#52525b` × `#ffffff` | 7,73:1 | ✅ Passa |
+| Desabilitado: rótulo × página | `#a1a1aa` × `#ffffff` | 2,56:1 | Isento (1.4.3 não se aplica a desabilitados) |
+| Desabilitado: marca × caixa | `#ffffff` × `#a1a1aa` | 2,56:1 | Isento |
+
+O rótulo desabilitado é legível, mas fraco. Se a opção desabilitada carrega informação importante, explique por perto por que ela está bloqueada.
+
+### Área de toque
+
+A caixa tem 20×20px, abaixo dos 24×24px do critério 2.5.8. Mas o alvo é o `<label>` inteiro: caixa, espaço de 8px e rótulo formam uma linha de **24px de altura** e largura de pelo menos 52px. Isso atende o 2.5.8. Para toque confortável (44px), deixe pelo menos `--space-gap-md` (12px) entre opções, como no grupo, ou aumente o espaço no layout da tela.
+
+### Regras
+
+- **Elemento nativo:** `<input type="checkbox">` com `appearance: none`. Nunca esconda o input e desenhe uma `<div>` no lugar sem papel e estado.
+- **Rótulo associado:** envolva input e texto num `<label>` (ou use `for`/`id`). O rótulo vira o nome acessível e o alvo de clique.
+- **Grupo:** `<fieldset>` + `<legend>` para opções relacionadas. Mensagem de erro do grupo ligada ao `<fieldset>` com `aria-describedby`.
+- **Ajuda e erro:** fora do `<label>`, ligados por `aria-describedby`. No erro, `aria-invalid="true"` no input.
+- **Misto:** só pela propriedade `indeterminate`. Não use `aria-checked="mixed"` num input nativo: o navegador já expõe o estado.
+- **Desabilitado:** o atributo `disabled` tira a opção do Tab e bloqueia o clique.
+- **Alto contraste:** em `forced-colors`, a marca usa a cor de texto do sistema, para não sumir.
+- **Movimento reduzido:** com `prefers-reduced-motion`, as transições de cor e da marca são desligadas.
+
+### Critérios de aceite
+
+Adaptado de *Checkbox* (Magoo v1.6.1, id `checkbox`, autor Marcelo Sales). É uma orientação educacional, não uma certificação: o comportamento precisa ser verificado na implementação.
+
+- **Teclado:** ao chegar com **Tab** num checkbox, vejo um foco bem visível. Com **Espaço**, ele alterna entre marcado e desmarcado. **Shift+Tab** volta ao item anterior. Um checkbox desabilitado não recebe foco.
+- **Mouse e toque:** clicar ou tocar na caixa ou no rótulo alterna o estado. Um checkbox desabilitado não muda.
+- **Leitor de tela no computador** (NVDA, JAWS, VoiceOver): ao focar, ouço o rótulo, ouço que é uma **caixa de seleção** e ouço o estado: marcada, não marcada ou mista. Num grupo, ouço o título do grupo. Ao alternar, ouço o novo estado.
+- **Leitor de tela no celular** (TalkBack, VoiceOver): ao deslizar até a opção, ouço o mesmo. Com toque duplo, o estado muda e é anunciado.
+
+### Revisão com o Magoo
+
+Cada item do checklist de *Checkbox* (Magoo v1.6.1) foi testado nas stories, no Chrome headless, com teclado e mouse simulados e com a árvore de acessibilidade, que é o que o leitor de tela recebe. Revisão de novembro de 2026.
+
+| Item do Magoo | Como foi verificado | Resultado |
+|---|---|---|
+| Antes de interagir, é possível perceber que a opção pode ser marcada | Caixa de 20px com borda `#71717a` (4,83:1) e cursor `pointer` na linha | ✅ |
+| O rótulo do grupo comunica o objetivo | `<fieldset>` exposto como grupo com o nome da `<legend>` ("Notificações") | ✅ |
+| Marcado, desmarcado, misto e desabilitado são distinguíveis | Estilos medidos: ✓ sobre `#4f46e5`, – sobre `#4f46e5`, caixa branca, caixa cinza | ✅ |
+| Feedback visual ao passar o mouse na caixa ou no rótulo | Ponteiro sobre o rótulo: borda vai para `#52525b`; no marcado, fundo para `#4338ca` | ✅ |
+| Clicar no rótulo altera o estado | Clique no rótulo, no espaço de 8px e na caixa: os três alternam | ✅ |
+| O alvo tocável inclui o rótulo | A linha inteira é o `<label>`: 24px de altura | ✅ |
+| Área de toque confortável em telas pequenas | 24px atende WCAG 2.5.8; para 44px, depende do espaço entre opções no layout | Regra de uso |
+| Foco visível | Anel de 2px `#6366f1`, afastado 2px, só com `:focus-visible` (não aparece no clique) | ✅ |
+| Alterna com Espaço | Espaço marca e desmarca; Enter não alterna, como no nativo | ✅ |
+| Tab segue a ordem do formulário; Shift+Tab volta | Ordem Desmarcado → Marcado → Misto → Com erro; Shift+Tab volta ao Misto | ✅ |
+| Desabilitado não executa ação | Fora do Tab; clique na caixa e no rótulo não muda o estado | ✅ |
+| O rótulo é anunciado | Nome na árvore de acessibilidade = texto do rótulo, nos 6 casos | ✅ |
+| O papel de checkbox é anunciado | Papel `checkbox` na árvore de acessibilidade | ✅ |
+| Estado marcado, desmarcado ou misto é anunciado | `checked` = `true`, `false` e `mixed` na árvore | ✅ |
+| Regra previsível do misto | Pai misto + Espaço → todos marcados; de novo → todos desmarcados; marcar um filho → pai misto | ✅ |
+| Ajuda e erro lidos junto ao campo | Descrição acessível = texto de ajuda; no erro, também `invalid` = `true`. No grupo, a mensagem vira a descrição do grupo | ✅ |
+| Estados desenhados no design | State × Interaction no Penpot, com os mesmos tokens do código | ✅ |
+| Contraste da borda (fora do Magoo, WCAG 1.4.11) | `--color-border-strong` 4,83:1; a revisão anterior apontava 1,48:1 | ✅ Corrigido |
+| Movimento reduzido (fora do Magoo) | Com `prefers-reduced-motion`, as transições ficam em 0s | ✅ |
+
+Resultado do teste automatizado: **35 de 35 verificações passaram**.
+
+O teste automatizado cobre o comportamento das stories. Antes de publicar, ainda vale testar com um leitor de tela real (NVDA, VoiceOver ou TalkBack).
+
+---
+
+## Referências
+
+- [Magoo: Checkbox](https://magoo.cc/pt-br), de Marcelo Sales, v1.6.1
+- [W3C APG: Checkbox Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/checkbox/)
+- [HTML: estado Checkbox do input](https://html.spec.whatwg.org/multipage/input.html#checkbox-state-(type=checkbox))
+- [WCAG 2.2: Contraste mínimo (1.4.3)](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)
+- [WCAG 2.2: Contraste não textual (1.4.11)](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html)
+- [WCAG 2.2: Tamanho mínimo do alvo (2.5.8)](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html)
+- [US Web Design System: Checkbox](https://designsystem.digital.gov/components/checkbox/)
+- [IBM Carbon: Checkbox](https://carbondesignsystem.com/components/checkbox/usage/)

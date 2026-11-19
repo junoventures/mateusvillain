@@ -1,0 +1,188 @@
+/*
+ * Switch
+ * Espelha o componente Switch do Penpot (arquivo Library):
+ *   State:       off | on                            →  atributo checked
+ *   Interaction: default | hover | focus | disabled  →  :hover, :focus-visible,
+ *                                                       atributo disabled
+ *   (todas as combinações estão desenhadas no Penpot; a marca de check no
+ *   pino é um acréscimo do código, ver doc)
+ *
+ * Estrutura (o <label> envolve tudo, então clicar no rótulo também alterna):
+ *   <label class="ds-switch">
+ *     <input type="checkbox" role="switch" class="ds-switch__input">
+ *     <span class="ds-switch__track" aria-hidden="true">
+ *       <span class="ds-switch__knob"></span>
+ *     </span>
+ *     <span class="ds-switch__label">Notificações por e-mail</span>
+ *   </label>
+ *
+ * O rótulo é ESTÁVEL: descreve a configuração, não o estado. O estado vem do
+ * próprio controle (posição, cor e marca de check no pino) e, para o leitor
+ * de tela, do atributo checked ("ligado"/"desligado").
+ */
+.ds-switch {
+  /* Deslocamento do pino: largura do trilho menos a altura (40 − 24 = 16px). */
+  --_travel: calc(var(--size-switch-width) - var(--size-switch-height));
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-gap-sm);
+  font: var(--typography-body-md);
+  color: var(--color-text-default);
+  cursor: pointer;
+}
+
+/*
+ * O checkbox nativo fica invisível, mas por cima do trilho: continua
+ * recebendo foco, Espaço, clique e toque, e o leitor de tela o encontra
+ * no lugar certo.
+ */
+.ds-switch__input {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 0;
+  width: var(--size-switch-width);
+  height: var(--size-switch-height);
+  margin: 0;
+  opacity: var(--opacity-0);
+  transform: translateY(-50%);
+  cursor: inherit;
+}
+
+/* Trilho */
+.ds-switch__track {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  width: var(--size-switch-width);
+  height: var(--size-switch-height);
+  padding: var(--space-inset-2xs);
+  border-radius: var(--radius-pill-default);
+  background: var(--color-control-track);
+  transition: background-color 150ms ease;
+}
+
+/* Pino */
+.ds-switch__knob {
+  position: relative;
+  display: block;
+  width: var(--size-control-xs);
+  height: var(--size-control-xs);
+  border-radius: var(--radius-pill-default);
+  background: var(--color-control-knob);
+  box-shadow: var(--shadow-sm);
+  transition: transform 150ms ease;
+}
+
+/*
+ * Marca de check dentro do pino, só quando ligado: o estado não depende
+ * apenas da cor e da posição (WCAG 1.4.1). Desenhada com bordas, na cor
+ * do trilho ligado.
+ */
+.ds-switch__knob::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  box-sizing: border-box;
+  width: var(--spacing-1);
+  height: var(--spacing-2);
+  border: solid var(--color-action-primary-bg);
+  border-width: 0 var(--border-width-focus) var(--border-width-focus) 0;
+  opacity: var(--opacity-0);
+  /* Compensação óptica: sobe 1px para o check parecer centrado. */
+  transform: translate(-50%, -60%) rotate(45deg);
+  transition: opacity 150ms ease;
+}
+
+/* Rótulo */
+.ds-switch__label {
+  font: inherit;
+}
+
+/*
+ * Texto de estado opcional ("Ligado"/"Desligado"), ao lado do rótulo.
+ * Fica fora do nome acessível (aria-hidden), porque o leitor de tela já
+ * anuncia o estado. Os dois textos ficam no HTML e o CSS mostra um deles.
+ */
+.ds-switch__status {
+  font: var(--typography-body-sm);
+  color: var(--color-text-muted);
+}
+.ds-switch__status--on,
+.ds-switch__input:checked ~ .ds-switch__status--off {
+  display: none;
+}
+.ds-switch__input:checked ~ .ds-switch__status--on {
+  display: inline;
+}
+
+/* Ligado */
+.ds-switch__input:checked + .ds-switch__track {
+  background: var(--color-action-primary-bg);
+}
+.ds-switch__input:checked + .ds-switch__track .ds-switch__knob {
+  transform: translateX(var(--_travel));
+}
+.ds-switch__input:checked + .ds-switch__track .ds-switch__knob::after {
+  opacity: var(--opacity-100);
+}
+
+/* Hover: o trilho escurece um tom. */
+.ds-switch:hover .ds-switch__input:not(:disabled) + .ds-switch__track {
+  background: var(--color-text-muted);
+}
+.ds-switch:hover .ds-switch__input:not(:disabled):checked + .ds-switch__track {
+  background: var(--color-action-primary-bg-hover);
+}
+
+/* Foco visível: mesmo anel do Button, em volta do trilho. */
+.ds-switch__input:focus-visible + .ds-switch__track {
+  outline: var(--border-width-focus) solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+/*
+ * Desabilitado: trilho e rótulo apagados, pino continua branco, cursor de
+ * bloqueio. O atributo disabled tira o switch da ordem de foco e impede a
+ * troca de estado.
+ */
+.ds-switch:has(.ds-switch__input:disabled) {
+  cursor: not-allowed;
+}
+.ds-switch__input:disabled + .ds-switch__track {
+  background: var(--color-border-default);
+}
+.ds-switch__input:disabled:checked + .ds-switch__track {
+  background: var(--color-action-disabled-text);
+}
+.ds-switch__input:disabled:checked + .ds-switch__track .ds-switch__knob::after {
+  border-color: var(--color-action-disabled-text);
+}
+.ds-switch__input:disabled ~ .ds-switch__label,
+.ds-switch__input:disabled ~ .ds-switch__status {
+  color: var(--color-action-disabled-text);
+}
+
+/* Alto contraste do Windows: o trilho ganha contorno e o pino, cor de texto. */
+@media (forced-colors: active) {
+  .ds-switch__track {
+    border: var(--border-width-default) solid CanvasText;
+  }
+  .ds-switch__knob {
+    background: CanvasText;
+  }
+  .ds-switch__input:checked + .ds-switch__track {
+    background: Highlight;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-switch__track,
+  .ds-switch__knob,
+  .ds-switch__knob::after {
+    transition: none;
+  }
+}

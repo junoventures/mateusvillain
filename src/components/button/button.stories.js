@@ -49,7 +49,7 @@ export default {
     },
     variant: {
       control: 'inline-radio',
-      options: ['primary', 'secondary', 'danger'],
+      options: ['primary', 'secondary', 'outline', 'danger'],
       description: 'Estilo visual',
     },
     size: {
@@ -82,6 +82,10 @@ export const Secondary = {
   args: { variant: 'secondary' },
 };
 
+export const Outline = {
+  args: { variant: 'outline', label: 'Cancelar' },
+};
+
 export const Danger = {
   args: { variant: 'danger', label: 'Excluir' },
 };
@@ -94,7 +98,8 @@ export const Variantes = {
   render: (args) =>
     row([
       createButton({ ...args, variant: 'primary', label: 'Salvar' }),
-      createButton({ ...args, variant: 'secondary', label: 'Cancelar' }),
+      createButton({ ...args, variant: 'secondary', label: 'Voltar' }),
+      createButton({ ...args, variant: 'outline', label: 'Cancelar' }),
       createButton({ ...args, variant: 'danger', label: 'Excluir' }),
     ]),
 };
@@ -149,7 +154,7 @@ export const AbreEFecha = {
     const wrapper = document.createElement('div');
     wrapper.innerHTML = `
       ${createButton({ ...args, variant: 'secondary', iconEnd: null, label: 'Mostrar detalhes' })}
-      <div id="detalhes-pedido" hidden style="margin-top: 12px; font-family: var(--font-family-base);">
+      <div id="detalhes-pedido" hidden style="margin-top: 12px; font-family: var(--font-family-sans);">
         Pedido nº 1234 · Entrega prevista em 3 dias úteis.
       </div>`;
     const button = wrapper.querySelector('button');

@@ -1,0 +1,385 @@
+import { Meta, Title, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as CardStories from './card.stories';
+
+<Meta of={CardStories} />
+
+export const Marker = ({ n, style }) => (
+  <span style={{ position: 'absolute', zIndex: 1, display: 'grid', placeItems: 'center', width: 22, height: 22, borderRadius: 'var(--radius-full)', background: 'var(--color-text-default)', color: 'var(--color-bg-default)', fontFamily: 'var(--font-family-sans)', fontSize: 12, fontWeight: 700, ...style }}>{n}</span>
+);
+
+export const DoDont = ({ type, children, caption }) => {
+  const isDo = type === 'do';
+  const color = isDo ? 'var(--color-feedback-success-text)' : 'var(--color-feedback-error-text)';
+  return (
+    <figure className="sb-unstyled" style={{ margin: 0, border: '1px solid var(--color-border-default)', borderTop: `4px solid ${color}`, borderRadius: 'var(--radius-control-default)', overflow: 'hidden' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center', justifyContent: 'center', minHeight: 96, padding: 'var(--space-inset-lg)', background: 'var(--color-bg-subtle)', fontFamily: 'var(--font-family-sans)', color: 'var(--color-text-default)' }}>{children}</div>
+      <figcaption style={{ padding: 'var(--space-gap-md) var(--space-inset-md)', fontFamily: 'var(--font-family-sans)', fontSize: 14 }}>
+        <strong style={{ color }}>{isDo ? 'Faça' : 'Não faça'}</strong> · {caption}
+      </figcaption>
+    </figure>
+  );
+};
+
+export const Grid = ({ children }) => (
+  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16, margin: '16px 0 32px' }}>{children}</div>
+);
+
+export const MiniCard = ({ title = 'Biblioteca de componentes', children }) => (
+  <article className="ds-card" style={{ '--ds-card-max-width': '280px' }}>
+    <div className="ds-card__body">
+      <h3 className="ds-card__title">{title}</h3>
+      <p className="ds-card__description">Tokens, componentes e documentação.</p>
+      <div className="ds-card__footer">{children}</div>
+    </div>
+  </article>
+);
+
+<Title />
+
+Agrupa o conteúdo sobre um assunto (capa, selo, título, resumo, autoria e ação) numa unidade que se destaca da página. Funciona bem em coleções, em que a pessoa compara e escolhe um item. O Card compõe outros componentes: [Badge](?path=/docs/componentes-badge--badge), [Avatar](?path=/docs/componentes-avatar--avatar) e a aparência do [Button](?path=/docs/componentes-button--button).
+
+<Canvas of={CardStories.Padrao} />
+<Controls of={CardStories.Padrao} />
+
+```html
+<article class="ds-card" aria-labelledby="card-biblioteca">
+  <div class="ds-card__cover"></div>
+  <div class="ds-card__body">
+    <span class="ds-badge ds-badge--brand">Novo</span>
+    <h3 class="ds-card__title" id="card-biblioteca">Biblioteca de componentes</h3>
+    <p class="ds-card__description">Tokens, componentes e documentação para criar interfaces consistentes e acessíveis.</p>
+    <div class="ds-card__footer">
+      <p class="ds-card__author">
+        <span class="ds-avatar ds-avatar--sm" aria-hidden="true"><span class="ds-avatar__initials">MV</span></span>
+        <span><span class="ds-visually-hidden">Autoria: </span>Mateus Villain</span>
+      </p>
+      <a class="ds-button ds-button--primary ds-button--sm" href="/biblioteca">
+        Ver mais<span class="ds-visually-hidden"> sobre Biblioteca de componentes</span>
+      </a>
+    </div>
+  </div>
+</article>
+```
+
+**Quando usar:** para apresentar itens parecidos numa coleção (artigos, cursos, projetos), cada um com título, resumo e, se houver, um destino.
+
+**Quando não usar:**
+- Para dados que a pessoa precisa comparar por colunas (preço, data, status de muitos itens). Use uma tabela.
+- Para um único bloco de texto sem relação com outros. Um parágrafo ou seção resolve.
+- Para chamar atenção para uma mensagem do sistema. Use o Alert.
+
+---
+
+## Anatomia
+
+<div className="sb-unstyled" style={{ position: 'relative', display: 'flex', justifyContent: 'center', padding: '40px 24px', background: 'var(--color-bg-subtle)', borderRadius: 'var(--radius-control-default)', margin: '16px 0' }}>
+  <div style={{ position: 'relative', width: 320 }}>
+    <article className="ds-card" aria-label="Exemplo de anatomia">
+      <div className="ds-card__cover" />
+      <div className="ds-card__body">
+        <span className="ds-badge ds-badge--brand">Novo</span>
+        <h3 className="ds-card__title">Biblioteca de componentes</h3>
+        <p className="ds-card__description">Tokens, componentes e documentação para criar interfaces consistentes e acessíveis.</p>
+        <div className="ds-card__footer">
+          <p className="ds-card__author"><span className="ds-avatar ds-avatar--sm" aria-hidden="true"><span className="ds-avatar__initials">MV</span></span><span>Mateus Villain</span></p>
+          <a className="ds-button ds-button--primary ds-button--sm" href="#anatomia" onClick={(e) => e.preventDefault()}>Ver mais<span className="ds-visually-hidden"> sobre Biblioteca de componentes (exemplo)</span></a>
+        </div>
+      </div>
+    </article>
+    <Marker n="1" style={{ top: -11, left: -11 }} />
+    <Marker n="2" style={{ top: 70, left: -32 }} />
+    <Marker n="3" style={{ top: 184, left: -32 }} />
+    <Marker n="4" style={{ top: 216, left: -32 }} />
+    <Marker n="5" style={{ top: 262, left: -32 }} />
+    <Marker n="6" style={{ bottom: 28, left: -32 }} />
+    <Marker n="7" style={{ bottom: 28, right: -32 }} />
+  </div>
+</div>
+
+| # | Parte | Obrigatória | Token |
+|---|---|---|---|
+| 1 | **Contêiner**: fundo, borda e cantos | Sim | `--color-surface-default`, `--border-width-default` + `--color-border-default`, `--radius-container-default` (12px) |
+| 2 | **Capa**: bloco de cor ou imagem, 160px de altura | Não | `--color-accent-bg`; altura `calc(var(--size-20) * 2)` |
+| 3 | **Selo**: Badge brand | Não | ver [Badge](?path=/docs/componentes-badge--badge) |
+| 4 | **Título**: `<h2>` a `<h6>`, conforme a página | Sim | `--typography-heading-sm` (20px, 600, 1,35), `--color-text-default` |
+| 5 | **Descrição**: resumo de 1 a 3 linhas | Sim | `--typography-body-sm` (14px), `--color-text-muted` |
+| 6 | **Autoria**: Avatar sm decorativo + nome | Não | `--typography-label-md`, `--color-text-default`, espaço `--space-gap-sm` (8px) |
+| 7 | **Ação**: link com aparência de Button primary sm (32px) | Não | ver [Button](?path=/docs/componentes-button--button) |
+
+O corpo tem respiro `--space-inset-lg` (24px) e espaço de `--space-gap-md` (12px) entre as partes. O rodapé fica sempre no fim do card (`margin-top: auto`), então cards de alturas diferentes numa grade alinham autoria e ação.
+
+---
+
+## Propriedades
+
+| Propriedade | Valores | Classe ou atributo | Padrão |
+|---|---|---|---|
+| Tipo | informativo, destino único, várias ações, card inteiro clicável | ver "Tipos de card"; `.ds-card--clickable` | destino único |
+| Nível do título | `h2` a `h6` | elemento do `.ds-card__title` | `h3` |
+| Capa | cor, imagem decorativa, imagem informativa, nenhuma | `.ds-card__cover` + `<img class="ds-card__cover-img" alt>` | cor |
+| Selo | texto ou nenhum | Badge `.ds-badge--brand` | "Novo" |
+| Autoria | nome ou nenhum | `.ds-card__author` | com autoria |
+| Largura máxima | qualquer medida | `--ds-card-max-width` | 320px (`calc(var(--size-20) * 4)`) |
+
+**Largura:** no Penpot o card tem 320px. No código, 320px é a **largura máxima**: em telas menores o card encolhe (`width: 100%`). Dentro de uma grade, use `--ds-card-max-width: none` para o card ocupar a coluna inteira.
+
+**Título:** o nível não é fixo. Ele segue a página: se os cards estão numa seção com `<h2>`, os títulos dos cards são `<h3>`. A aparência é a mesma em qualquer nível.
+
+<Canvas of={CardStories.Colecao} />
+
+---
+
+## Tipos de card
+
+O Magoo pede para decidir **antes** o que o card faz, e não dar a mesma aparência de interação a cards com comportamentos diferentes.
+
+| Tipo | Quando | Controles | Paradas de Tab |
+|---|---|---|---|
+| **Informativo** | Só apresenta conteúdo | Nenhum. O contêiner nunca recebe foco | 0 |
+| **Destino único** | Leva a uma página com mais detalhes | Um link "Ver mais", com nome que identifica o card | 1 |
+| **Várias ações** | Destino + ações na mesma tela (Favoritar, Compartilhar) | Link + botões independentes, lado a lado | 1 por controle |
+| **Card inteiro clicável** | Destino único, e o card todo deve ser a área de clique | Um link, no título, que se estende ao card todo | 1 |
+
+### Informativo
+
+<Canvas of={CardStories.Informativo} />
+
+Sem link nem botão: o leitor de tela lê o conteúdo em ordem, e o Tab passa direto. Não use `tabindex="0"` no contêiner "para dar foco".
+
+### Destino único
+
+<Canvas of={CardStories.Padrao} />
+
+"Ver mais" **leva a outra página**, então é um **link** (`<a href>`), com a aparência do Button primary sm. Para quem ouve a lista de links, "Ver mais" sozinho se repete em todos os cards. Por isso o nome do link inclui o título, num trecho invisível:
+
+```html
+<a class="ds-button ds-button--primary ds-button--sm" href="/biblioteca">
+  Ver mais<span class="ds-visually-hidden"> sobre Biblioteca de componentes</span>
+</a>
+```
+
+O nome acessível fica "Ver mais sobre Biblioteca de componentes". Ele **começa pelo texto visível**, então quem usa comando de voz ("clicar em Ver mais") também consegue acionar (WCAG 2.5.3).
+
+### Várias ações
+
+<Canvas of={CardStories.VariasAcoes} />
+
+O Favoritar é um `<button>` com `aria-pressed`: alterna o estado na mesma tela e **não abre** o link. O rótulo não muda; o estado é anunciado como "pressionado" ou "não pressionado", e a estrela preenchida mostra o estado na tela. O nome também identifica o card ("Favoritar Biblioteca de componentes").
+
+### Card inteiro clicável (opcional)
+
+<Canvas of={CardStories.CardInteiroClicavel} />
+
+Para quando o card todo leva ao mesmo destino. O link fica **no título**, e um pseudo-elemento estica a área de clique até as bordas:
+
+```html
+<article class="ds-card ds-card--clickable" aria-labelledby="card-biblioteca">
+  …
+  <h3 class="ds-card__title" id="card-biblioteca">
+    <a class="ds-card__link" href="/biblioteca">Biblioteca de componentes</a>
+  </h3>
+  …
+</article>
+```
+
+- **Uma só parada de Tab**, com o nome do título.
+- **O foco contorna o card inteiro**, para mostrar a área que será aberta (`:has(.ds-card__link:focus-visible)`).
+- **Nenhum outro controle dentro.** Se precisar de Favoritar, use o tipo "Várias ações".
+- **Não envolva o card num `<a>`.** O leitor de tela leria o card inteiro como nome do link, e qualquer botão dentro ficaria aninhado.
+- A seleção de texto dentro do card fica mais difícil, porque o clique cai no link. Use só quando o destino é óbvio.
+
+---
+
+## Conteúdo variável
+
+### Título longo
+
+<Canvas of={CardStories.TituloLongo} />
+
+O título quebra em quantas linhas precisar, inclusive palavras longas sem espaço (`overflow-wrap: anywhere`). Nada é cortado com reticências: o título é a informação que distingue o card. Em telas de 320px, o card encolhe e o rodapé quebra linha.
+
+### Sem imagem
+
+<Canvas of={CardStories.SemImagem} />
+
+Sem capa, o card começa direto no corpo. Título e resumo continuam distinguindo o card, sem depender da imagem.
+
+### Capa com imagem
+
+<Canvas of={CardStories.ComImagem} />
+
+| A imagem… | Texto alternativo | Exemplo |
+|---|---|---|
+| **É decorativa** (ilustração, foto de banco, repete o título) | `alt=""` | Story "Com imagem" |
+| **Traz informação** que não está no texto (gráfico, produto, mapa) | `alt` que descreve a informação | Story "Imagem informativa" |
+
+<Canvas of={CardStories.ImagemInformativa} />
+
+Não repita o título no `alt`: o leitor de tela leria o mesmo texto duas vezes. A capa de cor (sem `<img>`) é sempre decorativa.
+
+---
+
+## Interação
+
+| Entrada | Como aciona | Retorno visual |
+|---|---|---|
+| **Mouse** | Clique no link "Ver mais" ou nos botões. No card inteiro clicável, clique em qualquer ponto | Hover do Button no link; no card clicável, borda `--color-border-strong` e título sublinhado |
+| **Toque** | Toque nos mesmos alvos | Pressionado do Button (afunda 1px) |
+| **Teclado** | **Tab** percorre links e botões na ordem do conteúdo. **Enter** abre o link. **Enter** ou **Espaço** aciona o botão | Anel de foco de 2px; no card clicável, o anel contorna o card todo |
+| **Leitor de tela** | Navegação por títulos (H) e por links (lista de links) | Anuncia o título com o nível, o artigo com o nome do título e o link com "Ver mais sobre" seguido do título |
+
+- **O contêiner nunca recebe foco.** Borda e destaque não são motivo para uma parada de Tab.
+- **Uma ação não dispara outra.** Favoritar não abre o destino do card.
+- **Sem controles aninhados.** Nunca botão dentro de link, link dentro de botão ou card inteiro dentro de `<a>`.
+- **Coleção em lista:** vários cards ficam num `<ul>`, um por `<li>`, para o leitor de tela anunciar "lista, 3 itens".
+
+---
+
+## Affordance
+
+| Sinal | Como aparece |
+|---|---|
+| **Contêiner** | Borda e cantos arredondados agrupam o conteúdo, mas **não** indicam clique sozinhos |
+| **Ação explícita** | O link "Ver mais" tem forma de botão: é ali que se clica |
+| **Card clicável** | Cursor `pointer` em toda a área, borda mais escura e título sublinhado no hover |
+| **Informativo** | Nenhum hover e nenhum cursor de clique: a aparência não promete interação |
+
+Cuidados:
+
+- **Não dê hover ao card informativo.** Um card que reage ao mouse e não faz nada frustra a pessoa.
+- **Mesma aparência, mesmo comportamento.** Numa coleção, todos os cards devem ser do mesmo tipo.
+
+---
+
+## Compensação óptica
+
+**A capa não tem respiro.** Ela encosta nas bordas e o contêiner corta os cantos (`overflow: hidden`). Uma capa com respiro, dentro dos cantos de 12px, parece "flutuar" e desalinha do texto.
+
+**O selo ocupa só a largura do texto** (`align-self: flex-start`). Sem isso, a coluna flex esticaria o Badge até a largura do card.
+
+**O rodapé desce até o fim.** Em cards de alturas diferentes lado a lado, autoria e ação ficam na mesma linha de base (`margin-top: auto`).
+
+---
+
+## Faça e não faça
+
+<Grid>
+  <DoDont type="do" caption="Link com nome que identifica o card.">
+    <MiniCard>
+      <a className="ds-button ds-button--primary ds-button--sm" href="#faca" onClick={(e) => e.preventDefault()}>Ver mais<span className="ds-visually-hidden"> sobre Biblioteca de componentes (exemplo)</span></a>
+    </MiniCard>
+  </DoDont>
+  <DoDont type="dont" caption="Botão para navegar, com nome genérico repetido em todos os cards.">
+    <MiniCard>
+      <button type="button" className="ds-button ds-button--primary ds-button--sm">Ver mais</button>
+    </MiniCard>
+  </DoDont>
+</Grid>
+
+<Grid>
+  <DoDont type="do" caption="Ações independentes, lado a lado.">
+    <MiniCard>
+      <button type="button" className="ds-button ds-button--secondary ds-button--sm" aria-pressed="false">Favoritar<span className="ds-visually-hidden"> Biblioteca de componentes (exemplo)</span></button>
+      <a className="ds-button ds-button--primary ds-button--sm" href="#faca" onClick={(e) => e.preventDefault()}>Ver mais<span className="ds-visually-hidden"> sobre Biblioteca de componentes (exemplo 2)</span></a>
+    </MiniCard>
+  </DoDont>
+  <DoDont type="dont" caption="Card inteiro clicável com outro botão dentro: um clique dispara as duas coisas.">
+    <article className="ds-card ds-card--clickable" style={{ '--ds-card-max-width': '280px' }}>
+      <div className="ds-card__body">
+        <h3 className="ds-card__title"><span>Biblioteca de componentes</span></h3>
+        <p className="ds-card__description">Tokens, componentes e documentação.</p>
+        <div className="ds-card__footer"><span className="ds-button ds-button--secondary ds-button--sm" aria-hidden="true">Favoritar</span></div>
+      </div>
+    </article>
+  </DoDont>
+</Grid>
+
+<Grid>
+  <DoDont type="do" caption="Título completo, quebrando linha.">
+    <MiniCard title="Guia completo de acessibilidade para formulários e tabelas" />
+  </DoDont>
+  <DoDont type="dont" caption="Título cortado com reticências, sem alternativa.">
+    <MiniCard title={<span style={{ display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Guia completo de acessibilidade para formulários e tabelas</span>} />
+  </DoDont>
+</Grid>
+
+---
+
+## Acessibilidade
+
+### Contraste dos tokens atuais
+
+Calculado com a fórmula da WCAG 2.2 e conferido no navegador. Texto precisa de **4,5:1** (1.4.3); anel de foco, **3:1** (1.4.11).
+
+| Combinação | Contraste | Resultado |
+|---|---|---|
+| Título `#18181b` × fundo branco | 17,72:1 | ✅ Passa |
+| Descrição `#52525b` × fundo branco | 7,73:1 | ✅ Passa |
+| Nome do autor `#18181b` × fundo branco | 17,72:1 | ✅ Passa |
+| Selo "Novo" `#4338ca` × `#e0e7ff` | 6,41:1 | ✅ Passa |
+| "Ver mais": texto × fundo `#4f46e5` | 6,29:1 | ✅ Passa |
+| "Ver mais" no hover: texto × `#4338ca` | 7,90:1 | ✅ Passa |
+| Anel de foco `#6366f1` × página branca | 4,47:1 | ✅ Passa (mínimo 3:1) |
+| Borda `#e4e4e7` × fundo branco | 1,27:1 | Isento: o card não é um controle e a borda é decorativa |
+| Borda no hover do card clicável `#71717a` × branco | 4,83:1 | ✅ Passa |
+
+### Regras
+
+- **Contêiner:** `<article>` com `aria-labelledby` apontando para o título (o leitor anuncia "artigo, Biblioteca de componentes"). Não existe papel ARIA "card".
+- **Título:** um `<h2>` a `<h6>` conforme a hierarquia da página, nunca `<div>` com aparência de título.
+- **Navegação = link:** "Ver mais" é `<a href>`. Ação na mesma tela = `<button type="button">`.
+- **Nome único:** o nome de cada link e botão inclui o título do card.
+- **Imagem:** decorativa com `alt=""`; informativa com `alt` útil, sem repetir o título.
+- **Avatar do autor:** decorativo (`aria-hidden="true"`), com "Autoria:" em `.ds-visually-hidden` antes do nome.
+- **Sem aninhamento** de links e botões; **sem foco** no contêiner.
+- **Movimento reduzido:** com `prefers-reduced-motion`, a transição de borda do card clicável é desligada.
+
+### Critérios de aceite
+
+Adaptado de *Cards* (Magoo v1.6.1, id `cards`, autor Marcelo Sales). É uma orientação educacional, não uma certificação: o comportamento precisa ser verificado na implementação.
+
+- **Teclado:** ao percorrer uma coleção com **Tab** e **Shift + Tab**, vejo o foco nos links e botões, sem paradas para cards estáticos. Ao acionar uma ação secundária, vejo seu resultado sem abrir o destino principal.
+- **Leitor de tela no computador:** ao navegar pela coleção, ouço títulos e nomes de links que distinguem os destinos e identifico as ações independentes. Ao acionar um link ou botão, percebo o destino ou o novo estado sem depender da imagem.
+- **Leitor de tela no celular:** ao explorar os cards, ouço o conteúdo em ordem e identifico cada controle pelo nome. Com toque duplo, só a ação correspondente acontece.
+- **Card informativo:** não encontro uma parada de foco criada só para o contêiner.
+- **Título longo e tela pequena:** título, contexto e controles continuam disponíveis, sem sobreposição.
+
+### Revisão com o Magoo
+
+Cada item do checklist de *Cards* (Magoo v1.6.1) foi testado nas stories, no Chrome headless, com teclado e mouse simulados e com a árvore de acessibilidade, que é o que o leitor de tela recebe. Revisão de novembro de 2026: **30 de 30 verificações passaram**.
+
+| Item do Magoo | Como foi verificado | Resultado |
+|---|---|---|
+| Título e resumo distinguem o card sem a imagem | Story "Sem imagem": card começa no corpo, título e resumo presentes | ✅ |
+| Definir se o card é informativo, tem um destino ou várias ações | Quatro tipos documentados e com story; informativo sem controles | ✅ |
+| Hierarquia de títulos acompanha a página | `heading` nível 3 por padrão; nível 2 pelo controle `headingLevel` | ✅ |
+| Área acionável reconhecível | "Ver mais" com 32px e forma de botão; card clicável com cursor e hover | ✅ |
+| Foco mostra a área inteira do card clicável | Contorno de 2px no `<article>` quando o link do título tem foco | ✅ |
+| Card clicável abre o destino em qualquer ponto | Clique na descrição muda o endereço para o destino | ✅ |
+| Ações secundárias independentes | Favoritar com Espaço e com Enter muda `aria-pressed` sem abrir o link | ✅ |
+| Sem botões ou links aninhados | 0 elementos interativos aninhados nas 9 stories | ✅ |
+| Sem paradas de foco repetidas ou no contêiner | Tab: 1 parada (link) no padrão, 2 em várias ações, 0 no informativo, 1 no clicável; contêiner nunca focável | ✅ |
+| Nome do link identifica o card | Link "Ver mais sobre Biblioteca de componentes"; na coleção, 3 nomes diferentes | ✅ |
+| Enter abre o link focado | O endereço muda para `#biblioteca-de-componentes` | ✅ |
+| Imagens com alternativa adequada | Decorativa (`alt=""`) fora da árvore; informativa com nome | ✅ |
+| Títulos longos sem corte nem sobreposição | 5 linhas em 320px e em tela de 320px; sem rolagem horizontal | ✅ |
+| Estado do Favoritar disponível além da aparência | `pressed` "false" → "true" na árvore de acessibilidade | ✅ |
+| Coleção em lista com títulos | `list` com 3 `listitem` e 3 `heading` | ✅ |
+| Contraste (fora do Magoo, WCAG 1.4.3) | Medido no navegador: todos os textos ≥ 6,29:1 | ✅ |
+| Ordem visual coerente ao passar de colunas para uma | A grade da story "Coleção" segue a ordem do HTML | Regra de uso |
+| Título longo no Penpot | Ainda não há variante desenhada | ⚠️ Falta no design |
+
+O teste automatizado cobre o comportamento das stories. Antes de publicar, ainda vale testar com um leitor de tela real (NVDA, VoiceOver ou TalkBack), principalmente a lista de links e a navegação por títulos.
+
+---
+
+## Referências
+
+- [Magoo: Cards](https://magoo.cc/componentes/estrutura/cards.html), de Marcelo Sales, v1.6.1
+- [USWDS: Card](https://designsystem.digital.gov/components/card/) (referência citada pelo Magoo)
+- [W3C WAI: Page structure](https://www.w3.org/WAI/tutorials/page-structure/) (referência citada pelo Magoo)
+- [W3C APG: Button Pattern (botão alternável)](https://www.w3.org/WAI/ARIA/apg/patterns/button/)
+- [WCAG 2.2: Propósito do link no contexto (2.4.4)](https://www.w3.org/WAI/WCAG22/Understanding/link-purpose-in-context.html)
+- [WCAG 2.2: Rótulo no nome (2.5.3)](https://www.w3.org/WAI/WCAG22/Understanding/label-in-name.html)
+- [WCAG 2.2: Reflow (1.4.10)](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html)
+- Revisão do Penpot: `docs/revisao-magoo.md`, seção Card

@@ -1,0 +1,161 @@
+/*
+ * Alert
+ * Espelha o componente Alert do Penpot (arquivo Library):
+ *   Type: error | warning | success | info  →  .ds-alert--{type}
+ *   Partes: ícone (círculo de 20px com glifo branco), título e descrição.
+ *
+ * Definido aqui, no código (não existe no Penpot):
+ *   - largura fluida (o Penpot desenha com 400px fixos);
+ *   - botão de fechar (.ds-alert__close), para alertas descartáveis;
+ *   - ação interna (.ds-alert__action), link ou botão dentro do texto.
+ *
+ * As cores de cada tipo ficam em propriedades locais (--_bg, --_border,
+ * --_icon, --_text) para que as partes não repitam regras por tipo.
+ */
+.ds-alert {
+  --_bg: var(--color-feedback-info-bg);
+  --_border: var(--color-feedback-info-border);
+  --_icon: var(--color-feedback-info-icon);
+  --_text: var(--color-feedback-info-text);
+  /* Altura da primeira linha do título: referência para alinhar ícone e fechar. */
+  --_title-line: calc(var(--font-size-md) * var(--font-line-height-tight));
+
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-gap-md);
+  width: 100%;
+  padding: var(--space-inset-md);
+  border: var(--border-width-default) solid var(--_border);
+  border-radius: var(--radius-container-default);
+  background: var(--_bg);
+  color: var(--_text);
+}
+
+/* Tipos */
+.ds-alert--error {
+  --_bg: var(--color-feedback-error-bg);
+  --_border: var(--color-feedback-error-border);
+  --_icon: var(--color-feedback-error-icon);
+  --_text: var(--color-feedback-error-text);
+}
+.ds-alert--warning {
+  --_bg: var(--color-feedback-warning-bg);
+  --_border: var(--color-feedback-warning-border);
+  --_icon: var(--color-feedback-warning-icon);
+  --_text: var(--color-feedback-warning-text);
+}
+.ds-alert--success {
+  --_bg: var(--color-feedback-success-bg);
+  --_border: var(--color-feedback-success-border);
+  --_icon: var(--color-feedback-success-icon);
+  --_text: var(--color-feedback-success-text);
+}
+.ds-alert--info {
+  --_bg: var(--color-feedback-info-bg);
+  --_border: var(--color-feedback-info-border);
+  --_icon: var(--color-feedback-info-icon);
+  --_text: var(--color-feedback-info-text);
+}
+
+/*
+ * Ícone: SVG inline com o círculo em currentColor e o glifo branco.
+ * Compensação óptica: o ícone (20px) é centralizado na primeira linha do
+ * título (16px × 1.2 = 19,2px), e não no alerta inteiro. Assim continua
+ * alinhado quando a descrição quebra em várias linhas.
+ */
+.ds-alert__icon {
+  flex-shrink: 0;
+  width: var(--size-icon-md);
+  height: var(--size-icon-md);
+  margin-block: calc((var(--_title-line) - var(--size-icon-md)) / 2);
+  color: var(--_icon);
+}
+
+.ds-alert__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-gap-xs);
+  min-width: 0;
+}
+
+.ds-alert__title {
+  margin: 0;
+  font: var(--typography-label-lg);
+}
+
+.ds-alert__description {
+  margin: 0;
+  font: var(--typography-body-sm);
+}
+
+/* Ação interna: link ou botão com aparência de link, na cor do texto. */
+.ds-alert__action {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: var(--font-weight-semibold);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.ds-alert__action:hover {
+  text-decoration-thickness: var(--border-width-2);
+}
+.ds-alert__action:focus-visible {
+  outline: var(--border-width-focus) solid var(--color-border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/*
+ * Fechar: botão só com ícone, 32×32px. A margem negativa centraliza o botão
+ * na primeira linha do título e encosta o ícone no respiro da direita, sem
+ * aumentar a altura do alerta.
+ */
+.ds-alert__close {
+  box-sizing: border-box;
+  display: inline-grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: var(--size-control-sm);
+  height: var(--size-control-sm);
+  margin-block: calc((var(--_title-line) - var(--size-control-sm)) / 2);
+  margin-inline-end: calc(-1 * var(--space-inset-sm));
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-control-default);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+.ds-alert__close:hover {
+  background: var(--_border);
+}
+.ds-alert__close:focus-visible {
+  outline: var(--border-width-focus) solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+.ds-alert__close svg {
+  width: var(--size-icon-sm);
+  height: var(--size-icon-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-alert__close {
+    transition: none;
+  }
+}
+
+/* Glifo branco dentro do círculo do ícone. */
+.ds-alert__glyph {
+  fill: none;
+  stroke: var(--color-text-inverse);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

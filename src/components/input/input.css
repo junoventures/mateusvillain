@@ -1,0 +1,143 @@
+/*
+ * Input (campo de texto de uma linha)
+ * Espelha o componente Input do Penpot (arquivo Library):
+ *   Estrutura: rótulo, campo de 40px e texto de ajuda, empilhados com 4px.
+ *   Estados desenhados no Penpot: padrão (vazio, com placeholder), foco
+ *   (preenchido), erro e desabilitado.
+ *   Estados acrescentados no Penpot a partir do Magoo (variantes Hover,
+ *   Read-only e Required) + erro com ícone, definido aqui.
+ *
+ * O estado vem do HTML nativo, sem classes de modificador:
+ *   erro           → aria-invalid="true" no <input>
+ *   desabilitado   → atributo disabled
+ *   somente leitura → atributo readonly
+ *   obrigatório    → atributo required + .ds-input__required no rótulo
+ *
+ * A borda de 2px (foco e erro) é feita com a borda de 1px somada a uma
+ * sombra interna de 1px. Assim o texto não "pula" 1px ao trocar de estado.
+ */
+.ds-input {
+  --_border: var(--color-border-strong);
+  --_ring: transparent;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-gap-xs);
+  width: 100%;
+  min-width: 0;
+}
+
+/* Rótulo */
+.ds-input__label {
+  font: var(--typography-label-md);
+  color: var(--color-text-default);
+}
+
+/* Indicação de obrigatório: texto visível, não só cor ou asterisco. */
+.ds-input__required {
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-muted);
+}
+
+/* Campo */
+.ds-input__field {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--size-control-md);
+  margin: 0;
+  padding: 0 var(--space-gap-md);
+  border: var(--border-width-default) solid var(--_border);
+  border-radius: var(--radius-control-default);
+  background: var(--color-field-bg);
+  box-shadow: inset 0 0 0 var(--border-width-default) var(--_ring);
+  font: var(--typography-body-md);
+  color: var(--color-text-default);
+  appearance: none;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.ds-input__field::placeholder {
+  color: var(--color-text-subtle);
+  opacity: 1;
+}
+
+/* Hover: a borda escurece. */
+.ds-input__field:hover:not(:disabled, :read-only, :focus, [aria-invalid='true']) {
+  --_border: var(--color-text-muted);
+}
+
+/* Foco: borda de 2px na cor de foco. O contorno transparente aparece no
+   modo de alto contraste do Windows, que remove sombras. */
+.ds-input__field:focus {
+  --_border: var(--color-border-focus);
+  --_ring: var(--color-border-focus);
+  outline: var(--border-width-focus) solid transparent;
+}
+
+/* Erro: borda de 2px vermelha. */
+.ds-input__field[aria-invalid='true'] {
+  --_border: var(--color-feedback-error-icon);
+  --_ring: var(--color-feedback-error-icon);
+}
+
+/* Erro com foco: a borda continua vermelha e ganha um anel de foco por fora,
+   para o foco não esconder o erro (e vice-versa). */
+.ds-input__field[aria-invalid='true']:focus {
+  outline: var(--border-width-focus) solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+/* Somente leitura: fundo suave, com a mesma borda do padrão (3:1 no limite do campo).
+   O texto mantém o contraste normal, porque o conteúdo continua sendo lido. */
+.ds-input__field:read-only:not(:disabled) {
+  --_border: var(--color-border-strong);
+  background: var(--color-bg-subtle);
+  cursor: default;
+}
+
+/* Desabilitado */
+.ds-input__field:disabled {
+  --_border: var(--color-border-default);
+  background: var(--color-field-bg-disabled);
+  color: var(--color-action-disabled-text);
+  cursor: not-allowed;
+}
+.ds-input__field:disabled::placeholder {
+  color: var(--color-action-disabled-text);
+}
+.ds-input:has(.ds-input__field:disabled) :is(.ds-input__label, .ds-input__required, .ds-input__helper) {
+  color: var(--color-action-disabled-text);
+}
+
+/* Texto de ajuda */
+.ds-input__helper {
+  margin: 0;
+  font: var(--typography-caption);
+  color: var(--color-text-muted);
+}
+
+/* Mensagem de erro: ícone + texto, para não depender só da cor. */
+.ds-input__error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-gap-xs);
+  margin: 0;
+  font: var(--typography-caption);
+  color: var(--color-feedback-error-text);
+}
+
+.ds-input__error-icon {
+  flex-shrink: 0;
+  /* Mesma altura da linha do texto (12px × 1.5), para alinhar ao centro. */
+  width: var(--size-icon-sm);
+  height: calc(var(--font-size-xs) * var(--font-line-height-normal));
+  color: var(--color-feedback-error-icon);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-input__field {
+    transition: none;
+  }
+}

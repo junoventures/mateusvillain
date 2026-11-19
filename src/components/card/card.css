@@ -1,0 +1,160 @@
+/*
+ * Card
+ * Espelha o componente Card do Penpot (arquivo Library) e compõe outros
+ * componentes da biblioteca:
+ *   Capa      →  .ds-card__cover (bloco de cor, com <img class="ds-card__cover-img"> opcional)
+ *   Corpo     →  .ds-card__body
+ *     Selo    →  Badge (.ds-badge--brand)
+ *     Título  →  .ds-card__title (<h2> a <h6>, conforme a página; padrão <h3>)
+ *     Texto   →  .ds-card__description
+ *     Rodapé  →  .ds-card__footer
+ *       Autor →  .ds-card__author, com Avatar sm decorativo
+ *       Ação  →  link <a class="ds-button ds-button--primary ds-button--sm">
+ *
+ * Três tipos de card (ver doc):
+ *   informativo        →  sem link nem botão; o contêiner nunca recebe foco
+ *   destino único      →  um link; opcionalmente o card inteiro clicável (.ds-card--clickable)
+ *   várias ações       →  link + botões independentes, nunca um dentro do outro
+ *
+ * A largura de 320px do Penpot vira largura máxima, ajustável pela
+ * propriedade --ds-card-max-width (por exemplo, `none` dentro de um grid).
+ */
+.ds-card {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  /* 320px do Penpot = 4 × --size-20 (80px). */
+  max-width: var(--ds-card-max-width, calc(var(--size-20) * 4));
+  background: var(--color-surface-default);
+  border: var(--border-width-default) solid var(--color-border-default);
+  border-radius: var(--radius-container-default);
+  overflow: hidden;
+  color: var(--color-text-default);
+  font-family: var(--font-family-sans);
+}
+
+/*
+ * Capa: 160px de altura, como no Penpot (2 × --size-20). A altura é fixa
+ * para que cards lado a lado alinhem o texto; a imagem se ajusta com
+ * object-fit: cover e é cortada nas laterais em cards estreitos.
+ */
+.ds-card__cover {
+  flex-shrink: 0;
+  height: calc(var(--size-20) * 2);
+  background: var(--color-accent-bg);
+}
+
+.ds-card__cover-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ds-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-gap-md);
+  padding: var(--space-inset-lg);
+}
+
+/* O selo ocupa só a largura do texto, mesmo dentro da coluna flex. */
+.ds-card__body > .ds-badge {
+  align-self: flex-start;
+}
+
+.ds-card__title {
+  margin: 0;
+  font: var(--typography-heading-sm);
+  color: var(--color-text-default);
+  /* Títulos longos quebram linha, inclusive palavras sem espaço (URLs, nomes técnicos). */
+  overflow-wrap: anywhere;
+}
+
+/* Link no título (card inteiro clicável): mantém a aparência de título. */
+.ds-card__title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.ds-card__description {
+  margin: 0;
+  font: var(--typography-body-sm);
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+/* O rodapé fica sempre no fim do card, mesmo com textos de tamanhos diferentes. */
+.ds-card__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-gap-md);
+  margin-top: auto;
+}
+
+.ds-card__author {
+  display: flex;
+  align-items: center;
+  gap: var(--space-gap-sm);
+  min-width: 0;
+  margin: 0;
+  font: var(--typography-label-md);
+  color: var(--color-text-default);
+}
+
+.ds-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-gap-sm);
+}
+
+/* A ação é um link com aparência de botão: tira o sublinhado do link. */
+.ds-card a.ds-button {
+  text-decoration: none;
+}
+
+/*
+ * Card inteiro clicável (opcional).
+ * O link continua no título; o pseudo-elemento ::after estica a área de
+ * clique até as bordas do card. O foco desenha o contorno no card inteiro,
+ * para mostrar a área que será aberta. Só use com UM link e nenhum outro
+ * controle dentro do card.
+ */
+.ds-card--clickable {
+  cursor: pointer;
+  transition: border-color 150ms ease;
+}
+
+.ds-card--clickable .ds-card__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.ds-card--clickable:hover {
+  border-color: var(--color-border-strong);
+}
+
+.ds-card--clickable:hover .ds-card__link {
+  text-decoration: underline;
+}
+
+.ds-card--clickable .ds-card__link:focus-visible {
+  outline: none;
+}
+
+.ds-card--clickable:has(.ds-card__link:focus-visible) {
+  outline: var(--border-width-focus) solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-card--clickable {
+    transition: none;
+  }
+}

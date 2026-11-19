@@ -1,0 +1,242 @@
+import { Meta, Title, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as AvatarStories from './avatar.stories';
+
+<Meta of={AvatarStories} />
+
+export const Marker = ({ n, style }) => (
+  <span style={{ position: 'absolute', display: 'grid', placeItems: 'center', width: 22, height: 22, borderRadius: 'var(--radius-full)', background: 'var(--color-text-default)', color: 'var(--color-bg-default)', fontFamily: 'var(--font-family-sans)', fontSize: 12, fontWeight: 700, ...style }}>{n}</span>
+);
+
+export const DoDont = ({ type, children, caption }) => {
+  const isDo = type === 'do';
+  const color = isDo ? 'var(--color-feedback-success-text)' : 'var(--color-feedback-error-text)';
+  return (
+    <figure className="sb-unstyled" style={{ margin: 0, border: '1px solid var(--color-border-default)', borderTop: `4px solid ${color}`, borderRadius: 'var(--radius-control-default)', overflow: 'hidden' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center', justifyContent: 'center', minHeight: 96, padding: 'var(--space-inset-lg)', background: 'var(--color-bg-subtle)', fontFamily: 'var(--font-family-sans)', color: 'var(--color-text-default)' }}>{children}</div>
+      <figcaption style={{ padding: 'var(--space-gap-md) var(--space-inset-md)', fontFamily: 'var(--font-family-sans)', fontSize: 14 }}>
+        <strong style={{ color }}>{isDo ? 'Faça' : 'Não faça'}</strong> · {caption}
+      </figcaption>
+    </figure>
+  );
+};
+
+export const Grid = ({ children }) => (
+  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16, margin: '16px 0 32px' }}>{children}</div>
+);
+
+export const Av = ({ size, label, hidden, children }) => (
+  <span className={`ds-avatar${size && size !== 'md' ? ` ds-avatar--${size}` : ''}`} {...(hidden ? { 'aria-hidden': 'true' } : { role: 'img', 'aria-label': label })}>
+    <span className="ds-avatar__initials" aria-hidden="true">{children}</span>
+  </span>
+);
+
+<Title />
+
+Representa uma pessoa com a foto ou as iniciais do nome, num círculo. Ajuda a reconhecer quem fez, comentou ou participa de algo. O nome escrito continua sendo a informação principal: o avatar complementa.
+
+<Canvas of={AvatarStories.Padrao} />
+<Controls of={AvatarStories.Padrao} />
+
+```html
+<!-- Sozinho: o avatar é a única referência à pessoa -->
+<span class="ds-avatar" role="img" aria-label="Mateus Villain">
+  <span class="ds-avatar__initials" aria-hidden="true">MV</span>
+</span>
+```
+
+**Quando usar:** ao lado do nome de quem é autor, responsável ou participante; numa lista de pessoas; no cabeçalho, para a conta conectada.
+
+**Quando não usar:** para representar empresas, produtos ou arquivos (use um ícone ou logotipo) ou como único meio de identificar alguém numa tarefa importante (mostre o nome).
+
+> **Sem orientação do Magoo.** O Magoo não tem um comportamento específico para Avatar, porque ele não é interativo. Esta página se baseia na WCAG 2.2 (alternativa em texto, contraste) e na revisão do Penpot.
+
+---
+
+## Anatomia
+
+<div className="sb-unstyled" style={{ position: 'relative', display: 'flex', justifyContent: 'center', padding: '48px 24px', background: 'var(--color-bg-subtle)', borderRadius: 'var(--radius-control-default)', margin: '16px 0' }}>
+  <div style={{ position: 'relative' }}>
+    <span style={{ outline: '2px dashed var(--color-border-focus)', outlineOffset: 4, display: 'inline-flex', borderRadius: 'var(--radius-full)' }}>
+      <Av size="lg" label="Mateus Villain">MV</Av>
+    </span>
+    <Marker n="1" style={{ top: -30, left: -26 }} />
+    <Marker n="2" style={{ bottom: -30, left: '50%', transform: 'translateX(-50%)' }} />
+  </div>
+</div>
+
+| # | Parte | Obrigatória | Token |
+|---|---|---|---|
+| 1 | **Contêiner**: círculo com fundo de destaque | Sim | `--radius-full`, `--color-accent-bg`, `--size-avatar-{sm,md,lg}` |
+| 2 | **Conteúdo**: iniciais (até 2 letras) ou foto | Sim | Iniciais: `--color-accent-text`, `--font-weight-semibold`, `--font-size-{xs,sm,xl}`. Foto: `<img class="ds-avatar__img">` |
+
+---
+
+## Propriedades
+
+| Propriedade | Valores | Classe ou atributo | Padrão |
+|---|---|---|---|
+| Size | `sm` (32px), `md` (40px), `lg` (64px) | `.ds-avatar--sm`, `.ds-avatar--lg` | `md` (sem classe) |
+| Conteúdo | iniciais ou foto | `<span class="ds-avatar__initials">` ou `<img class="ds-avatar__img">` | iniciais |
+| Nome acessível | sozinho ou decorativo | `role="img"` + `aria-label` (ou `alt` na foto) / `aria-hidden="true"` | obrigatório escolher |
+
+### Tamanhos
+
+<Canvas of={AvatarStories.Tamanhos} />
+
+| Tamanho | Círculo | Iniciais | Use em |
+|---|---|---|---|
+| `sm` | 32px (`--size-avatar-sm`) | 12px (`--font-size-xs`) | Ao lado do nome em cards, listas e comentários |
+| `md` | 40px (`--size-avatar-md`) | 14px (`--font-size-sm`) | Cabeçalho, conta conectada, listas de pessoas |
+| `lg` | 64px (`--size-avatar-lg`) | 20px (`--font-size-xl`) | Página de perfil |
+
+### Com foto
+
+<Canvas of={AvatarStories.ComFoto} />
+
+A foto não estava desenhada no Penpot; ela segue o mesmo círculo e tamanhos. A imagem é recortada com `object-fit: cover`, então fotos retangulares não ficam distorcidas. Enquanto a foto carrega (ou se falhar), aparece o fundo `--color-accent-bg`.
+
+```html
+<span class="ds-avatar">
+  <img class="ds-avatar__img" src="foto.jpg" alt="Mateus Villain">
+</span>
+```
+
+### Com nome e em grupo
+
+<Canvas of={AvatarStories.ComNome} />
+<Canvas of={AvatarStories.Grupo} />
+
+---
+
+## Nome acessível
+
+É a decisão mais importante do Avatar. Pergunte: **o nome da pessoa já está escrito ao lado?**
+
+| Situação | Marcação | O leitor de tela lê |
+|---|---|---|
+| **Sozinho** (lista de participantes, cabeçalho) | `role="img"` + `aria-label="Nome completo"` no contêiner; iniciais com `aria-hidden="true"` | "Mateus Villain, imagem" |
+| **Sozinho, com foto** | `alt="Nome completo"` no `<img>` | "Mateus Villain, imagem" |
+| **Ao lado do nome visível** (Card, comentário) | `aria-hidden="true"` no contêiner; foto com `alt=""` | Só o nome escrito, uma vez |
+
+- O nome acessível é o **nome completo**, não as iniciais. "M V" não diz nada a quem ouve.
+- Não escreva "Foto de" nem "Avatar de" no `alt`: o leitor já anuncia "imagem".
+- Avatar decorativo e nome escrito juntos evitam que o nome seja lido duas vezes.
+
+---
+
+## Estados e interação
+
+O Avatar **não tem estados** e **não é interativo**: não recebe foco, não tem hover nem cursor de clique.
+
+| Entrada | Comportamento |
+|---|---|
+| **Mouse e toque** | Nenhum |
+| **Teclado** | O Tab passa direto |
+| **Leitor de tela** | Sozinho: lê o nome e "imagem". Decorativo: é ignorado |
+
+**Avatar que leva ao perfil:** coloque o avatar **dentro** de um link (`<a href>`) ou botão, com o avatar decorativo e o nome no link (texto visível ou `aria-label`, por exemplo "Perfil de Mateus Villain"). O foco e o hover ficam no link, não no Avatar.
+
+---
+
+## Affordance
+
+O Avatar não deve parecer clicável quando não é: sem sombra, sem borda de destaque, sem mudança no hover, cursor padrão. Quando estiver dentro de um link, é o link que dá os sinais de clique (foco visível, cursor `pointer`, sublinhado ou mudança no hover do nome).
+
+---
+
+## Compensação óptica
+
+**As iniciais são centradas pela altura das maiúsculas, não pela linha.** A caixa de uma linha de texto reserva espaço acima das maiúsculas (acentos) e abaixo da linha de base (descendentes, como em "g"). Centralizar essa caixa deixa "MV" um pouco fora do centro, e o desvio muda conforme a fonte. O CSS corta a caixa com:
+
+```css
+.ds-avatar__initials {
+  text-box: trim-both cap alphabetic;
+}
+```
+
+A caixa das iniciais passa a ter só a altura das maiúsculas, e o `align-items: center` centraliza as letras de verdade. No teste, o centro das iniciais ficou a **0,01px** do centro do círculo nos três tamanhos. Navegadores sem suporte a `text-box` ignoram a regra e centralizam pela linha, com diferença de cerca de 1px.
+
+**Duas letras, no máximo.** Primeira letra do primeiro e do último nome ("Mateus Villain" → "MV"). Com três letras, o texto encosta na curva do círculo no tamanho `sm`.
+
+---
+
+## Faça e não faça
+
+<Grid>
+  <DoDont type="do" caption="Sozinho, com o nome completo no aria-label.">
+    <Av label="Mateus Villain">MV</Av>
+  </DoDont>
+  <DoDont type="dont" caption="Sem nome acessível: o leitor de tela lê só “M V”, ou nada.">
+    <span className="ds-avatar"><span className="ds-avatar__initials">MV</span></span>
+  </DoDont>
+</Grid>
+
+<Grid>
+  <DoDont type="do" caption="Ao lado do nome: avatar decorativo, nome lido uma vez.">
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, font: 'var(--typography-label-md)' }}><Av size="sm" hidden>MV</Av>Mateus Villain</span>
+  </DoDont>
+  <DoDont type="dont" caption="Ao lado do nome com aria-label: o nome é lido duas vezes.">
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, font: 'var(--typography-label-md)' }}><Av size="sm" label="Mateus Villain">MV</Av>Mateus Villain</span>
+  </DoDont>
+</Grid>
+
+<Grid>
+  <DoDont type="do" caption="Até duas letras, em maiúsculas.">
+    <Av label="Ana Souza">AS</Av>
+  </DoDont>
+  <DoDont type="dont" caption="Três letras ou mais: o texto encosta na borda.">
+    <Av size="sm" label="Ana Beatriz Souza">ABS</Av>
+  </DoDont>
+</Grid>
+
+---
+
+## Acessibilidade
+
+### Contraste dos tokens atuais
+
+Calculado com a fórmula da WCAG 2.2. As iniciais são texto e precisam de **4,5:1** (critério 1.4.3).
+
+| Combinação | Contraste | Resultado |
+|---|---|---|
+| Iniciais `#4338ca` (`--color-accent-text`) × fundo `#e0e7ff` (`--color-accent-bg`) | 6,41:1 | ✅ Passa |
+| Fundo `#e0e7ff` × página branca | 1,23:1 | Isento: o círculo é decorativo |
+
+### Regras
+
+- **Alternativa em texto** (WCAG 1.1.1): sozinho, `role="img"` + `aria-label` com o nome completo, ou `alt` na foto. Ao lado do nome, `aria-hidden="true"` (ou `alt=""`).
+- **Iniciais ocultas:** o `<span class="ds-avatar__initials">` leva `aria-hidden="true"` para o leitor nunca ler as letras soltas.
+- **Elemento:** `<span>`, sem `tabindex`. Se precisar de clique, envolva num link ou botão com nome próprio.
+- **Grupo:** vários avatares formam uma lista (`<ul>`) com um nome (`aria-label="Pessoas no projeto"`).
+- **Alto contraste do Windows:** o fundo some no modo de cores forçadas; o avatar ganha uma borda para manter o círculo.
+
+### Revisão de acessibilidade (WCAG)
+
+O Magoo não tem orientação para Avatar. Cada item abaixo vem da WCAG 2.2 e da revisão do Penpot (`docs/revisao-magoo.md`), e foi testado nas stories, no Chrome headless, com teclado simulado e com a árvore de acessibilidade. Revisão de novembro de 2026: **11 de 11 verificações passaram**.
+
+| Item | Como foi verificado | Resultado |
+|---|---|---|
+| Sozinho: papel e nome completo (1.1.1) | Árvore de acessibilidade: `image` com nome "Mateus Villain" | ✅ |
+| Iniciais não são lidas soltas | Nenhum texto "MV" na árvore | ✅ |
+| Ao lado do nome: decorativo | Nenhuma imagem na árvore; o nome aparece uma vez | ✅ |
+| Foto: nome vem do `alt` | 3 imagens com nome "Mateus Villain" | ✅ |
+| Foto não distorce | `object-fit: cover` nos três tamanhos | ✅ |
+| Não recebe foco | Tab: nenhuma parada | ✅ |
+| Tamanhos do Penpot | 32/40/64px com iniciais de 12/14/20px | ✅ |
+| Círculo e peso | `border-radius: 9999px`, peso 600 | ✅ |
+| Contraste das iniciais (1.4.3) | Medido no navegador: 6,41:1 | ✅ |
+| Iniciais centradas (compensação óptica) | Desvio do centro ≤ 0,01px nos três tamanhos | ✅ |
+| Grupo em lista nomeada | `list` "Pessoas no projeto" com 4 imagens nomeadas | ✅ |
+| Avatar clicável (perfil) | Não existe como variante; padrão documentado em "Estados e interação" | Regra de uso |
+
+O teste automatizado cobre o comportamento das stories. Antes de publicar, ainda vale ouvir com um leitor de tela real (NVDA, VoiceOver ou TalkBack).
+
+---
+
+## Referências
+
+- [WCAG 2.2: Conteúdo não textual (1.1.1)](https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html)
+- [WCAG 2.2: Contraste mínimo (1.4.3)](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)
+- [W3C WAI: Árvore de decisão para `alt`](https://www.w3.org/WAI/tutorials/images/decision-tree/)
+- [CSS Inline Layout: `text-box`](https://drafts.csswg.org/css-inline-3/#text-box-shorthand)
+- Revisão do Penpot: `docs/revisao-magoo.md`, seção Avatar

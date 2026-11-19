@@ -1,33 +1,33 @@
 /*
  * Button
- * Variantes espelham as propriedades do componente no Figma/Penpot:
- *   Variant: primary | secondary | danger  →  .ds-button--{variant}
- *   Size:    sm | md | lg                  →  .ds-button--{size}
- *   Icon:    start | end | only            →  .ds-button__icon--start / --end
- *                                             .ds-button--icon-only
- *   State:   hover | active | focus        →  pseudo-classes
- *            disabled                      →  atributo [disabled]
+ * Espelha o componente Button do Penpot (arquivo Library):
+ *   Variant: primary | secondary | outline | danger  →  .ds-button--{variant}
+ *   Size:    sm (32px) | md (40px) | lg (48px)        →  .ds-button--{size}
+ *   State:   default | hover | disabled (desenhados no Penpot)
+ *            + pressed e focus (definidos aqui)
+ *   Icon:    start | end | only                       →  .ds-button__icon--start / --end
+ *                                                        .ds-button--icon-only
  *
- * Os espaçamentos internos ficam em propriedades locais (--_py, --_px,
- * --_px-icon) para que tamanhos e ícones se combinem sem repetir regras.
+ * Os valores por tamanho ficam em propriedades locais (--_h, --_px, --_px-icon,
+ * --_icon) para que tamanhos e ícones se combinem sem repetir regras.
  */
 .ds-button {
-  --_py: var(--spacing-2);
-  --_px: var(--spacing-4);
+  --_h: var(--size-control-md);
+  --_px: var(--space-inset-md);
   /* Compensação óptica: o lado com ícone usa menos respiro (ver doc). */
-  --_px-icon: var(--spacing-3);
+  --_px-icon: var(--space-gap-md);
+  --_icon: var(--size-icon-sm);
 
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-2);
-  padding: var(--_py) var(--_px);
-  border: none;
-  border-radius: var(--radius-md);
-  font-family: var(--font-family-base);
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-medium);
-  line-height: var(--font-line-height-tight);
+  gap: var(--space-gap-sm);
+  min-height: var(--_h);
+  padding: 0 var(--_px);
+  border: var(--border-width-default) solid transparent;
+  border-radius: var(--radius-control-default);
+  font: var(--typography-label-md);
   cursor: pointer;
   transition:
     background-color 150ms ease,
@@ -35,7 +35,7 @@
 }
 
 .ds-button:focus-visible {
-  outline: 2px solid var(--color-focus);
+  outline: var(--border-width-focus) solid var(--color-border-focus);
   outline-offset: 2px;
 }
 
@@ -46,51 +46,60 @@
 
 /* Variantes */
 .ds-button--primary {
-  background: var(--color-action-primary-default);
-  color: var(--color-text-on-action);
+  background: var(--color-action-primary-bg);
+  color: var(--color-action-primary-text);
 }
 .ds-button--primary:hover:not(:disabled) {
-  background: var(--color-action-primary-hover);
+  background: var(--color-action-primary-bg-hover);
+}
+.ds-button--primary:active:not(:disabled) {
+  background: var(--color-action-primary-bg-pressed);
 }
 
 .ds-button--secondary {
-  background: var(--color-action-secondary-default);
-  color: var(--color-action-primary-default);
+  background: var(--color-action-secondary-bg);
+  color: var(--color-action-secondary-text);
 }
 .ds-button--secondary:hover:not(:disabled) {
-  background: var(--color-action-secondary-hover);
+  background: var(--color-action-secondary-bg-hover);
+}
+
+.ds-button--outline {
+  background: transparent;
+  border-color: var(--color-action-outline-border);
+  color: var(--color-action-outline-text);
+}
+.ds-button--outline:hover:not(:disabled) {
+  background: var(--color-action-outline-bg-hover);
 }
 
 .ds-button--danger {
-  background: var(--color-action-danger-default);
-  color: var(--color-text-on-action);
+  background: var(--color-action-danger-bg);
+  color: var(--color-action-danger-text);
 }
 .ds-button--danger:hover:not(:disabled) {
-  background: var(--color-action-danger-hover);
+  background: var(--color-action-danger-bg-hover);
 }
 
 /* Tamanhos */
 .ds-button--sm {
-  --_py: var(--spacing-1);
-  --_px: var(--spacing-3);
-  --_px-icon: var(--spacing-2);
-  font-size: var(--font-size-sm);
+  --_h: var(--size-control-sm);
+  --_px: var(--space-gap-md);
+  --_px-icon: var(--space-inset-sm);
 }
 .ds-button--lg {
-  --_py: var(--spacing-3);
-  --_px: var(--spacing-6);
-  --_px-icon: var(--spacing-4);
-  font-size: var(--font-size-lg);
+  --_h: var(--size-control-lg);
+  --_px: var(--space-inset-lg);
+  --_px-icon: var(--space-inset-md);
+  --_icon: var(--size-icon-md);
+  font: var(--typography-label-lg);
 }
 
-/* Ícones
- * O ícone tem o mesmo tamanho da linha de texto (font-size × line-height),
- * então o botão mantém a mesma altura com ou sem ícone.
- */
+/* Ícones */
 .ds-button__icon {
   flex-shrink: 0;
-  width: calc(var(--font-line-height-tight) * 1em);
-  height: calc(var(--font-line-height-tight) * 1em);
+  width: var(--_icon);
+  height: var(--_icon);
 }
 
 .ds-button:has(> .ds-button__icon--start) {
@@ -100,16 +109,18 @@
   padding-inline-end: var(--_px-icon);
 }
 
-/* Só ícone: quadrado, com o mesmo respiro nos quatro lados. */
+/* Só ícone: quadrado, com a largura igual à altura do tamanho. */
 .ds-button--icon-only,
 .ds-button--icon-only:has(> .ds-button__icon) {
-  padding: var(--_py);
+  width: var(--_h);
+  padding: 0;
 }
 
 /* Estados */
 .ds-button:disabled {
-  background: var(--color-action-disabled);
-  color: var(--color-text-muted);
+  background: var(--color-action-disabled-bg);
+  border-color: transparent;
+  color: var(--color-action-disabled-text);
   cursor: not-allowed;
 }
 

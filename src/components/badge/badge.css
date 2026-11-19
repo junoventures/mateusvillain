@@ -1,0 +1,65 @@
+/*
+ * Badge
+ * Espelha o componente Badge do Penpot (arquivo Library):
+ *   Variant: info | error | warning | success | brand | neutral  →  .ds-badge--{variant}
+ *   Tamanho único: 12px de texto (label-sm), ~19px de altura.
+ *
+ * O Badge é só informativo: não tem hover, foco nem cursor de clique.
+ * O significado vem do texto, nunca só da cor.
+ * Sem modificador, o Badge usa a aparência neutra.
+ */
+.ds-badge {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  /* Compensação óptica: o respiro lateral é 4× o vertical porque as pontas
+     arredondadas "comem" parte do espaço horizontal (ver doc). */
+  padding: var(--space-inset-2xs) var(--space-inset-sm);
+  border-radius: var(--radius-pill-default);
+  font: var(--typography-label-sm);
+  white-space: nowrap;
+  vertical-align: middle;
+  background: var(--color-bg-muted);
+  color: var(--color-text-muted);
+}
+
+/* Variantes */
+.ds-badge--info {
+  background: var(--color-feedback-info-bg);
+  color: var(--color-feedback-info-text);
+}
+
+.ds-badge--error {
+  background: var(--color-feedback-error-bg);
+  color: var(--color-feedback-error-text);
+}
+
+.ds-badge--warning {
+  background: var(--color-feedback-warning-bg);
+  color: var(--color-feedback-warning-text);
+}
+
+.ds-badge--success {
+  background: var(--color-feedback-success-bg);
+  color: var(--color-feedback-success-text);
+}
+
+.ds-badge--brand {
+  background: var(--color-accent-bg);
+  color: var(--color-accent-text);
+}
+
+.ds-badge--neutral {
+  background: var(--color-bg-muted);
+  color: var(--color-text-muted);
+}
+
+/*
+ * Modo de alto contraste (Windows): os fundos somem, então a borda
+ * transparente vira uma borda visível e mantém o formato de pílula.
+ */
+@media (forced-colors: active) {
+  .ds-badge {
+    border: var(--border-width-default) solid transparent;
+  }
+}

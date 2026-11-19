@@ -1,0 +1,369 @@
+import { Meta, Title, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as AlertStories from './alert.stories';
+
+<Meta of={AlertStories} />
+
+export const GLYPHS = {
+  error: 'M7 7l6 6M13 7l-6 6',
+  warning: 'M10 5.5V11M10 14.5v.01',
+  success: 'M6 10.5l2.5 2.5L14 7.5',
+  info: 'M10 9v5.5M10 5.5v.01',
+};
+
+export const AlertIcon = ({ type }) => (
+  <svg className="ds-alert__icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+    <circle cx="10" cy="10" r="10" fill="currentColor" />
+    <path className="ds-alert__glyph" d={GLYPHS[type]} />
+  </svg>
+);
+
+export const CloseButton = () => (
+  <button type="button" className="ds-alert__close" aria-label="Fechar alerta">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true" focusable="false">
+      <path d="M6 6l12 12M18 6L6 18" />
+    </svg>
+  </button>
+);
+
+export const Alert = ({ type = 'info', title, children, close, style }) => (
+  <div className={`ds-alert ds-alert--${type}`} style={style}>
+    <AlertIcon type={type} />
+    <div className="ds-alert__content">
+      <p className="ds-alert__title">{title}</p>
+      {children && <p className="ds-alert__description">{children}</p>}
+    </div>
+    {close && <CloseButton />}
+  </div>
+);
+
+export const Marker = ({ n, style }) => (
+  <span style={{ position: 'absolute', display: 'grid', placeItems: 'center', width: 22, height: 22, borderRadius: 'var(--radius-full)', background: 'var(--color-text-default)', color: 'var(--color-bg-default)', fontFamily: 'var(--font-family-sans)', fontSize: 12, fontWeight: 700, ...style }}>{n}</span>
+);
+
+export const DoDont = ({ type, children, caption }) => {
+  const isDo = type === 'do';
+  const color = isDo ? 'var(--color-feedback-success-icon)' : 'var(--color-feedback-error-icon)';
+  return (
+    <figure style={{ margin: 0, border: '1px solid var(--color-border-default)', borderTop: `4px solid ${color}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+      <div className="sb-unstyled" style={{ display: 'flex', flexDirection: 'column', gap: 12, justifyContent: 'center', minHeight: 96, padding: 'var(--spacing-6)', background: 'var(--color-bg-subtle)' }}>{children}</div>
+      <figcaption style={{ padding: 'var(--spacing-3) var(--spacing-4)', fontFamily: 'var(--font-family-sans)', fontSize: 14 }}>
+        <strong style={{ color }}>{isDo ? 'Faça' : 'Não faça'}</strong> · {caption}
+      </figcaption>
+    </figure>
+  );
+};
+
+export const Grid = ({ children }) => (
+  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16, margin: '16px 0 32px' }}>{children}</div>
+);
+
+<Title />
+
+Mostra uma mensagem importante dentro da página: o que aconteceu e o que a pessoa pode fazer. Tem quatro tipos (erro, aviso, sucesso e informação), e o título em texto diz o tipo, sem depender só da cor ou do ícone.
+
+<Canvas of={AlertStories.Erro} />
+<Controls of={AlertStories.Erro} />
+
+```html
+<div class="ds-alert ds-alert--error">
+  <svg class="ds-alert__icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+    <circle cx="10" cy="10" r="10" fill="currentColor" />
+    <path class="ds-alert__glyph" d="M7 7l6 6M13 7l-6 6" />
+  </svg>
+  <div class="ds-alert__content">
+    <p class="ds-alert__title">Algo deu errado</p>
+    <p class="ds-alert__description">Não foi possível publicar o pacote. Verifique seu login no npm e tente de novo.</p>
+  </div>
+</div>
+```
+
+**Quando usar:** para uma informação relevante ao fluxo, que fica na página enquanto importa: um erro que impede a tarefa, um aviso antes de uma decisão, a confirmação de que algo deu certo, uma novidade sobre o contexto atual.
+
+**Quando não usar:**
+
+| Situação | Use em vez do Alert |
+|---|---|
+| Confirmação rápida de uma ação, que não precisa ficar na tela (ex.: "Copiado") | **Toast**, sem prazo curto para sumir e com anúncio por `role="status"` |
+| Erro de um campo específico de formulário | **Mensagem de erro do campo**, ao lado do campo e ligada a ele por `aria-describedby` |
+| Decisão que bloqueia a tarefa até ser respondida | **Diálogo** (modal) |
+| Mensagem decorativa, promocional ou sem consequência no fluxo | Texto comum ou um Card |
+
+Um formulário com vários erros pode usar **os dois**: um Alert de erro no topo, resumindo o problema, e a mensagem em cada campo.
+
+---
+
+## Anatomia
+
+<div className="sb-unstyled" style={{ display: 'flex', justifyContent: 'center', padding: '48px 24px', background: 'var(--color-bg-subtle)', borderRadius: 'var(--radius-md)', margin: '16px 0' }}>
+  <div style={{ position: 'relative', width: '100%', maxWidth: 420 }}>
+    <Alert type="error" title="Algo deu errado" close style={{ outline: '2px dashed var(--color-border-strong)', outlineOffset: 4 }}>Não foi possível publicar o pacote. Verifique seu login no npm e tente de novo.</Alert>
+    <Marker n="1" style={{ top: -32, left: -12 }} />
+    <Marker n="2" style={{ bottom: -32, left: 14 }} />
+    <Marker n="3" style={{ top: -32, left: 52 }} />
+    <Marker n="4" style={{ bottom: -32, left: 120 }} />
+    <Marker n="5" style={{ top: -32, right: 10 }} />
+  </div>
+</div>
+
+| # | Parte | Obrigatória | Token |
+|---|---|---|---|
+| 1 | **Contêiner**: fundo, borda, raio e respiro | Sim | `--color-feedback-{tipo}-bg`, `--color-feedback-{tipo}-border`, `--border-width-default`, `--radius-container-default` (12px), `--space-inset-md` (16px) |
+| 2 | **Ícone**: círculo de 20px com glifo branco (× ! ✓ i) | Sim | `--size-icon-md`, `--color-feedback-{tipo}-icon`, `--color-text-inverse` (glifo) |
+| 3 | **Título**: o tipo ou o que aconteceu, em poucas palavras | Sim | `--typography-label-lg` (16px, 600), `--color-feedback-{tipo}-text` |
+| 4 | **Descrição**: o que aconteceu e o que fazer; pode ter uma ação | Sim | `--typography-body-sm` (14px, 400, 1.5), `--color-feedback-{tipo}-text` |
+| 5 | **Fechar**: só nos alertas descartáveis (definido no código) | Não | `--size-control-sm` (32px), `--radius-control-default`, `--color-border-focus` |
+
+O espaço entre ícone, conteúdo e fechar é `--space-gap-md` (12px). Entre título e descrição, `--space-gap-xs` (4px).
+
+---
+
+## Propriedades
+
+As propriedades **Type**, título e descrição espelham o componente no Penpot. As demais foram **definidas no código**, para cobrir o que o checklist do Magoo pede.
+
+| Propriedade | Valores | Classe ou atributo | Padrão | Origem |
+|---|---|---|---|---|
+| Type | `error`, `warning`, `success`, `info` | `.ds-alert--{type}` | `info` (sem classe de tipo) | Penpot |
+| Título | texto curto | `.ds-alert__title` | obrigatório | Penpot |
+| Descrição | texto | `.ds-alert__description` | obrigatório | Penpot |
+| Descartável | com ou sem botão de fechar | `<button class="ds-alert__close" aria-label="Fechar alerta">` | sem | Código |
+| Ação | link ou botão no fim da descrição | `.ds-alert__action` | sem | Código |
+| Anúncio | `alert`, `status` ou nenhum | atributo `role` (ver "Leitor de tela") | nenhum | Código |
+| Tipo em texto oculto | "Erro: ", "Aviso: "… | `<span class="ds-visually-hidden">` dentro do título | sem | Código |
+| Largura | fluida | `width: 100%` | ocupa o contêiner | Código (no Penpot, 400px fixos) |
+
+---
+
+## Tipos
+
+<Canvas of={AlertStories.Tipos} />
+
+| Tipo | Use para | Título de exemplo (Penpot) | Glifo | Anúncio quando aparece dinamicamente |
+|---|---|---|---|---|
+| **error** | Algo falhou e a tarefa não pode seguir como está | "Algo deu errado" | × | `role="alert"` se for crítico; senão `role="status"` |
+| **warning** | Algo pode dar errado se a pessoa não agir | "Atenção" | ! | `role="alert"` se exigir ação imediata; senão `role="status"` |
+| **success** | A ação terminou como esperado | "Tudo certo!" | ✓ | `role="status"` |
+| **info** | Contexto útil, sem urgência | "Informação" | i | `role="status"` |
+
+O Alert não tem estados de hover, foco ou desabilitado: ele não é interativo. Só os controles internos (fechar e ação) têm estados, e seguem o mesmo anel de foco do Button.
+
+### Descartável
+
+<Canvas of={AlertStories.Descartavel} />
+
+Ao fechar, o alerta sai da página e **o foco vai para o próximo elemento lógico** (aqui, o botão "Continuar"). Se o alerta foi aberto por um botão, o foco volta para esse botão. O foco nunca fica perdido no topo da página.
+
+### Com ação
+
+<Canvas of={AlertStories.ComAcao} />
+
+A ação é um link (leva a outro lugar) ou um botão (age na mesma tela) com a classe `ds-alert__action`, no fim da descrição. Use uma ação por alerta, com texto que diga o destino ("Ver novidades", e não "Clique aqui").
+
+### Descrição longa
+
+<Canvas of={AlertStories.DescricaoLonga} />
+
+---
+
+## Interação
+
+| Entrada | Como funciona | Retorno visual |
+|---|---|---|
+| **Mouse** | Ler não exige interação. Clique na ação ou em fechar | Ação: o sublinhado engrossa. Fechar: fundo no tom da borda |
+| **Toque** | Toque na ação ou em fechar. Tocar fora do alerta não o fecha | Fechar tem 32×32px de área |
+| **Teclado** | **Tab** alcança só a ação e o fechar, na ordem do HTML. **Enter** aciona a ação; **Enter** ou **Espaço** fecham | Anel de foco de 2px, afastado 2px |
+| **Leitor de tela** | Alertas dinâmicos são anunciados sem mover o foco (ver abaixo). Estáticos são lidos na leitura normal | Anuncia o título, a descrição e o nome dos controles |
+
+- **O alerta em si não recebe foco.** Não use `tabindex` no contêiner só para ele ser lido: quem anuncia é a região de anúncio.
+- **Não feche sozinho rápido demais.** O Alert fica até a pessoa fechar ou até o problema ser resolvido. Se precisar sumir sozinho, use um Toast com tempo que dê para ler e sem levar ações essenciais.
+- **Não cubra conteúdo:** o Alert fica no fluxo da página, empurrando o conteúdo, e não flutua sobre ele.
+
+### Leitor de tela: quando usar cada `role`
+
+| Situação | `role` | O que acontece |
+|---|---|---|
+| Alerta já está na página quando ela carrega (ex.: aviso de manutenção) | **nenhum** | É lido na ordem normal da página. Um `role="alert"` aqui faria o leitor interromper a pessoa sem necessidade |
+| Erro crítico que aparece depois de uma ação (ex.: falha ao publicar) | **`alert`** | Anunciado na hora, interrompendo a leitura, sem mover o foco |
+| Sucesso, informação ou aviso não urgente que aparece depois de uma ação | **`status`** | Anunciado quando o leitor termina o que está lendo, sem interromper |
+
+A região de anúncio precisa **existir vazia antes** de a mensagem chegar. Muitos leitores de tela ignoram uma região que é criada já com o conteúdo dentro.
+
+```html
+<!-- Já na página, vazias -->
+<div id="regiao-alert" role="alert"></div>
+<div id="regiao-status" role="status"></div>
+
+<!-- Depois da ação, o alerta é inserido dentro da região certa -->
+<script>
+  document.getElementById('regiao-status').innerHTML = `<div class="ds-alert ds-alert--success">…</div>`;
+</script>
+```
+
+Experimente: os botões abaixo inserem um alerta em cada região. Ao fechar o alerta, o foco volta para o botão que o gerou.
+
+<Canvas of={AlertStories.AnuncioDinamico} />
+
+### Fechar e devolver o foco
+
+O CSS não fecha o alerta: o comportamento é do produto. Nas stories, ele segue esta regra, que vale copiar:
+
+```js
+// Ao fechar: foco em data-return-focus (quem abriu), senão no próximo
+// elemento focável depois do alerta, senão no anterior.
+const FOCUSABLE = 'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
+function dismissAlert(alert) {
+  const focusables = [...document.querySelectorAll(FOCUSABLE)].filter((el) => !alert.contains(el));
+  const opener = document.getElementById(alert.dataset.returnFocus);
+  const next = focusables.find((el) => alert.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING);
+  const prev = focusables.filter((el) => alert.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_PRECEDING).pop();
+  alert.remove();
+  (opener || next || prev)?.focus();
+}
+```
+
+---
+
+## Affordance
+
+O Alert **não é clicável**, e os sinais visuais precisam deixar isso claro, ao mesmo tempo que destacam os controles internos:
+
+| Sinal | Como aparece |
+|---|---|
+| **Mensagem importante, antes de ler** | Fundo colorido, borda e ícone separam o alerta do texto da página |
+| **Tipo sem depender da cor** | O título em texto ("Algo deu errado", "Atenção") e o glifo (× ! ✓ i) dizem o tipo |
+| **Contêiner não é botão** | Sem sombra, sem cursor de mãozinha e sem hover no contêiner |
+| **Ação é clicável** | Sublinhada e em negrito, com cursor de mãozinha |
+| **Fechar é clicável** | Ícone × conhecido, com fundo ao passar o mouse e anel de foco no teclado |
+
+---
+
+## Compensação óptica
+
+**1. O ícone se alinha à primeira linha do título, não ao alerta inteiro.** O título tem linha de 19,2px (16px × 1.2) e o ícone tem 20px. O ícone recebe uma margem vertical de `(19,2 − 20) / 2`, o que centraliza o círculo na primeira linha. Se o ícone fosse centralizado no alerta todo, ele desceria para o meio da descrição quando o texto quebrasse em várias linhas (veja a story "Descrição longa").
+
+**2. O fechar também se alinha ao título.** O botão tem 32px, mas recebe margem vertical negativa para ficar centralizado na primeira linha sem aumentar a altura do alerta. Ele também avança 8px sobre o respiro da direita: o × tem só 16px e muito espaço vazio em volta, então, sem esse ajuste, parecia mais afastado da borda do que o ícone da esquerda.
+
+**3. O glifo é desenhado com traço, não com fonte.** O ×, !, ✓ e i são SVG com traço de 2px, centralizados no círculo. Um caractere de fonte mudaria de posição e de espessura conforme a fonte carregada.
+
+---
+
+## Faça e não faça
+
+<Grid>
+  <DoDont type="do" caption="Título que diz o tipo ou o problema, e descrição que diz o que fazer.">
+    <Alert type="error" title="Algo deu errado">Não foi possível publicar o pacote. Verifique seu login no npm e tente de novo.</Alert>
+  </DoDont>
+  <DoDont type="dont" caption="Só a cor e o ícone dizendo o tipo, sem orientação.">
+    <Alert type="error" title="Ops!">Erro 403.</Alert>
+  </DoDont>
+</Grid>
+
+<Grid>
+  <DoDont type="do" caption="Um alerta por assunto, perto do que ele fala.">
+    <Alert type="warning" title="Atenção">Sua sessão expira em 5 minutos. Salve o que estiver editando.</Alert>
+  </DoDont>
+  <DoDont type="dont" caption="Vários alertas empilhados: nenhum se destaca.">
+    <Alert type="info" title="Informação">Nova versão disponível.</Alert>
+    <Alert type="warning" title="Atenção">Sessão expira em breve.</Alert>
+    <Alert type="success" title="Tudo certo!">Rascunho salvo.</Alert>
+  </DoDont>
+</Grid>
+
+<Grid>
+  <DoDont type="do" caption="Erro de campo junto do campo; o alerta só resume.">
+    <Alert type="error" title="Revise 2 campos">O e-mail e o CEP estão incompletos.</Alert>
+  </DoDont>
+  <DoDont type="dont" caption="Alerta de sucesso para algo que não importa ao fluxo.">
+    <Alert type="success" title="Tudo certo!">Você abriu a página de configurações.</Alert>
+  </DoDont>
+</Grid>
+
+---
+
+## Acessibilidade
+
+### Contraste dos tokens atuais
+
+Calculado com a fórmula da WCAG 2.2 a partir dos valores de `src/styles/tokens.css`. Texto precisa de **4,5:1** (critério 1.4.3). Ícone e anel de foco precisam de **3:1** (critério 1.4.11).
+
+| Tipo | Texto × fundo | Ícone × fundo | Glifo branco × ícone | Texto × fundo do fechar (hover) | Anel de foco × fundo |
+|---|---|---|---|---|---|
+| error | 7,60:1 ✅ | 4,41:1 ✅ | 4,83:1 ✅ | 5,74:1 ✅ | 4,08:1 ✅ |
+| warning | 6,84:1 ✅ | 4,84:1 ✅ | 5,02:1 ✅ | 5,69:1 ✅ | 4,31:1 ✅ |
+| success | 6,81:1 ✅ | 4,79:1 ✅ | 5,02:1 ✅ | 5,88:1 ✅ | 4,27:1 ✅ |
+| info | 8,01:1 ✅ | 4,75:1 ✅ | 5,17:1 ✅ | 6,14:1 ✅ | 4,10:1 ✅ |
+
+O ícone de aviso (`amber.700`) e o de sucesso (`green.700`) já estão um tom mais escuros que no primeiro desenho, que ficava no limite de 3:1. A borda do contêiner tem 1,2 a 1,3:1 com o fundo: ela é decorativa, porque o fundo e o título já delimitam o alerta.
+
+### Área de toque
+
+| Controle | Tamanho | WCAG 2.5.8 (mínimo 24×24px) | Recomendado para toque (44×44px) |
+|---|---|---|---|
+| Fechar | 32×32px | ✅ | ❌ Em telas de toque, mantenha espaço livre em volta |
+| Ação (link no texto) | altura da linha | Isento (link dentro de uma frase) | ❌ |
+
+### Regras
+
+- **Tipo sem depender da cor:** o título diz o tipo. Se o título não disser ("Pagamento recusado"), adicione o tipo em texto oculto: `<span class="ds-visually-hidden">Erro: </span>`.
+- **Ícone decorativo:** o SVG leva `aria-hidden="true"` e `focusable="false"`. O tipo já está no texto.
+- **Anúncio certo para a urgência:** `role="alert"` só para erro crítico dinâmico; `role="status"` para o resto que aparece depois de uma ação; nenhum `role` para o que já está na página.
+- **Região de anúncio vazia antes:** insira a mensagem dentro de uma região que já existia.
+- **Sem foco no contêiner:** o alerta não recebe `tabindex`. Só a ação e o fechar entram no Tab.
+- **Fechar com nome:** `aria-label="Fechar alerta"`. Se houver vários alertas, diferencie ("Fechar aviso de sessão").
+- **Foco previsível ao fechar:** volta para quem abriu o alerta, ou vai para o próximo elemento lógico.
+- **Sem sumir sozinho:** o Alert não tem tempo de expiração.
+- **Erro de campo:** fica junto do campo, ligado por `aria-describedby`. O Alert pode resumir os erros, mas não substitui a mensagem no campo.
+- **Movimento reduzido:** com `prefers-reduced-motion`, a transição do botão de fechar é desligada.
+
+<Canvas of={AlertStories.TextoOculto} />
+
+### Critérios de aceite
+
+Adaptado de *Alertas* (Magoo v1.6.1, id `alertas`, autor Marcelo Sales). É uma orientação educacional, não uma certificação: o comportamento precisa ser verificado na implementação.
+
+- **Teclado:** quando um alerta aparece, vejo a mensagem e o tipo indicados visualmente. Com **Tab**, o foco passa só pelos controles do alerta (ação e fechar), se existirem, e nunca pelo contêiner. Ao acionar um controle, a ação acontece; ao fechar, o foco vai para um ponto previsível.
+- **Leitor de tela no computador** (NVDA, JAWS, VoiceOver): ouço a mensagem quando ela é crítica ou dinâmica, sem que o foco saia da minha tarefa. Ouço os links e botões internos com nomes claros. Num erro de formulário, ouço a relação entre o erro e o campo.
+- **Leitor de tela no celular** (TalkBack, VoiceOver): ouço a mensagem quando ela é crítica ou dinâmica, consigo deslizar até os controles internos e, com toque duplo, percebo que a ação aconteceu.
+
+### Revisão com o Magoo
+
+Cada item do checklist de *Alertas* (Magoo v1.6.1) foi testado nas stories, no Chrome headless, com teclado e mouse simulados e com a árvore de acessibilidade, que é o que o leitor de tela recebe. Revisão de novembro de 2026.
+
+| Item do Magoo | Como foi verificado | Resultado |
+|---|---|---|
+| Antes de ler, é possível perceber que há uma mensagem importante | Fundo, borda e ícone por tipo (ver contraste) | ✅ |
+| O tipo é compreensível sem depender só de cor ou ícone | Título em texto; tipo em texto oculto quando o título não diz | ✅ |
+| O texto diz o que aconteceu e o que fazer | Exemplos e "Faça e não faça" | Regra de uso |
+| Ler o alerta não exige interação | O contêiner não está na ordem de foco (`tabIndex` −1, sem `tabindex`) | ✅ |
+| Tab alcança só os controles internos | Tab passa por "Ver novidades" e sai; no descartável, só pelo fechar | ✅ |
+| Foco visível nos controles internos | Anel de 2px com `:focus-visible` na ação e no fechar | ✅ |
+| Alertas descartáveis têm controle visível para fechar | Botão × de 32px com `aria-label="Fechar alerta"` | ✅ |
+| Fechar funciona com Enter e com Espaço | Teclas simuladas removem o alerta | ✅ |
+| Ao fechar, o foco vai para um ponto previsível | Story "Descartável": foco em "Continuar". "Anúncio dinâmico": foco volta ao botão que gerou | ✅ |
+| Alerta crítico é anunciado | Inserido dentro de `role="alert"` (árvore: `alert`, *live* `assertive`) | ✅ |
+| Alerta informativo não interrompe a leitura | Inserido dentro de `role="status"` (árvore: `status`, *live* `polite`) | ✅ |
+| Alerta estático não usa região de anúncio | Story "Erro": sem `alert` nem `status` na árvore | ✅ |
+| Ícone não atrapalha a leitura | SVGs ignorados na árvore de acessibilidade | ✅ |
+| Links e botões internos com nomes claros | Nomes na árvore: "Ver novidades", "Fechar alerta" | ✅ |
+| A mensagem fica visível tempo suficiente | O Alert não expira; continua na tela após 5s no teste | ✅ |
+| O alerta não cobre conteúdo essencial | Fica no fluxo da página (`position: static`) | ✅ |
+| Toque fora do alerta não o fecha | Clique fora não remove o alerta | ✅ |
+| Erros de formulário ligados aos campos | Depende do formulário: ver "Quando não usar" e "Regras" | Regra de uso |
+| Desenhar fechar e ação com foco | O componente no Penpot não tem fechar nem ação | ⚠️ Falta no design |
+
+O teste automatizado (33 verificações, todas passando) cobre o comportamento das stories. Antes de publicar, ainda vale testar com um leitor de tela real (NVDA, VoiceOver ou TalkBack), porque o momento e a forma do anúncio variam entre leitores.
+
+---
+
+## Referências
+
+- [Magoo: Alertas](https://magoo.cc/pt-br), de Marcelo Sales, v1.6.1
+- [W3C APG: Alert Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/alert/)
+- [MDN: ARIA alert role](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/alert_role)
+- [MDN: ARIA status role](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/status_role)
+- [WCAG 2.2: Mensagens de status (4.1.3)](https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html)
+- [WCAG 2.2: Contraste mínimo (1.4.3)](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)
+- [WCAG 2.2: Contraste de elementos não textuais (1.4.11)](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html)
+- [US Web Design System: Alert](https://designsystem.digital.gov/components/alert/)
+- [IBM Carbon: Notification](https://carbondesignsystem.com/components/notification/usage/)

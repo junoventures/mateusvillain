@@ -1,0 +1,349 @@
+import { Meta, Title, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as InputStories from './input.stories';
+
+<Meta of={InputStories} />
+
+export const ErrorIcon = () => (
+  <svg className="ds-input__error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 7.5v5.5M12 16.5h.01" />
+  </svg>
+);
+
+export const Field = ({ id, label, helper, placeholder, value, error, required, disabled, readOnly, style }) => {
+  const describedBy = [error && `${id}-erro`, helper && `${id}-ajuda`].filter(Boolean).join(' ') || undefined;
+  return (
+    <div className="ds-input" style={style}>
+      <label className="ds-input__label" htmlFor={id}>
+        {label}
+        {required && <> <span className="ds-input__required">(obrigatório)</span></>}
+      </label>
+      <input type="text" className="ds-input__field" id={id} placeholder={placeholder} defaultValue={value} aria-describedby={describedBy} aria-invalid={error ? 'true' : undefined} required={required} disabled={disabled} readOnly={readOnly} />
+      {error && (
+        <p className="ds-input__error" id={`${id}-erro`}>
+          <ErrorIcon />
+          <span><span className="ds-visually-hidden">Erro: </span>{error}</span>
+        </p>
+      )}
+      {helper && <p className="ds-input__helper" id={`${id}-ajuda`}>{helper}</p>}
+    </div>
+  );
+};
+
+export const Marker = ({ n, style }) => (
+  <span style={{ position: 'absolute', display: 'grid', placeItems: 'center', width: 22, height: 22, borderRadius: 'var(--radius-full)', background: 'var(--color-text-default)', color: 'var(--color-text-inverse)', font: 'var(--typography-label-sm)', ...style }}>{n}</span>
+);
+
+export const DoDont = ({ type, children, caption }) => {
+  const isDo = type === 'do';
+  const color = isDo ? 'var(--color-feedback-success-icon)' : 'var(--color-feedback-error-icon)';
+  return (
+    <figure className="sb-unstyled" style={{ margin: 0, border: '1px solid var(--color-border-default)', borderTop: `4px solid ${color}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 120, padding: 'var(--spacing-6)', background: 'var(--color-bg-subtle)' }}>
+        <div style={{ width: '100%', maxWidth: 280 }}>{children}</div>
+      </div>
+      <figcaption style={{ padding: 'var(--spacing-3) var(--spacing-4)', font: 'var(--typography-body-sm)', color: 'var(--color-text-default)', background: 'var(--color-bg-default)' }}>
+        <strong style={{ color: isDo ? 'var(--color-feedback-success-text)' : 'var(--color-feedback-error-text)' }}>{isDo ? 'Faça' : 'Não faça'}</strong> · {caption}
+      </figcaption>
+    </figure>
+  );
+};
+
+export const Grid = ({ children }) => (
+  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16, margin: '16px 0 32px' }}>{children}</div>
+);
+
+<Title />
+
+Campo de texto de **uma linha**, com rótulo sempre visível acima, texto de ajuda abaixo e mensagem de erro quando a entrada não é aceita. Usa o `<input type="text">` nativo, então seleção, edição, copiar e colar funcionam como a pessoa já conhece.
+
+<Canvas of={InputStories.Padrao} />
+<Controls of={InputStories.Padrao} />
+
+```html
+<div class="ds-input">
+  <label class="ds-input__label" for="nome">Nome completo</label>
+  <input type="text" class="ds-input__field" id="nome" name="nome"
+         placeholder="Ex.: Maria da Silva" aria-describedby="nome-ajuda" />
+  <p class="ds-input__helper" id="nome-ajuda">Como aparece no seu documento.</p>
+</div>
+```
+
+**Quando usar:** para respostas curtas, em uma linha: nome, cidade, código, título.
+
+**Quando não usar:** para textos com várias linhas (use um `<textarea>`), para escolher entre opções conhecidas (use seleção, radio ou checkbox) ou para datas e números com formato próprio, que pedem um campo específico.
+
+**Origem dos estados.** Padrão (vazio), foco (preenchido), erro e desabilitado vieram do componente Input no Penpot (arquivo Library). Hover, somente leitura e obrigatório foram **desenhados no Penpot (página Componentes, variantes Hover/Read-only/Required)** a partir da revisão com o Magoo. O ícone na mensagem de erro e o anel extra de foco no campo com erro foram **definidos no código**.
+
+---
+
+## Anatomia
+
+<div className="sb-unstyled" style={{ display: 'flex', justifyContent: 'center', padding: '48px 24px', background: 'var(--color-bg-subtle)', borderRadius: 'var(--radius-md)', margin: '16px 0' }}>
+  <div style={{ position: 'relative', width: 280 }}>
+    <Field id="doc-anatomia" label="E-mail" required value="maria@" error="Digite um e-mail completo, como nome@exemplo.com." helper="Vamos enviar o recibo para este endereço." />
+    <Marker n="1" style={{ top: -2, left: -32 }} />
+    <Marker n="2" style={{ top: -2, right: -32 }} />
+    <Marker n="3" style={{ top: 27, left: -32 }} />
+    <Marker n="4" style={{ top: 27, right: -32 }} />
+    <Marker n="5" style={{ top: 70, left: -32 }} />
+    <Marker n="6" style={{ bottom: -2, left: -32 }} />
+  </div>
+</div>
+
+| # | Parte | Obrigatória | Token |
+|---|---|---|---|
+| 1 | **Rótulo**: diz o que preencher; fica sempre visível, fora do campo | Sim | `--typography-label-md`, `--color-text-default` |
+| 2 | **Indicação de obrigatório**: texto "(obrigatório)" no rótulo | Quando o campo é obrigatório | `--color-text-muted`, `--font-weight-regular` |
+| 3 | **Campo**: contêiner de 40px com borda, onde se digita | Sim | `--size-control-md`, `--space-gap-md`, `--radius-control-default`, `--color-field-bg`, `--border-width-default`, `--color-border-strong` |
+| 4 | **Valor** (ou **placeholder**, quando vazio) | O valor sim; o placeholder não | `--typography-body-md`, `--color-text-default`; placeholder `--color-text-subtle` |
+| 5 | **Mensagem de erro**: ícone + texto que explica como corrigir | Só no erro | `--typography-caption`, `--color-feedback-error-text`, ícone `--color-feedback-error-icon` |
+| 6 | **Texto de ajuda**: instrução, formato ou limite | Não | `--typography-caption`, `--color-text-muted` |
+
+As partes ficam empilhadas com `--space-gap-xs` (4px). No Penpot o componente tem 280px de largura; no código ele é **fluido** (`width: 100%`) e ocupa a largura do contêiner.
+
+---
+
+## Propriedades
+
+| Propriedade | Valores | Classe ou atributo | Padrão |
+|---|---|---|---|
+| Label | texto | `<label class="ds-input__label" for="…">` | obrigatório |
+| Helper | texto | `<p class="ds-input__helper" id="…">` + `aria-describedby` | sem ajuda |
+| Placeholder | texto | atributo `placeholder` | vazio |
+| Required | `true`, `false` | atributo `required` + `<span class="ds-input__required">(obrigatório)</span>` | `false` |
+| Error | texto da mensagem | `aria-invalid="true"` + `<p class="ds-input__error" id="…">` no `aria-describedby` | sem erro |
+| Disabled | `true`, `false` | atributo `disabled` | `false` |
+| Read-only | `true`, `false` | atributo `readonly` | `false` |
+
+Não há classes de estado: o visual segue os atributos nativos e o `aria-invalid`. Assim o que a pessoa vê e o que o leitor de tela anuncia não ficam fora de sincronia.
+
+### Obrigatório
+
+<Canvas of={InputStories.Obrigatorio} />
+
+### Com erro
+
+<Canvas of={InputStories.ComErro} />
+
+```html
+<div class="ds-input">
+  <label class="ds-input__label" for="nome">
+    Nome completo <span class="ds-input__required">(obrigatório)</span>
+  </label>
+  <input type="text" class="ds-input__field" id="nome" name="nome" value="Maria" required
+         aria-invalid="true" aria-describedby="nome-erro nome-ajuda" />
+  <p class="ds-input__error" id="nome-erro">
+    <svg class="ds-input__error-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24">…</svg>
+    <span><span class="ds-visually-hidden">Erro: </span>Digite o nome e o sobrenome, como em "Maria da Silva".</span>
+  </p>
+  <p class="ds-input__helper" id="nome-ajuda">Como aparece no seu documento.</p>
+</div>
+```
+
+O erro vem antes da ajuda no `aria-describedby`: é o que a pessoa precisa resolver primeiro. A ajuda continua associada, como pede o Magoo.
+
+### Somente leitura
+
+<Canvas of={InputStories.SomenteLeitura} />
+
+---
+
+## Estados
+
+<Canvas of={InputStories.Estados} />
+
+Passe o mouse e navegue com Tab no exemplo acima para ver hover e foco.
+
+| Estado | Origem | Como acontece | O que muda | Token |
+|---|---|---|---|---|
+| **Padrão (vazio)** | Penpot | Em repouso, sem valor | Mostra o placeholder | `--color-border-strong`, `--color-text-subtle` |
+| **Preenchido** | Penpot | Há valor no campo | O texto substitui o placeholder | `--color-text-default` |
+| **Hover** | Penpot (variante Hover) | Ponteiro sobre o campo habilitado, sem foco e sem erro | A borda de 1px escurece | `--color-text-muted` |
+| **Foco** | Penpot | Tab, clique ou toque no campo ou no rótulo | Borda de 2px na cor de foco | `--border-width-focus`, `--color-border-focus` |
+| **Obrigatório** | Penpot (variante Required) | Atributo `required` | "(obrigatório)" em texto depois do rótulo | `--color-text-muted` |
+| **Erro** | Penpot + ícone no código | `aria-invalid="true"` | Borda de 2px vermelha, mensagem com ícone | `--color-feedback-error-icon`, `--color-feedback-error-text` |
+| **Erro com foco** | Código | Foco num campo com erro | A borda segue vermelha e ganha um anel de foco por fora, afastado 2px | `--color-border-focus` |
+| **Somente leitura** | Penpot (variante Read-only) | Atributo `readonly` | Fundo suave, mesma borda do padrão; recebe foco e permite selecionar e copiar | `--color-bg-subtle`, `--color-border-strong`, `--color-text-default` |
+| **Desabilitado** | Penpot | Atributo `disabled` | Fundo cinza; rótulo, valor e ajuda apagados; não recebe foco | `--color-field-bg-disabled`, `--color-border-default`, `--color-action-disabled-text` |
+
+A borda de 2px do foco e do erro é feita com a borda de 1px mais uma sombra interna de 1px. Assim o texto não se desloca ao trocar de estado. Um contorno transparente garante o foco visível no modo de alto contraste do Windows, que apaga sombras.
+
+**Somente leitura ou desabilitado?** Use somente leitura para um dado que a pessoa precisa ver e copiar, mas não pode mudar aqui (o valor também é enviado com o formulário). Use desabilitado para um campo que não se aplica agora; ele não recebe foco e não é enviado.
+
+---
+
+## Interação
+
+| Entrada | Como funciona | Retorno visual |
+|---|---|---|
+| **Mouse** | Clique no campo **ou no rótulo** para digitar. Selecionar, copiar e colar seguem o navegador | Hover escurece a borda; foco com borda de 2px |
+| **Toque** | Toque no campo ou no rótulo abre o teclado virtual | Foco com borda de 2px |
+| **Teclado** | **Tab** entra no campo, **Shift + Tab** volta. Setas, Home, End e atalhos de seleção são nativos. **Enter** envia o formulário (não cria linha nova) | Foco com borda de 2px |
+| **Leitor de tela** | Anuncia rótulo, "campo de texto", obrigatório, inválido e a descrição (erro e ajuda) | — |
+
+### Validação
+
+<Canvas of={InputStories.Validacao} />
+
+Tente enviar vazio, depois só com o primeiro nome e, por fim, com nome e sobrenome. O exemplo segue o Magoo (*Validação de formulários*):
+
+- **O erro só aparece depois de tentar enviar**, nunca antes de a pessoa ter chance de preencher.
+- **O foco vai para o campo inválido** e o leitor de tela lê rótulo, "inválido", erro e ajuda.
+- **O valor digitado é preservado** para correção.
+- **Depois do primeiro erro, a revalidação acontece ao sair do campo**, não a cada tecla.
+- **O sucesso é anunciado** numa região `role="status"`, só depois da validação.
+
+Em formulários com vários campos, some a isso um resumo de erros no topo com links para cada campo.
+
+---
+
+## Affordance
+
+*Affordance* é o que faz a pessoa perceber, antes de interagir, que ali se digita. No Input, esses sinais se somam:
+
+| Sinal | Como aparece |
+|---|---|
+| **Caixa com borda** | Borda `--color-border-strong` com **4,83:1** sobre o branco, acima do mínimo de 3:1 para componentes |
+| **Fundo de campo** | `--color-field-bg`, branco, diferente do cinza do desabilitado |
+| **Rótulo acima** | Diz o que preencher e continua visível depois de preenchido |
+| **Placeholder** | Um exemplo do formato, em cinza, que some ao digitar |
+| **Cursor** | Cursor de texto (I) ao passar o mouse; bloqueio (`not-allowed`) no desabilitado |
+| **Hover** | A borda escurece: o campo "responde" ao ponteiro |
+
+---
+
+## Faça e não faça
+
+<Grid>
+  <DoDont type="do" caption="Rótulo visível acima do campo; o placeholder só dá um exemplo.">
+    <Field id="doc-do-rotulo" label="Cidade" placeholder="Ex.: Recife" />
+  </DoDont>
+  <DoDont type="dont" caption="Placeholder no lugar do rótulo: some ao digitar e tem pouco contraste.">
+    <div className="ds-input">
+      <input type="text" className="ds-input__field" placeholder="Cidade" aria-label="Cidade" />
+    </div>
+  </DoDont>
+</Grid>
+
+<Grid>
+  <DoDont type="do" caption="Erro que diz como corrigir, com ícone e texto.">
+    <Field id="doc-do-erro" label="E-mail" value="maria@" error="Digite um e-mail completo, como nome@exemplo.com." />
+  </DoDont>
+  <DoDont type="dont" caption="Mensagem genérica, que não ajuda a corrigir.">
+    <Field id="doc-dont-erro" label="E-mail" value="maria@" error="Valor inválido." />
+  </DoDont>
+</Grid>
+
+<Grid>
+  <DoDont type="do" caption="Obrigatoriedade em texto, antes da entrada.">
+    <Field id="doc-do-obrig" label="Nome completo" required />
+  </DoDont>
+  <DoDont type="dont" caption="Só um asterisco, sem legenda: nem todo mundo entende.">
+    <div className="ds-input">
+      <label className="ds-input__label" htmlFor="doc-dont-obrig">Nome completo *</label>
+      <input type="text" className="ds-input__field" id="doc-dont-obrig" required />
+    </div>
+  </DoDont>
+</Grid>
+
+<Grid>
+  <DoDont type="do" caption="Limites e formato informados antes, no texto de ajuda.">
+    <Field id="doc-do-limite" label="Apelido" helper="Até 20 caracteres, sem espaços." />
+  </DoDont>
+  <DoDont type="dont" caption="Erro só pela cor da borda, sem mensagem.">
+    <div className="ds-input">
+      <label className="ds-input__label" htmlFor="doc-dont-cor">Apelido</label>
+      <input type="text" className="ds-input__field" id="doc-dont-cor" defaultValue="maria silva" aria-invalid="true" />
+    </div>
+  </DoDont>
+</Grid>
+
+---
+
+## Acessibilidade
+
+### Contraste dos tokens
+
+Calculado com a fórmula da WCAG 2.2. Texto precisa de **4,5:1** (critério 1.4.3); borda do campo e foco precisam de **3:1** (critério 1.4.11).
+
+| Combinação | Cores | Contraste | Resultado |
+|---|---|---|---|
+| Rótulo e valor × campo | `#18181b` × `#ffffff` | 17,72:1 | ✅ Passa |
+| Placeholder × campo | `#71717a` × `#ffffff` | 4,83:1 | ✅ Passa |
+| Ajuda e "(obrigatório)" × página | `#52525b` × `#ffffff` | 7,73:1 | ✅ Passa |
+| Borda padrão × página | `#71717a` × `#ffffff` | 4,83:1 | ✅ Passa (mínimo 3:1) |
+| Borda no hover × página | `#52525b` × `#ffffff` | 7,73:1 | ✅ Passa |
+| Borda de foco × página | `#6366f1` × `#ffffff` | 4,47:1 | ✅ Passa (mínimo 3:1) |
+| Borda e ícone de erro × página | `#dc2626` × `#ffffff` | 4,83:1 | ✅ Passa |
+| Mensagem de erro × página | `#991b1b` × `#ffffff` | 8,31:1 | ✅ Passa |
+| Valor no somente leitura × fundo | `#18181b` × `#fafafa` | 16,97:1 | ✅ Passa |
+| Borda do somente leitura × página | `#71717a` × `#ffffff` | 4,83:1 | ✅ Passa (mínimo 3:1) |
+| Desabilitado: texto × fundo | `#a1a1aa` × `#f4f4f5` | 2,33:1 | Isento (desabilitado) |
+| Desabilitado: rótulo × página | `#a1a1aa` × `#ffffff` | 2,56:1 | Isento (desabilitado) |
+
+**Nota sobre o somente leitura.** A primeira versão usava a borda clara (`--color-border-default`, 1,27:1), que some contra a página. A borda passou a ser `--color-border-strong` (4,83:1), igual ao padrão, no Penpot e no código. O que diferencia o somente leitura é o fundo `--color-bg-subtle` e o fato de não aceitar edição.
+
+**Foco e erro juntos.** A cor de foco e o vermelho do erro têm só 1,08:1 entre si. Por isso o campo com erro não troca a borda vermelha pela de foco: ele ganha um anel de foco separado, afastado 2px por um espaço branco.
+
+### Área de toque
+
+O campo tem **40px** de altura e a largura do contêiner (280px no Penpot). Passa o mínimo de 24×24px (WCAG 2.5.8). Para 44px de toque, conta também o rótulo: clicar ou tocar nele leva ao campo, o que aumenta a área útil.
+
+### Regras
+
+- **Elemento nativo:** `<input type="text">`. Nada de `contenteditable` ou `<div>` com papel de campo.
+- **Rótulo associado:** `<label for>` com o mesmo `id` do campo. O rótulo é o nome acessível; o placeholder não substitui.
+- **Descrições:** ajuda e erro ligados por `aria-describedby`, com o erro primeiro.
+- **Erro:** `aria-invalid="true"` só quando o erro foi detectado; remova ao confirmar a correção. Ícone com `aria-hidden="true"` e o prefixo "Erro:" visualmente oculto no texto.
+- **Obrigatório:** `required` no campo **e** "(obrigatório)" visível no rótulo. A informação vem antes da entrada.
+- **Valor preservado:** nunca limpe o campo ao mostrar o erro.
+- **Somente leitura:** `readonly`, não `disabled`, quando a pessoa precisa ler e copiar o valor.
+- **Limites:** se houver `maxlength`, informe o limite no texto de ajuda.
+- **Movimento reduzido:** com `prefers-reduced-motion`, a transição da borda é desligada.
+
+### Critérios de aceite
+
+Adaptado de *Input "text"* (Magoo v1.6.1, id `input-text`, autor Marcelo Sales) e de *Validação de formulários* (id `validacao-formularios`). É uma orientação educacional, não uma certificação: o comportamento precisa ser verificado na implementação.
+
+- **Teclado:** quando uso **Tab** para chegar ao campo, vejo um foco bem visível. Quando digito, seleciono ou edito com os comandos nativos, vejo o valor atualizado. Com **Tab** ou **Shift + Tab**, o foco segue a ordem da página, sem ficar preso no campo.
+- **Leitor de tela no computador** (NVDA, JAWS, VoiceOver): ao chegar com Tab, ouço o rótulo, que é um campo de texto, se é obrigatório, as instruções e os erros. Ao digitar, percebo que o valor mudou.
+- **Leitor de tela no celular** (TalkBack, VoiceOver): ao deslizar até o campo, ouço o mesmo. Com toque duplo, consigo editar.
+- **Validação:** quando a entrada é rejeitada, vejo uma mensagem junto ao campo que explica como corrigir; com leitor de tela, ouço a indicação de erro e a orientação. Ao voltar ao campo, o valor que digitei continua lá.
+
+### Revisão com o Magoo
+
+Cada item foi testado nas stories, no Chrome headless, com teclado e mouse simulados e com a árvore de acessibilidade, que é o que o leitor de tela recebe. Revisão de novembro de 2026.
+
+| Item do Magoo | Como foi verificado | Resultado |
+|---|---|---|
+| Rótulo sempre visível e associado | Clique no rótulo leva o foco ao campo; nome acessível = rótulo, também com o campo preenchido | ✅ |
+| Tipo anunciado como campo de texto | Papel `textbox` na árvore de acessibilidade | ✅ |
+| Foco fortemente indicado | Tab chega ao campo; borda de 2px `#6366f1` (borda + sombra interna) | ✅ |
+| Digitar e editar atualizam o valor | Texto digitado por teclado simulado aparece no `value` | ✅ |
+| Tab e Shift + Tab sem prender o foco | Tab e Shift + Tab percorrem os campos na ordem do HTML | ✅ |
+| Obrigatoriedade informada antes | "(obrigatório)" no rótulo e `required` na árvore de acessibilidade | ✅ |
+| Instruções associadas | Descrição acessível contém o texto de ajuda | ✅ |
+| Erro associado e anunciado | `invalid` na árvore de acessibilidade; descrição contém a mensagem de erro | ✅ |
+| Erro sem depender só da cor | Ícone + texto + borda de 2px | ✅ |
+| A mensagem explica como corrigir | Mensagens das stories dizem o que fazer; regra em "Faça e não faça" | ✅ / Regra de uso |
+| Valor preservado após o erro | Na story Validação, o valor continua após o envio inválido | ✅ |
+| Foco vai ao campo inválido após o envio | Na story Validação, o foco volta ao campo | ✅ |
+| Hover com retorno visual | A borda muda para `--color-text-muted` | ✅ |
+| Desabilitado não recebe foco | O Tab pula o campo; `disabled` na árvore de acessibilidade | ✅ |
+| Somente leitura distinguível e anunciado | `readonly` na árvore de acessibilidade; recebe foco; fundo e borda diferentes | ✅ |
+| Movimento reduzido | `transition-duration: 0s` com `prefers-reduced-motion` | ✅ |
+| Teclado virtual e ampliação | Não testado em dispositivo real | Verificar no celular |
+
+O teste automatizado cobre o comportamento das stories. Antes de publicar, ainda vale testar com um leitor de tela real (NVDA, VoiceOver ou TalkBack).
+
+---
+
+## Referências
+
+- [Magoo: Input "text"](https://magoo.cc/componentes/formularios/input-text.html), de Marcelo Sales, v1.6.1
+- [Magoo: Validação de formulários](https://magoo.cc/componentes/mensagens/validacao-formularios.html), de Marcelo Sales, v1.6.1
+- [MDN: input type="text"](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/text)
+- [GOV.UK: Text input](https://design-system.service.gov.uk/components/text-input/) e [Error message](https://design-system.service.gov.uk/components/error-message/)
+- [W3C WAI: User Notification](https://www.w3.org/WAI/tutorials/forms/notifications/)
+- [WCAG 2.2: Contraste mínimo (1.4.3)](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html) e [Contraste não textual (1.4.11)](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html)

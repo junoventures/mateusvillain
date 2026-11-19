@@ -1,0 +1,142 @@
+{
+  "border": {
+    "width": {
+      "default": {
+        "$type": "dimension",
+        "$value": "{border-width.1}"
+      },
+      "focus": {
+        "$type": "dimension",
+        "$value": "{border-width.2}"
+      }
+    }
+  },
+  "radius": {
+    "container": {
+      "default": {
+        "$type": "dimension",
+        "$value": "{radius.lg}"
+      }
+    },
+    "control": {
+      "default": {
+        "$type": "dimension",
+        "$value": "{radius.md}"
+      },
+      "sm": {
+        "$type": "dimension",
+        "$value": "{radius.sm}"
+      }
+    },
+    "pill": {
+      "default": {
+        "$type": "dimension",
+        "$value": "{radius.full}"
+      }
+    }
+  },
+  "size": {
+    "avatar": {
+      "sm": {
+        "$type": "dimension",
+        "$value": "{size.8}"
+      },
+      "md": {
+        "$type": "dimension",
+        "$value": "{size.10}"
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "{size.16}"
+      }
+    },
+    "control": {
+      "xs": {
+        "$type": "dimension",
+        "$value": "{size.5}"
+      },
+      "sm": {
+        "$type": "dimension",
+        "$value": "{size.8}"
+      },
+      "md": {
+        "$type": "dimension",
+        "$value": "{size.10}"
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "{size.12}"
+      }
+    },
+    "icon": {
+      "sm": {
+        "$type": "dimension",
+        "$value": "{size.4}"
+      },
+      "md": {
+        "$type": "dimension",
+        "$value": "{size.5}"
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "{size.6}"
+      }
+    },
+    "switch": {
+      "height": {
+        "$type": "dimension",
+        "$value": "{size.6}"
+      },
+      "width": {
+        "$type": "dimension",
+        "$value": "{size.10}"
+      }
+    }
+  },
+  "space": {
+    "gap": {
+      "xs": {
+        "$type": "dimension",
+        "$value": "{spacing.1}"
+      },
+      "sm": {
+        "$type": "dimension",
+        "$value": "{spacing.2}"
+      },
+      "md": {
+        "$type": "dimension",
+        "$value": "{spacing.3}"
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "{spacing.4}"
+      },
+      "xl": {
+        "$type": "dimension",
+        "$value": "{spacing.6}"
+      }
+    },
+    "inset": {
+      "2xs": {
+        "$type": "dimension",
+        "$value": "{spacing.0-5}"
+      },
+      "xs": {
+        "$type": "dimension",
+        "$value": "{spacing.1}"
+      },
+      "sm": {
+        "$type": "dimension",
+        "$value": "{spacing.2}"
+      },
+      "md": {
+        "$type": "dimension",
+        "$value": "{spacing.4}"
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "{spacing.6}"
+      }
+    }
+  }
+}

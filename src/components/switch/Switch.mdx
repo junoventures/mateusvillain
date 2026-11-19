@@ -1,0 +1,334 @@
+import { Meta, Title, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as SwitchStories from './switch.stories';
+
+<Meta of={SwitchStories} />
+
+export const Switch = ({ label, checked, disabled, status, style }) => (
+  <label className="ds-switch" style={style}>
+    <input type="checkbox" role="switch" className="ds-switch__input" defaultChecked={checked} disabled={disabled} />
+    <span className="ds-switch__track" aria-hidden="true"><span className="ds-switch__knob" /></span>
+    <span className="ds-switch__label">{label}</span>
+    {status && (
+      <>
+        <span className="ds-switch__status ds-switch__status--off" aria-hidden="true">Desligado</span>
+        <span className="ds-switch__status ds-switch__status--on" aria-hidden="true">Ligado</span>
+      </>
+    )}
+  </label>
+);
+
+export const Marker = ({ n, style }) => (
+  <span style={{ position: 'absolute', display: 'grid', placeItems: 'center', width: 22, height: 22, borderRadius: 'var(--radius-full)', background: 'var(--color-text-default)', color: 'var(--color-bg-default)', fontFamily: 'var(--font-family-sans)', fontSize: 12, fontWeight: 700, ...style }}>{n}</span>
+);
+
+export const DoDont = ({ type, children, caption }) => {
+  const isDo = type === 'do';
+  const color = isDo ? 'var(--color-action-primary-bg)' : 'var(--color-action-danger-bg)';
+  return (
+    <figure style={{ margin: 0, border: '1px solid var(--color-border-default)', borderTop: `4px solid ${color}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+      <div className="sb-unstyled" style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'flex-start', justifyContent: 'center', minHeight: 96, padding: 'var(--space-inset-lg)', background: 'var(--color-bg-subtle)' }}>{children}</div>
+      <figcaption style={{ padding: 'var(--space-gap-md) var(--space-inset-md)', fontFamily: 'var(--font-family-sans)', fontSize: 14 }}>
+        <strong style={{ color }}>{isDo ? 'Faça' : 'Não faça'}</strong> · {caption}
+      </figcaption>
+    </figure>
+  );
+};
+
+export const Grid = ({ children }) => (
+  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16, margin: '16px 0 32px' }}>{children}</div>
+);
+
+<Title />
+
+Liga ou desliga uma configuração, e a mudança vale **na hora**, sem botão de salvar. O rótulo diz *o que* é controlado ("Notificações por e-mail"), e o próprio controle mostra *se* está ligado.
+
+> **Origem dos estados.** Todos os estados vêm do componente Switch do Penpot (arquivo Library), que tem as propriedades **State** (`On`, `Off`) × **Interaction** (`Default`, `Hover`, `Focus`, `Disabled`). Hover, foco e desabilitado foram acrescentados ao Penpot depois da revisão em `docs/revisao-magoo.md`, que pedia esses estados. O rótulo do Penpot, antes "Desativado"/"Ativado", agora é o estável "Notificações por e-mail" nos dois estados (ver [Faça e não faça](#faça-e-não-faça)). **Definida só no código:** a marca de check no pino (ver [Affordance](#affordance)).
+
+<Canvas of={SwitchStories.Padrao} />
+<Controls of={SwitchStories.Padrao} />
+
+```html
+<label class="ds-switch">
+  <input type="checkbox" role="switch" class="ds-switch__input">
+  <span class="ds-switch__track" aria-hidden="true">
+    <span class="ds-switch__knob"></span>
+  </span>
+  <span class="ds-switch__label">Notificações por e-mail</span>
+</label>
+```
+
+**Quando usar:** para uma configuração binária (ligada ou desligada) que entra em vigor assim que a pessoa alterna, como ativar notificações, o modo escuro ou o backup automático.
+
+**Quando não usar:**
+
+- **A mudança só vale depois de confirmar** (num formulário com botão Salvar ou Enviar): use **Checkbox**. O switch promete efeito imediato; num formulário, ele faz a pessoa achar que já salvou.
+- **Escolha entre opções que não são "ligado/desligado"** (por exemplo, "Mensal" ou "Anual"): use Radio ou um controle segmentado.
+- **Estado misto ou parcial** (alguns itens marcados): o switch não tem estado misto. Use Checkbox com `indeterminate`.
+- **Aceite de termos ou seleção de vários itens numa lista:** use Checkbox.
+
+---
+
+## Anatomia
+
+<div className="sb-unstyled" style={{ display: 'flex', justifyContent: 'center', padding: '80px 24px', background: 'var(--color-bg-subtle)', borderRadius: 'var(--radius-md)', margin: '16px 0' }}>
+  <div style={{ position: 'relative', transform: 'scale(1.75)', transformOrigin: 'center' }}>
+    <Switch label="Notificações por e-mail" checked />
+    <span aria-hidden="true" style={{ position: 'absolute', inset: -4, right: 'auto', width: 48, border: '1px dashed var(--color-border-focus)', borderRadius: 'var(--radius-full)', pointerEvents: 'none' }} />
+    <Marker n="1" style={{ top: -22, left: -6, transform: 'scale(0.57)' }} />
+    <Marker n="2" style={{ top: -22, left: 18, transform: 'scale(0.57)' }} />
+    <Marker n="3" style={{ bottom: -22, left: 18, transform: 'scale(0.57)' }} />
+    <Marker n="4" style={{ top: -22, left: 90, transform: 'scale(0.57)' }} />
+    <Marker n="5" style={{ bottom: -22, left: -6, transform: 'scale(0.57)' }} />
+  </div>
+</div>
+
+| # | Parte | Obrigatória | Medida | Token |
+|---|---|---|---|---|
+| 1 | **Trilho**: fundo em pílula que muda de cor com o estado | Sim | 40 × 24px, respiro interno de 2px | `--size-switch-width`, `--size-switch-height`, `--radius-pill-default`, `--space-inset-2xs`; cor `--color-control-track` (desligado) e `--color-action-primary-bg` (ligado) |
+| 2 | **Pino**: círculo que fica à esquerda (desligado) ou à direita (ligado) | Sim | 20 × 20px | `--size-control-xs`, `--color-control-knob`, `--shadow-sm` |
+| 3 | **Marca de check**: aparece no pino só quando ligado | Sim (definida no código) | 4 × 8px, traço de 2px | `--spacing-1`, `--spacing-2`, `--border-width-focus`, `--color-action-primary-bg` |
+| 4 | **Rótulo**: nome estável da configuração | Sim | 16px / 24px de linha | `--typography-body-md`, `--color-text-default` (desabilitado: `--color-action-disabled-text`) |
+| 5 | **Anel de foco**: só na navegação por teclado (tracejado no diagrama) | Sim | 2px, afastado 2px | `--border-width-focus`, `--color-border-focus` |
+| — | **Texto de estado** ("Ligado"/"Desligado"), ao lado do rótulo | Não | 14px | `--typography-body-sm`, `--color-text-muted` |
+| — | **Checkbox nativo**, invisível, sobre o trilho | Sim | 40 × 24px | — (recebe foco, Espaço e clique) |
+
+O espaço entre trilho e rótulo é `--space-gap-sm` (8px).
+
+---
+
+## Propriedades
+
+As propriedades espelham o componente no Penpot. No HTML, State e Disabled são atributos do `<input>` nativo; Hover e Focus acontecem sozinhos, pela interação.
+
+| Propriedade (Penpot) | Valores | No código | Padrão |
+|---|---|---|---|
+| State | `Off`, `On` | atributo `checked` no `<input>` | `Off` |
+| Interaction | `Default`, `Hover`, `Focus`, `Disabled` | `:hover`, `:focus-visible` e atributo `disabled` no `<input>` | `Default` |
+| Label | texto | `.ds-switch__label` | obrigatório |
+| Status (opcional) | mostrar ou não "Ligado"/"Desligado" | `.ds-switch__status--off` e `--on`, com `aria-hidden="true"` | sem texto de estado |
+
+### Com texto de estado
+
+<Canvas of={SwitchStories.ComTextoDeEstado} />
+
+Em telas onde a cor ou a posição do pino podem não bastar (pessoas pouco familiarizadas com o padrão, telas de configuração longas), dá para mostrar "Ligado" ou "Desligado" ao lado do rótulo. Os dois textos ficam no HTML com `aria-hidden="true"`, e o CSS mostra só o do estado atual. Eles **não entram no nome acessível**: o leitor de tela já anuncia o estado pelo `checked`, e o nome continua "Notificações por e-mail".
+
+```html
+<label class="ds-switch">
+  <input type="checkbox" role="switch" class="ds-switch__input">
+  <span class="ds-switch__track" aria-hidden="true"><span class="ds-switch__knob"></span></span>
+  <span class="ds-switch__label">Notificações por e-mail</span>
+  <span class="ds-switch__status ds-switch__status--off" aria-hidden="true">Desligado</span>
+  <span class="ds-switch__status ds-switch__status--on" aria-hidden="true">Ligado</span>
+</label>
+```
+
+### Em grupo
+
+<Canvas of={SwitchStories.Grupo} />
+
+Vários switches relacionados ficam num `<fieldset>` com `<legend>`. O leitor de tela anuncia o nome do grupo ("Notificações") ao entrar nele, e cada rótulo pode ser curto ("Por e-mail", "Por SMS").
+
+---
+
+## Estados
+
+<Canvas of={SwitchStories.Estados} />
+
+Passe o mouse, clique e navegue com Tab no exemplo acima para ver cada estado.
+
+| State × Interaction | Como acontece | O que muda | Token |
+|---|---|---|---|
+| **Off · Default** | Sem `checked` | Trilho cinza, pino à esquerda, sem marca | `--color-control-track` |
+| **On · Default** | Com `checked` | Trilho na cor de ação, pino à direita, check no pino | `--color-action-primary-bg` |
+| **Off · Hover** | Ponteiro sobre o trilho ou o rótulo | O trilho escurece um tom | `--color-text-muted` |
+| **On · Hover** | Ponteiro sobre o trilho ou o rótulo | O trilho escurece um tom | `--color-action-primary-bg-hover` |
+| **Focus** (Off e On) | Navegação por teclado (Tab) | Anel de 2px sólido em volta do trilho, afastado 2px | `--border-width-focus`, `--color-border-focus`, `:focus-visible` |
+| **Off · Disabled** | Atributo `disabled` | Trilho claro, pino branco, rótulo apagado, cursor de bloqueio. Não recebe foco nem muda de estado | Trilho `--color-border-default`, pino `--color-control-knob`, rótulo `--color-action-disabled-text` |
+| **On · Disabled** | `disabled` + `checked` | Trilho cinza médio, pino branco à direita, check cinza, rótulo apagado | Trilho e check `--color-action-disabled-text`, pino `--color-control-knob`, rótulo `--color-action-disabled-text` |
+
+- **Sem estado misto.** O switch tem só dois estados. Nunca use `indeterminate` nele.
+- **Hover usa um token de texto.** O hover do trilho desligado usa `--color-text-muted` (`neutral.600`), como no Penpot. Se um dia o texto secundário mudar de cor, o trilho muda junto; vale criar um alias `color.control.track-hover` em `tokens/semantic/color.json` apontando para o mesmo valor.
+- **Desabilitado é isento de contraste**, mas o Off · Disabled fica bem claro (pino branco sobre `#e4e4e7`, 1,27:1). O que diferencia Off de On desabilitados é a posição do pino, o check e o tom do trilho. Sempre explique perto do switch por que ele está indisponível.
+
+---
+
+## Interação
+
+| Entrada | Como alterna | Retorno visual |
+|---|---|---|
+| **Mouse** | Clique no trilho **ou no rótulo** | Hover escurece o trilho; o pino desliza e o check aparece |
+| **Toque** | Toque no trilho ou no rótulo | O pino desliza e o check aparece |
+| **Teclado** | **Tab** leva o foco ao switch; **Espaço** alterna | Anel de foco em volta do trilho |
+| **Leitor de tela** | Espaço (computador) ou toque duplo (celular) | Anuncia o rótulo, "interruptor"/"switch" e "ligado" ou "desligado"; depois de alternar, anuncia o novo estado |
+
+- **Use o `<input type="checkbox" role="switch">` nativo.** Ele já entrega foco, Espaço, o clique no `<label>` e o estado `checked`. O `role="switch"` faz o leitor de tela dizer "ligado/desligado" em vez de "marcado/desmarcado".
+- **Enter não alterna**, como num checkbox nativo. O Magoo aceita Enter em implementações customizadas, mas Espaço é o atalho obrigatório. Dentro de um formulário, Enter envia o formulário.
+- **Efeito imediato.** Ao alternar, aplique a mudança na hora. Se a mudança falhar (por exemplo, erro de rede), volte o switch ao estado anterior e explique o que aconteceu perto dele.
+- **Alternativa com `<button>`:** `<button type="button" role="switch" aria-checked="false">` também funciona, mas exige JavaScript para alternar `aria-checked` e não envia valor em formulários. Prefira o input.
+
+---
+
+## Affordance
+
+| Sinal | Como aparece |
+|---|---|
+| **Forma de interruptor** | Trilho em pílula com um pino: a forma lembra um interruptor físico, que "desliza" de um lado para o outro |
+| **Posição do pino** | Esquerda = desligado, direita = ligado (o padrão de iOS, Android e da web) |
+| **Cor do trilho** | Cinza quando desligado, cor de ação quando ligado |
+| **Marca de check** | Só aparece quando ligado: o estado não depende só de cor e posição |
+| **Cursor** | Mãozinha no trilho e no rótulo; bloqueio quando desabilitado |
+| **Rótulo clicável** | O `<label>` envolve tudo: a área clicável vai do trilho até o fim do texto |
+
+**Por que a marca de check.** No Penpot, a diferença entre os estados é só a cor do trilho e o lado do pino. Para quem não distingue cores, e principalmente num switch isolado (sem outro para comparar a posição), isso pode não bastar (WCAG 1.4.1, uso de cor). A marca de check no pino é um terceiro sinal, que não depende de cor. Não foi colocado um "X" no desligado para não sugerir erro.
+
+---
+
+## Compensação óptica
+
+**1. Pino centrado no trilho.** Trilho de 24px de altura, pino de 20px e respiro de 2px: o pino fica exatamente centrado na vertical e a 2px das pontas. O deslocamento é calculado com os tokens (`--size-switch-width` − `--size-switch-height` = 16px), então continua certo se o tamanho mudar.
+
+**2. Rótulo alinhado ao trilho.** A linha do rótulo (`--typography-body-md`, 16px com 1.5) tem 24px, a mesma altura do trilho. Com `align-items: center`, o centro do texto e o centro do pino ficam na mesma linha. Se o rótulo quebrar em várias linhas, o trilho fica centrado no bloco; para alinhá-lo à primeira linha, use `align-items: flex-start` no `.ds-switch`.
+
+**3. Check um pouco acima do centro.** Um check girado 45° tem o peso visual na ponta de baixo. Ele foi deslocado para cima (`translate(-50%, -60%)`) para *parecer* centrado no pino.
+
+**4. Sombra sutil no pino.** `--shadow-sm` dá volume ao pino e separa o branco do trilho sem contorno.
+
+---
+
+## Faça e não faça
+
+<Grid>
+  <DoDont type="do" caption="Rótulo estável, que diz o que a configuração controla. O estado vem do controle.">
+    <Switch label="Notificações por e-mail" checked />
+  </DoDont>
+  <DoDont type="dont" caption="Rótulo que muda com o estado (Ativado/Desativado). O nome acessível muda a cada clique, o estado é dito duas vezes e não se sabe o que está sendo controlado.">
+    <Switch label="Ativado" checked />
+  </DoDont>
+</Grid>
+
+<Grid>
+  <DoDont type="do" caption="Switch para algo que vale na hora, numa tela de configurações.">
+    <Switch label="Modo escuro" />
+  </DoDont>
+  <DoDont type="dont" caption="Switch num formulário com botão Enviar. Se a mudança só vale depois de confirmar, use Checkbox.">
+    <Switch label="Aceito os termos de uso" />
+    <button type="button" className="ds-button ds-button--primary">Enviar</button>
+  </DoDont>
+</Grid>
+
+<Grid>
+  <DoDont type="do" caption="Rótulo afirmativo: ligado = a coisa acontece.">
+    <Switch label="Mostrar prévia das mensagens" checked />
+  </DoDont>
+  <DoDont type="dont" caption="Rótulo negativo: ligado = não fazer algo. A pessoa precisa inverter o raciocínio.">
+    <Switch label="Não mostrar prévia das mensagens" />
+  </DoDont>
+</Grid>
+
+<Grid>
+  <DoDont type="do" caption="Se quiser texto de estado, deixe-o fora do nome acessível e ao lado do rótulo.">
+    <Switch label="Backup automático" checked status />
+  </DoDont>
+  <DoDont type="dont" caption="Switch desabilitado sem explicação. Diga perto dele o que falta para liberar.">
+    <Switch label="Sincronizar contatos" disabled />
+  </DoDont>
+</Grid>
+
+---
+
+## Acessibilidade
+
+### Contraste dos tokens atuais
+
+Calculado com a fórmula da WCAG 2.2. O rótulo precisa de **4,5:1** (critério 1.4.3). O trilho, o pino e o anel de foco são partes gráficas necessárias para entender o estado, e precisam de **3:1** (critério 1.4.11).
+
+| Combinação | Cores | Contraste | Mínimo | Resultado |
+|---|---|---|---|---|
+| Rótulo × página | `#18181b` × `#ffffff` | 17,72:1 | 4,5:1 | ✅ Passa |
+| Texto de estado × página | `#52525b` × `#ffffff` | 7,73:1 | 4,5:1 | ✅ Passa |
+| Trilho desligado × página | `#71717a` × `#ffffff` | 4,83:1 | 3:1 | ✅ Passa |
+| Pino × trilho desligado | `#ffffff` × `#71717a` | 4,83:1 | 3:1 | ✅ Passa |
+| Trilho ligado × página | `#4f46e5` × `#ffffff` | 6,29:1 | 3:1 | ✅ Passa |
+| Pino × trilho ligado | `#ffffff` × `#4f46e5` | 6,29:1 | 3:1 | ✅ Passa |
+| Check × pino | `#4f46e5` × `#ffffff` | 6,29:1 | 3:1 | ✅ Passa |
+| Hover desligado: trilho × pino | `#52525b` × `#ffffff` | 7,73:1 | 3:1 | ✅ Passa |
+| Hover ligado: trilho × pino | `#4338ca` × `#ffffff` | 7,90:1 | 3:1 | ✅ Passa |
+| Anel de foco × página | `#6366f1` × `#ffffff` | 4,47:1 | 3:1 | ✅ Passa |
+| Desabilitado Off: pino × trilho | `#ffffff` × `#e4e4e7` | 1,27:1 | — | Isento (o critério não se aplica a controles desabilitados) |
+| Desabilitado On: pino × trilho | `#ffffff` × `#a1a1aa` | 2,56:1 | — | Isento |
+| Desabilitado: rótulo × página | `#a1a1aa` × `#ffffff` | 2,56:1 | — | Isento |
+
+A revisão anterior apontava 1,48:1 no trilho desligado (`#d4d4d8`). O token `--color-control-track` agora usa `neutral.500` (`#71717a`), que passa com 4,83:1.
+
+### Área de toque
+
+| Alvo | Tamanho | WCAG 2.5.8 (mínimo 24×24px) | Recomendado para toque (44×44px) |
+|---|---|---|---|
+| Só o trilho | 40 × 24px | ✅ No limite | ❌ |
+| Trilho + rótulo (o `<label>` inteiro) | 24px de altura × largura do texto | ✅ | ❌ na altura |
+
+O `<label>` envolve o trilho e o texto, então a área clicável já é bem mais larga que o trilho. Em telas de toque, deixe pelo menos 8px de espaço vertical entre switches vizinhos (as stories usam 16px) ou coloque cada switch numa linha de lista com 44px de altura.
+
+### Regras
+
+- **Elemento nativo:** `<input type="checkbox" role="switch">` dentro de um `<label>`. Nunca uma `<div>` clicável.
+- **Nome acessível = rótulo estável.** O nome descreve a configuração ("Notificações por e-mail") e **não muda** quando o estado muda. Não use "Ativado"/"Desativado" como rótulo (Magoo, *Pontos de atenção*).
+- **Estado pelo atributo, não pelo texto.** O `checked` é anunciado como "ligado" ou "desligado". O texto de estado opcional é `aria-hidden="true"`.
+- **Trilho e pino decorativos:** `aria-hidden="true"` no `.ds-switch__track`, para o leitor de tela ler só o input.
+- **Desabilitado:** o atributo `disabled` tira o switch da ordem de foco e impede a troca. Explique perto dele por que está indisponível.
+- **Sem estado misto:** nunca `indeterminate`.
+- **Grupo:** switches relacionados em `<fieldset>` com `<legend>`.
+- **Movimento reduzido:** com `prefers-reduced-motion`, o pino troca de lado sem deslizar e o trilho troca de cor sem transição.
+- **Alto contraste (Windows):** com `forced-colors`, o trilho ganha contorno e o pino usa a cor do texto do sistema.
+
+### Critérios de aceite
+
+Adaptado de *Switch* (Magoo v1.6.1, id `switch`, autor Marcelo Sales). É uma orientação educacional, não uma certificação: o comportamento precisa ser verificado na implementação.
+
+- **Teclado:** ao chegar com **Tab** num switch habilitado, vejo um foco bem visível. Com **Espaço**, o switch alterna entre ligado e desligado. Um switch desabilitado não recebe foco e não muda de estado.
+- **Mouse e toque:** ao clicar ou tocar no trilho ou no rótulo, o estado alterna na hora, e vejo o pino mudar de lado, a cor mudar e o check aparecer ou sumir.
+- **Leitor de tela no computador** (NVDA, JAWS, VoiceOver): ao focar, ouço o rótulo e a finalidade do switch, ouço que é um **switch** (ou "interruptor") e ouço o estado atual, **ligado** ou **desligado**. Ao alternar, ouço o novo estado, e o rótulo continua o mesmo.
+- **Leitor de tela no celular** (TalkBack, VoiceOver): ao deslizar até o switch, ouço o mesmo. Com toque duplo, o estado muda e eu ouço o novo estado.
+
+### Revisão com o Magoo
+
+Cada item do checklist de *Switch* (Magoo v1.6.1) e da revisão em `docs/revisao-magoo.md` foi testado nas stories, no Chrome headless, com teclado e mouse simulados e com a árvore de acessibilidade, que é o que o leitor de tela recebe. Revisão de novembro de 2026.
+
+| Item do Magoo | Como foi verificado | Resultado |
+|---|---|---|
+| Antes de interagir, dá para perceber que alterna entre ligado e desligado | Forma de interruptor, pino, cursor `pointer` | ✅ |
+| **O rótulo descreve a configuração, sem depender do estado** | Nome na árvore de acessibilidade antes e depois de alternar: "Notificações por e-mail" nos dois | ✅ (corrigido; no Penpot era "Desativado"/"Ativado") |
+| O estado atual está visualmente claro | Pino à esquerda ou à direita (16px de deslocamento), cor do trilho e check visível só quando ligado | ✅ |
+| Feedback visual ao passar o mouse | O trilho muda de `#71717a` para `#52525b` (desligado) e de `#4f46e5` para `#4338ca` (ligado) | ✅ |
+| Clicar no controle ou no rótulo alterna na hora | Clique simulado no trilho e no texto do rótulo | ✅ |
+| O alvo de toque inclui o rótulo | O `<label>` envolve trilho e texto | ✅ |
+| Foco visível | Anel de 2px sólido em volta do trilho, só com `:focus-visible` | ✅ |
+| Alterna com Espaço | Tecla simulada muda `checked` e o estado na árvore | ✅ |
+| Enter não substitui o Espaço | Enter não alterna (comportamento do checkbox nativo); Espaço é o atalho | ✅ |
+| Tab segue o fluxo esperado | Tab passa pelos switches habilitados na ordem do HTML | ✅ |
+| Desabilitado não recebe foco nem muda de estado | O Tab pula o switch; o clique não muda `checked`; trilho e rótulo com os tokens de desabilitado | ✅ |
+| O leitor de tela anuncia o rótulo | Nome = texto do rótulo; o texto de estado opcional fica fora do nome | ✅ |
+| O leitor de tela anuncia o papel de switch | Papel `switch` na árvore de acessibilidade | ✅ |
+| O leitor de tela anuncia ligado ou desligado | Propriedade `checked` `false` → `true` ao alternar | ✅ |
+| Sem estado misto | Só `checked` verdadeiro ou falso | ✅ |
+| Contraste do trilho e do pino (WCAG 1.4.11) | Mínimo de 4,83:1 (antes 1,48:1) | ✅ |
+| Movimento reduzido | Com `prefers-reduced-motion: reduce`, a transição do pino é 0s | ✅ |
+| Uso: configuração aplicada na hora | Regra de uso, documentada em "Quando usar" e "Faça e não faça" | Regra de uso |
+| Desenhar hover, foco e desabilitado | O Penpot agora tem State (On/Off) × Interaction (Default/Hover/Focus/Disabled), e o código usa os mesmos tokens | ✅ (corrigido) |
+
+Resultado do teste automatizado: **29 de 29 verificações passaram** (inclui também as medidas do Penpot: trilho 40×24px, pino 20px, respiro 2px, espaço de 8px e rótulo 16/24px). O teste cobre o comportamento das stories. Antes de publicar, ainda vale testar com um leitor de tela real (NVDA, VoiceOver ou TalkBack), porque cada leitor anuncia o `role="switch"` com palavras diferentes.
+
+---
+
+## Referências
+
+- [Magoo: Switch](https://magoo.cc/pt-br), de Marcelo Sales, v1.6.1
+- [W3C APG: Switch Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/switch/)
+- [WAI-ARIA 1.2: papel switch](https://www.w3.org/TR/wai-aria-1.2/#switch)
+- [WCAG 2.2: Uso de cor (1.4.1)](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html)
+- [WCAG 2.2: Contraste mínimo (1.4.3)](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)
+- [WCAG 2.2: Contraste de elementos não textuais (1.4.11)](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html)
+- [WCAG 2.2: Tamanho mínimo do alvo (2.5.8)](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html)
+- [Material Design 3: Switch](https://m3.material.io/components/switch/overview)
+- [Adobe Spectrum: Switch](https://spectrum.adobe.com/page/switch/)

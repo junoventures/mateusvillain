@@ -1,25 +1,90 @@
 {
   "font": {
     "family": {
-      "$type": "fontFamily",
-      "base": { "$value": "Inter, system-ui, sans-serif" }
+      "sans": {
+        "$type": "fontFamily",
+        "$value": "Inter, system-ui, sans-serif"
+      }
     },
-    "size": {
-      "$type": "dimension",
-      "sm": { "$value": "14px" },
-      "md": { "$value": "16px" },
-      "lg": { "$value": "18px" }
-    },
-    "weight": {
-      "$type": "fontWeight",
-      "regular": { "$value": 400 },
-      "medium": { "$value": 500 },
-      "bold": { "$value": 700 }
+    "letter-spacing": {
+      "tight": {
+        "$type": "dimension",
+        "$value": "-0.5px"
+      },
+      "normal": {
+        "$type": "dimension",
+        "$value": "0px"
+      },
+      "wide": {
+        "$type": "dimension",
+        "$value": "0.5px"
+      }
     },
     "line-height": {
-      "$type": "number",
-      "tight": { "$value": 1.2 },
-      "base": { "$value": 1.5 }
+      "tight": {
+        "$type": "number",
+        "$value": 1.2
+      },
+      "snug": {
+        "$type": "number",
+        "$value": 1.35
+      },
+      "normal": {
+        "$type": "number",
+        "$value": 1.5
+      }
+    },
+    "size": {
+      "xs": {
+        "$type": "dimension",
+        "$value": "12px"
+      },
+      "sm": {
+        "$type": "dimension",
+        "$value": "14px"
+      },
+      "md": {
+        "$type": "dimension",
+        "$value": "16px"
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "18px"
+      },
+      "xl": {
+        "$type": "dimension",
+        "$value": "20px"
+      },
+      "2xl": {
+        "$type": "dimension",
+        "$value": "24px"
+      },
+      "3xl": {
+        "$type": "dimension",
+        "$value": "30px"
+      },
+      "4xl": {
+        "$type": "dimension",
+        "$value": "36px"
+      }
+    },
+    "weight": {
+      "regular": {
+        "$type": "fontWeight",
+        "$value": 400
+      },
+      "medium": {
+        "$type": "fontWeight",
+        "$value": 500
+      },
+      "semibold": {
+        "$type": "fontWeight",
+        "$value": 600
+      },
+      "bold": {
+        "$type": "fontWeight",
+        "$value": 700
+      }
     }
   }
 }
