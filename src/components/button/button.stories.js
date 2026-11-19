@@ -2,20 +2,51 @@
  * Stories em HTML puro: cada story devolve uma string de HTML.
  * Os "args" viram controles no painel do Storybook (parecido com o painel
  * de propriedades do Figma/Penpot).
+ *
+ * A página de documentação fica em Button.mdx.
  */
-const createButton = ({ label, variant, size, disabled }) => {
+
+/* Ícones de exemplo (traço de 2px, herdam a cor do texto). */
+const ICONS = {
+  plus: '<path d="M12 5v14M5 12h14" />',
+  arrow: '<path d="M5 12h14M13 6l6 6-6 6" />',
+  trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />',
+};
+
+const icon = (name, position) =>
+  `<svg class="ds-button__icon ds-button__icon--${position}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${ICONS[name]}</svg>`;
+
+const createButton =({ label, variant, size, disabled, iconStart, iconEnd, iconOnly }) => {
   const classes = ['ds-button', `ds-button--${variant}`];
   if (size !== 'md') classes.push(`ds-button--${size}`);
+  if (iconOnly) classes.push('ds-button--icon-only');
 
-  return `<button class="${classes.join(' ')}"${disabled ? ' disabled' : ''}>${label}</button>`;
+  const content = iconOnly
+    ? icon(iconOnly, 'only')
+    : [iconStart && icon(iconStart, 'start'), label, iconEnd && icon(iconEnd, 'end')]
+        .filter(Boolean)
+        .join('');
+
+  const attrs = [
+    'type="button"',
+    `class="${classes.join(' ')}"`,
+    iconOnly ? `aria-label="${label}"` : '',
+    disabled ? 'disabled' : '',
+  ].filter(Boolean);
+
+  return `<button ${attrs.join(' ')}>${content}</button>`;
 };
+
+const iconOptions = [null, 'plus', 'arrow', 'trash'];
 
 export default {
   title: 'Componentes/Button',
-  tags: ['autodocs'],
   render: createButton,
   argTypes: {
-    label: { control: 'text', description: 'Texto do botão' },
+    label: {
+      control: 'text',
+      description: 'Texto do botão. No botão só com ícone, vira o `aria-label`',
+    },
     variant: {
       control: 'inline-radio',
       options: ['primary', 'secondary', 'danger'],
@@ -26,15 +57,24 @@ export default {
       options: ['sm', 'md', 'lg'],
       description: 'Tamanho',
     },
+    iconStart: { control: 'select', options: iconOptions, description: 'Ícone antes do texto' },
+    iconEnd: { control: 'select', options: iconOptions, description: 'Ícone depois do texto' },
+    iconOnly: { control: 'select', options: iconOptions, description: 'Mostra só o ícone' },
     disabled: { control: 'boolean', description: 'Desabilita a interação' },
   },
   args: {
     label: 'Botão',
     variant: 'primary',
     size: 'md',
+    iconStart: null,
+    iconEnd: null,
+    iconOnly: null,
     disabled: false,
   },
 };
+
+const row = (items) =>
+  `<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">${items.join('')}</div>`;
 
 export const Primary = {};
 
@@ -50,12 +90,58 @@ export const Disabled = {
   args: { disabled: true },
 };
 
+export const Variantes = {
+  render: (args) =>
+    row([
+      createButton({ ...args, variant: 'primary', label: 'Salvar' }),
+      createButton({ ...args, variant: 'secondary', label: 'Cancelar' }),
+      createButton({ ...args, variant: 'danger', label: 'Excluir' }),
+    ]),
+};
+
 export const Tamanhos = {
-  render: (args) => `
-    <div style="display: flex; gap: 12px; align-items: center;">
-      ${createButton({ ...args, size: 'sm', label: 'Small' })}
-      ${createButton({ ...args, size: 'md', label: 'Medium' })}
-      ${createButton({ ...args, size: 'lg', label: 'Large' })}
-    </div>
-  `,
+  render: (args) =>
+    row([
+      createButton({ ...args, size: 'sm', label: 'Small' }),
+      createButton({ ...args, size: 'md', label: 'Medium' }),
+      createButton({ ...args, size: 'lg', label: 'Large' }),
+    ]),
+};
+
+export const ComIcone = {
+  name: 'Com ícone',
+  render: (args) =>
+    row([
+      createButton({ ...args, iconStart: 'plus', label: 'Adicionar' }),
+      createButton({ ...args, variant: 'secondary', iconEnd: 'arrow', label: 'Continuar' }),
+      createButton({ ...args, variant: 'danger', iconStart: 'trash', label: 'Excluir' }),
+    ]),
+};
+
+export const SomenteIcone = {
+  name: 'Só ícone',
+  render: (args) =>
+    row(
+      ['sm', 'md', 'lg'].map((size) =>
+        createButton({ ...args, size, iconOnly: 'plus', label: 'Adicionar item' }),
+      ),
+    ),
+};
+
+export const IconesPorTamanho = {
+  name: 'Ícones por tamanho',
+  render: (args) =>
+    row(
+      ['sm', 'md', 'lg'].map((size) =>
+        createButton({ ...args, size, iconStart: 'plus', label: 'Adicionar' }),
+      ),
+    ),
+};
+
+export const Estados = {
+  render: (args) =>
+    row([
+      createButton({ ...args, label: 'Padrão' }),
+      createButton({ ...args, label: 'Desabilitado', disabled: true }),
+    ]),
 };

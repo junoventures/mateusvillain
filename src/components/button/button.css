@@ -3,14 +3,25 @@
  * Variantes espelham as propriedades do componente no Figma/Penpot:
  *   Variant: primary | secondary | danger  →  .ds-button--{variant}
  *   Size:    sm | md | lg                  →  .ds-button--{size}
- *   State:   disabled                      →  atributo [disabled]
+ *   Icon:    start | end | only            →  .ds-button__icon--start / --end
+ *                                             .ds-button--icon-only
+ *   State:   hover | active | focus        →  pseudo-classes
+ *            disabled                      →  atributo [disabled]
+ *
+ * Os espaçamentos internos ficam em propriedades locais (--_py, --_px,
+ * --_px-icon) para que tamanhos e ícones se combinem sem repetir regras.
  */
 .ds-button {
+  --_py: var(--spacing-2);
+  --_px: var(--spacing-4);
+  /* Compensação óptica: o lado com ícone usa menos respiro (ver doc). */
+  --_px-icon: var(--spacing-3);
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--spacing-2);
-  padding: var(--spacing-2) var(--spacing-4);
+  padding: var(--_py) var(--_px);
   border: none;
   border-radius: var(--radius-md);
   font-family: var(--font-family-base);
@@ -18,12 +29,19 @@
   font-weight: var(--font-weight-medium);
   line-height: var(--font-line-height-tight);
   cursor: pointer;
-  transition: background-color 150ms ease;
+  transition:
+    background-color 150ms ease,
+    transform 100ms ease;
 }
 
 .ds-button:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
+}
+
+/* Pressionado: afunda 1px para confirmar o clique ou o toque. */
+.ds-button:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 /* Variantes */
@@ -53,12 +71,39 @@
 
 /* Tamanhos */
 .ds-button--sm {
-  padding: var(--spacing-1) var(--spacing-3);
+  --_py: var(--spacing-1);
+  --_px: var(--spacing-3);
+  --_px-icon: var(--spacing-2);
   font-size: var(--font-size-sm);
 }
 .ds-button--lg {
-  padding: var(--spacing-3) var(--spacing-6);
+  --_py: var(--spacing-3);
+  --_px: var(--spacing-6);
+  --_px-icon: var(--spacing-4);
   font-size: var(--font-size-lg);
+}
+
+/* Ícones
+ * O ícone tem o mesmo tamanho da linha de texto (font-size × line-height),
+ * então o botão mantém a mesma altura com ou sem ícone.
+ */
+.ds-button__icon {
+  flex-shrink: 0;
+  width: calc(var(--font-line-height-tight) * 1em);
+  height: calc(var(--font-line-height-tight) * 1em);
+}
+
+.ds-button:has(> .ds-button__icon--start) {
+  padding-inline-start: var(--_px-icon);
+}
+.ds-button:has(> .ds-button__icon--end) {
+  padding-inline-end: var(--_px-icon);
+}
+
+/* Só ícone: quadrado, com o mesmo respiro nos quatro lados. */
+.ds-button--icon-only,
+.ds-button--icon-only:has(> .ds-button__icon) {
+  padding: var(--_py);
 }
 
 /* Estados */
@@ -66,4 +111,13 @@
   background: var(--color-action-disabled);
   color: var(--color-text-muted);
   cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-button {
+    transition: none;
+  }
+  .ds-button:active:not(:disabled) {
+    transform: none;
+  }
 }

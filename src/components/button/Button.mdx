@@ -1,0 +1,342 @@
+import { Meta, Title, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as ButtonStories from './button.stories';
+
+<Meta of={ButtonStories} />
+
+export const Plus = ({ position }) => (
+  <svg className={`ds-button__icon ds-button__icon--${position}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+    <path d="M12 5v14M5 12h14" />
+  </svg>
+);
+
+export const Arrow = ({ position }) => (
+  <svg className={`ds-button__icon ds-button__icon--${position}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+    <path d="M5 12h14M13 6l6 6-6 6" />
+  </svg>
+);
+
+export const Row = ({ children }) => (
+  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center' }}>{children}</div>
+);
+
+export const Marker = ({ n, style }) => (
+  <span style={{ position: 'absolute', display: 'grid', placeItems: 'center', width: 22, height: 22, borderRadius: 'var(--radius-full)', background: 'var(--color-text-default)', color: 'var(--color-background-default)', fontFamily: 'var(--font-family-base)', fontSize: 12, fontWeight: 700, ...style }}>{n}</span>
+);
+
+export const DoDont = ({ type, children, caption }) => {
+  const isDo = type === 'do';
+  const color = isDo ? 'var(--color-action-primary-default)' : 'var(--color-action-danger-hover)';
+  return (
+    <figure style={{ margin: 0, border: '1px solid var(--color-border-default)', borderTop: `4px solid ${color}`, borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center', justifyContent: 'center', minHeight: 96, padding: 'var(--spacing-6)', background: 'var(--color-background-subtle)' }}>{children}</div>
+      <figcaption style={{ padding: 'var(--spacing-3) var(--spacing-4)', fontFamily: 'var(--font-family-base)', fontSize: 14 }}>
+        <strong style={{ color }}>{isDo ? 'Faça' : 'Não faça'}</strong> · {caption}
+      </figcaption>
+    </figure>
+  );
+};
+
+export const Grid = ({ children }) => (
+  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16, margin: '16px 0 32px' }}>{children}</div>
+);
+
+<Title />
+
+Aciona uma ação na tela atual: salvar, enviar, abrir um diálogo, excluir. O texto diz o que vai acontecer, e os estados mostram que o botão pode ser usado e que a ação foi recebida.
+
+<Canvas of={ButtonStories.Primary} />
+<Controls of={ButtonStories.Primary} />
+
+```html
+<button type="button" class="ds-button ds-button--primary">Salvar</button>
+```
+
+**Quando usar:** para executar uma ação, como salvar, enviar, confirmar ou abrir e fechar um componente na mesma tela.
+
+**Quando não usar:** para levar a outra página ou endereço. Isso é um link (`<a href>`), mesmo que tenha aparência de botão.
+
+---
+
+## Anatomia
+
+<div className="sb-unstyled" style={{ position: 'relative', display: 'flex', justifyContent: 'center', padding: '48px 24px', background: 'var(--color-background-subtle)', borderRadius: 'var(--radius-md)', margin: '16px 0' }}>
+  <div style={{ position: 'relative' }}>
+    <button type="button" className="ds-button ds-button--primary ds-button--lg" style={{ outline: '2px dashed var(--color-focus)', outlineOffset: 4 }}>
+      <Plus position="start" />
+      Adicionar item
+      <Arrow position="end" />
+    </button>
+    <Marker n="1" style={{ top: -30, left: -12 }} />
+    <Marker n="2" style={{ bottom: -30, left: 16 }} />
+    <Marker n="3" style={{ bottom: -30, left: '50%', transform: 'translateX(-50%)' }} />
+    <Marker n="4" style={{ bottom: -30, right: 16 }} />
+    <Marker n="5" style={{ top: -30, right: -12 }} />
+  </div>
+</div>
+
+| # | Parte | Obrigatória | Token |
+|---|---|---|---|
+| 1 | **Contêiner**: fundo, raio e respiro interno | Sim | `--color-action-*`, `--radius-md`, `--spacing-*` |
+| 2 | **Ícone inicial**: reforça a ação | Não | herda a cor do texto |
+| 3 | **Rótulo**: verbo que descreve a ação | Sim, exceto no botão só com ícone | `--font-family-base`, `--font-weight-medium`, `--font-size-*` |
+| 4 | **Ícone final**: indica direção ou continuidade | Não | herda a cor do texto |
+| 5 | **Anel de foco**: aparece só na navegação por teclado | Sim | `--color-focus` |
+
+O espaço entre ícone e rótulo é sempre `--spacing-2` (8px).
+
+---
+
+## Propriedades
+
+As propriedades espelham o componente no Figma e no Penpot.
+
+| Propriedade | Valores | Classe ou atributo | Padrão |
+|---|---|---|---|
+| Variant | `primary`, `secondary`, `danger` | `.ds-button--{variant}` | obrigatório |
+| Size | `sm`, `md`, `lg` | `.ds-button--sm`, `.ds-button--lg` | `md` (sem classe) |
+| Icon | início, fim ou só ícone | `.ds-button__icon--start`, `.ds-button__icon--end`, `.ds-button--icon-only` | sem ícone |
+| Disabled | `true`, `false` | atributo `disabled` | `false` |
+
+### Variantes
+
+<Canvas of={ButtonStories.Variantes} />
+
+| Variante | Use para | Quantidade por área |
+|---|---|---|
+| **Primary** | A ação principal da tela ou do bloco | Uma |
+| **Secondary** | Ações de apoio ou alternativas, como Cancelar ou Voltar | Várias |
+| **Danger** | Ações destrutivas ou irreversíveis, como Excluir ou Remover acesso | Só quando a ação destrói algo |
+
+### Tamanhos
+
+<Canvas of={ButtonStories.Tamanhos} />
+
+| Tamanho | Altura | Respiro (vertical × horizontal) | Fonte | Ícone | Use em |
+|---|---|---|---|---|---|
+| `sm` | ~25px | 4 × 12px | 14px | ~17px | Tabelas, barras de ferramentas, interfaces densas |
+| `md` | ~35px | 8 × 16px | 16px | ~19px | Padrão para formulários e telas em geral |
+| `lg` | ~46px | 12 × 24px | 18px | ~22px | Chamada principal de uma página e telas de toque |
+
+A altura vem do tamanho da fonte × altura de linha (`--font-line-height-tight`, 1.2) somado ao respiro vertical.
+
+### Ícones
+
+<Canvas of={ButtonStories.ComIcone} />
+
+Os ícones são SVGs inline com a classe `ds-button__icon` e um modificador de posição. Eles usam `stroke="currentColor"`, então mudam de cor junto com o texto em todas as variantes e estados.
+
+```html
+<button type="button" class="ds-button ds-button--primary">
+  <svg class="ds-button__icon ds-button__icon--start" aria-hidden="true" focusable="false" viewBox="0 0 24 24">…</svg>
+  Adicionar
+</button>
+```
+
+- **Início (`--start`):** ícone que representa a ação, como + em Adicionar ou lixeira em Excluir.
+- **Fim (`--end`):** ícone que indica direção ou continuidade, como uma seta em Continuar ou um chevron num menu.
+- **Use um ícone por botão**, no início ou no fim. Ícones dos dois lados competem pela atenção.
+
+#### Só ícone
+
+<Canvas of={ButtonStories.SomenteIcone} />
+
+Para barras de ferramentas e ações repetidas em listas. O botão fica quadrado, e o nome acessível vem do `aria-label`:
+
+```html
+<button type="button" class="ds-button ds-button--secondary ds-button--icon-only" aria-label="Adicionar item">
+  <svg class="ds-button__icon ds-button__icon--only" aria-hidden="true" focusable="false" viewBox="0 0 24 24">…</svg>
+</button>
+```
+
+Só use ícones que o público reconhece sem legenda, como +, lixeira, lápis ou fechar. Na dúvida, mostre o rótulo.
+
+---
+
+## Estados
+
+<Canvas of={ButtonStories.Estados} />
+
+Passe o mouse, clique e navegue com Tab no exemplo acima para ver cada estado.
+
+| Estado | Como acontece | O que muda | Token ou regra |
+|---|---|---|---|
+| **Padrão** | Em repouso | — | `--color-action-{variant}-default` |
+| **Hover** | Ponteiro sobre o botão | O fundo escurece | `--color-action-{variant}-hover` |
+| **Pressionado** | Durante o clique ou o toque | O botão desce 1px | `transform: translateY(1px)` |
+| **Foco** | Navegação por teclado (Tab) | Anel de 2px, afastado 2px do botão | `--color-focus`, `:focus-visible` |
+| **Desabilitado** | Atributo `disabled` | Fundo cinza, texto apagado, cursor de bloqueio. Não recebe foco nem clique | `--color-action-disabled`, `--color-text-muted` |
+
+O anel de foco usa `:focus-visible`, então aparece na navegação por teclado e não a cada clique com o mouse.
+
+**Ainda não existe:** estado de carregamento (*loading*). Até ele existir, desabilite o botão durante o envio e mude o rótulo, por exemplo para "Salvando…".
+
+---
+
+## Interação
+
+| Entrada | Como aciona | Retorno visual |
+|---|---|---|
+| **Mouse** | Clique | Hover ao passar o ponteiro, pressionado ao clicar |
+| **Toque** | Toque | Pressionado durante o toque |
+| **Teclado** | **Enter** ou **Espaço**, com o foco no botão | Anel de foco; o Tab segue a ordem do HTML |
+| **Leitor de tela** | Enter, Espaço ou toque duplo | Anuncia "botão" e o rótulo |
+
+- **Use sempre o elemento `<button>`.** Ele já entrega foco, Enter, Espaço e o papel de botão. Uma `<div>` ou `<span>` clicável não entrega nada disso.
+- **Declare `type="button"`.** Sem o atributo, um botão dentro de `<form>` vira `submit` e envia o formulário. Use `type="submit"` só no botão que envia.
+- **Botão ou link:** se a ação acontece na mesma tela, é botão. Se leva a outra página ou endereço, é link (`<a href>`), mesmo com a aparência de botão.
+- **Botão que abre ou fecha algo** (menu, painel, acordeão) informa o estado com `aria-expanded="true"` ou `"false"` e aponta o alvo com `aria-controls`.
+- **Mostre o resultado:** depois do acionamento, a pessoa precisa perceber que algo aconteceu, como uma mensagem, uma mudança na tela ou um diálogo.
+
+---
+
+## Affordance
+
+*Affordance* é o que faz a pessoa perceber, antes de interagir, que o elemento pode ser clicado. No Button, esses sinais se somam:
+
+| Sinal | Como aparece |
+|---|---|
+| **Forma de contêiner** | Fundo sólido e cantos arredondados (`--radius-md`) separam o botão do texto corrido |
+| **Peso do rótulo** | Fonte `medium` (500), mais pesada que o texto ao redor |
+| **Cor de ação** | Primary e danger usam cores fortes, que contrastam com a página |
+| **Cursor** | Mãozinha (`pointer`) ao passar o mouse; bloqueio (`not-allowed`) quando desabilitado |
+| **Resposta ao toque** | Hover escurece e o clique afunda o botão: o botão "responde" como um objeto físico |
+
+Cuidados para não enfraquecer esses sinais:
+
+- **Secondary depende do fundo.** O lilás claro (`--color-action-secondary-default`) tem só **1,23:1** de contraste com a página branca. Quem sustenta a affordance é a cor do rótulo, então evite usar o secondary sobre fundos lilás ou cinza-claro, onde ele some.
+- **Não imite um botão com texto ou card clicável.** Se é clicável, use o Button. Se não é, não dê aparência de botão.
+- **Desabilitado também é sinal.** O cinza mostra que a ação existe, mas não está disponível agora. Sempre que possível, diga perto do botão o que falta para liberá-lo.
+
+---
+
+## Compensação óptica
+
+Medidas matematicamente iguais nem sempre parecem iguais. O Button faz três ajustes para *parecer* equilibrado:
+
+**1. O lado com ícone tem menos respiro.** O ícone ocupa a altura toda da linha, mas tem traços finos e mais área vazia que as letras, então parece mais longe da borda do que está. O respiro desse lado é reduzido:
+
+| Tamanho | Lado com texto | Lado com ícone |
+|---|---|---|
+| `sm` | 12px (`--spacing-3`) | 8px (`--spacing-2`) |
+| `md` | 16px (`--spacing-4`) | 12px (`--spacing-3`) |
+| `lg` | 24px (`--spacing-6`) | 16px (`--spacing-4`) |
+
+<Canvas of={ButtonStories.IconesPorTamanho} />
+
+O ajuste é automático: o CSS detecta o ícone com `:has(> .ds-button__icon--start)` ou `--end`.
+
+**2. O ícone acompanha a linha de texto.** O ícone tem o tamanho da linha (`1em × --font-line-height-tight`). Assim, o botão tem a mesma altura com ou sem ícone, e botões lado a lado ficam alinhados.
+
+**3. O botão só com ícone é quadrado.** Ele usa o respiro vertical nos quatro lados. Ícones assimétricos, como setas e o play, podem parecer descentralizados: quando acontecer, ajuste o desenho dentro do `viewBox` do SVG, não o padding do botão.
+
+---
+
+## Faça e não faça
+
+<Grid>
+  <DoDont type="do" caption="Uma ação principal por área, com as alternativas em secondary.">
+    <button type="button" className="ds-button ds-button--secondary">Cancelar</button>
+    <button type="button" className="ds-button ds-button--primary">Salvar</button>
+  </DoDont>
+  <DoDont type="dont" caption="Vários primary juntos: nenhum se destaca.">
+    <button type="button" className="ds-button ds-button--primary">Cancelar</button>
+    <button type="button" className="ds-button ds-button--primary">Salvar</button>
+  </DoDont>
+</Grid>
+
+<Grid>
+  <DoDont type="do" caption="Rótulo com verbo que diz o resultado.">
+    <button type="button" className="ds-button ds-button--primary">Salvar alterações</button>
+  </DoDont>
+  <DoDont type="dont" caption="Rótulos vagos, como OK, Clique aqui ou Enviar sem contexto.">
+    <button type="button" className="ds-button ds-button--primary">Clique aqui</button>
+  </DoDont>
+</Grid>
+
+<Grid>
+  <DoDont type="do" caption="Danger só para ações destrutivas, de preferência com confirmação.">
+    <button type="button" className="ds-button ds-button--danger">Excluir projeto</button>
+  </DoDont>
+  <DoDont type="dont" caption="Danger para chamar atenção numa ação comum.">
+    <button type="button" className="ds-button ds-button--danger">Ver ofertas</button>
+  </DoDont>
+</Grid>
+
+<Grid>
+  <DoDont type="do" caption="Um ícone, no lado que faz sentido para a ação.">
+    <button type="button" className="ds-button ds-button--secondary">Continuar<Arrow position="end" /></button>
+  </DoDont>
+  <DoDont type="dont" caption="Ícones dos dois lados competindo com o rótulo.">
+    <button type="button" className="ds-button ds-button--secondary"><Plus position="start" />Continuar<Arrow position="end" /></button>
+  </DoDont>
+</Grid>
+
+<Grid>
+  <DoDont type="do" caption="Botão só com ícone sempre com aria-label.">
+    <button type="button" className="ds-button ds-button--secondary ds-button--icon-only" aria-label="Adicionar item"><Plus position="only" /></button>
+  </DoDont>
+  <DoDont type="dont" caption="Rótulo longo, que quebra linha ou é cortado.">
+    <button type="button" className="ds-button ds-button--primary" style={{ maxWidth: 180 }}>Salvar e continuar para a próxima etapa</button>
+  </DoDont>
+</Grid>
+
+---
+
+## Acessibilidade
+
+### Contraste dos tokens atuais
+
+Calculado com a fórmula da WCAG 2.2. O texto do botão precisa de **4,5:1** (critério 1.4.3), e o anel de foco precisa de **3:1** (critério 1.4.11).
+
+| Combinação | Contraste | Resultado |
+|---|---|---|
+| Primary: texto × fundo | 6,29:1 | ✅ Passa |
+| Primary hover: texto × fundo | 7,90:1 | ✅ Passa |
+| Secondary: texto × fundo | 5,10:1 | ✅ Passa |
+| Secondary hover: texto × fundo | **3,15:1** | ❌ Abaixo de 4,5:1 |
+| Danger: texto × fundo | **3,76:1** | ❌ Abaixo de 4,5:1 |
+| Danger hover: texto × fundo | 4,83:1 | ✅ Passa |
+| Anel de foco × página branca | 4,47:1 | ✅ Passa (mínimo 3:1) |
+| Desabilitado: texto × fundo | 6,09:1 | Isento (critério não se aplica a desabilitados) |
+
+**Pendências nos tokens** (correção em `tokens/semantic/color.json`, a partir do Penpot):
+- `action.danger.default` usa `red.500`. Trocar por `red.600`, que hoje é o hover, resolve com 4,83:1. Aí o hover precisa de um vermelho ainda mais escuro.
+- `action.secondary.hover` usa `brand.300`, claro demais para o texto `brand.600`. Um tom entre `brand.100` e `brand.300` resolve.
+
+### Área de toque
+
+| Tamanho | Altura | WCAG 2.5.8 (mínimo 24×24px) | Recomendado para toque (44×44px) |
+|---|---|---|---|
+| `sm` | ~25px | ✅ No limite | ❌ |
+| `md` | ~35px | ✅ | ❌ |
+| `lg` | ~46px | ✅ | ✅ |
+
+Em telas de toque, prefira `lg`. Se usar `sm` ou `md`, deixe pelo menos 8px de espaço entre botões vizinhos.
+
+### Regras
+
+- **Elemento nativo:** `<button type="button">`. Nunca `<div>` ou `<a>` sem `href` com papel de botão.
+- **Nome acessível:** o rótulo visível é o nome. No botão só com ícone, use `aria-label` com o verbo da ação ("Adicionar item", e não "Mais").
+- **Ícones decorativos:** sempre `aria-hidden="true"` e `focusable="false"`, para o leitor de tela não ler o SVG.
+- **Rótulos únicos:** vários "Editar" na mesma tela confundem quem usa leitor de tela. Diferencie, por exemplo com `aria-label="Editar endereço"`.
+- **Desabilitado:** o atributo `disabled` tira o botão da ordem de foco, como deve ser. Como a pessoa não consegue chegar até ele, explique perto do botão o que falta para habilitá-lo.
+- **Estado de abertura:** botões que abrem ou fecham algo usam `aria-expanded`.
+- **Movimento reduzido:** com `prefers-reduced-motion`, a transição e o afundar do pressionado são desligados.
+
+### Critérios de aceite
+
+Adaptado de *Botão* (Magoo v1.6.1, id `botao`, autor Marcelo Sales). É uma orientação educacional, não uma certificação: o comportamento precisa ser verificado na implementação.
+
+- **Teclado:** ao chegar com **Tab** num botão habilitado, vejo um foco bem visível. Com **Enter** ou **Espaço**, a ação é executada. Um botão desabilitado não recebe foco e não executa ação.
+- **Leitor de tela no computador** (NVDA, JAWS, VoiceOver): ao focar, ouço que é um **botão**, ouço um nome que descreve a ação e, se ele abre algo, ouço se está aberto ou fechado. Ao acionar, percebo que a ação aconteceu.
+- **Leitor de tela no celular** (TalkBack, VoiceOver): ao deslizar até o botão, ouço o mesmo. Com toque duplo, a ação acontece e eu percebo.
+
+---
+
+## Referências
+
+- [Magoo: Botão](https://magoo.cc/pt-br), de Marcelo Sales, v1.6.1
+- [W3C APG: Button Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/button/)
+- [WCAG 2.2: Contraste mínimo (1.4.3)](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)
+- [WCAG 2.2: Tamanho mínimo do alvo (2.5.8)](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html)
+- [HTML: o elemento button](https://html.spec.whatwg.org/multipage/form-elements.html#the-button-element)

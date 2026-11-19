@@ -40,8 +40,12 @@
     "@storybook/addon-mcp": "^10.6.7",
     "@storybook/html-vite": "^10.6.7",
     "lightningcss-cli": "^1.33.0",
+    "remark-gfm": "^4.0.1",
     "storybook": "^10.6.7",
     "style-dictionary": "^5.8.0",
     "vite": "^8.3.8"
+  },
+  "allowScripts": {
+    "lightningcss-cli@1.33.0": true
   }
 }
