@@ -138,6 +138,34 @@ export const IconesPorTamanho = {
     ),
 };
 
+/*
+ * Botão que abre e fecha um conteúdo: anuncia o estado com aria-expanded
+ * e aponta o alvo com aria-controls. Devolve um elemento DOM (e não uma
+ * string) para poder ter o comportamento de clique.
+ */
+export const AbreEFecha = {
+  name: 'Abre e fecha',
+  render: (args) => {
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = `
+      ${createButton({ ...args, variant: 'secondary', iconEnd: null, label: 'Mostrar detalhes' })}
+      <div id="detalhes-pedido" hidden style="margin-top: 12px; font-family: var(--font-family-base);">
+        Pedido nº 1234 · Entrega prevista em 3 dias úteis.
+      </div>`;
+    const button = wrapper.querySelector('button');
+    const panel = wrapper.querySelector('#detalhes-pedido');
+    button.setAttribute('aria-expanded', 'false');
+    button.setAttribute('aria-controls', 'detalhes-pedido');
+    button.addEventListener('click', () => {
+      const open = button.getAttribute('aria-expanded') === 'true';
+      button.setAttribute('aria-expanded', String(!open));
+      button.textContent = open ? 'Mostrar detalhes' : 'Ocultar detalhes';
+      panel.hidden = open;
+    });
+    return wrapper;
+  },
+};
+
 export const Estados = {
   render: (args) =>
     row([

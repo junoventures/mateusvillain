@@ -184,7 +184,9 @@ O anel de foco usa `:focus-visible`, então aparece na navegação por teclado e
 - **Use sempre o elemento `<button>`.** Ele já entrega foco, Enter, Espaço e o papel de botão. Uma `<div>` ou `<span>` clicável não entrega nada disso.
 - **Declare `type="button"`.** Sem o atributo, um botão dentro de `<form>` vira `submit` e envia o formulário. Use `type="submit"` só no botão que envia.
 - **Botão ou link:** se a ação acontece na mesma tela, é botão. Se leva a outra página ou endereço, é link (`<a href>`), mesmo com a aparência de botão.
-- **Botão que abre ou fecha algo** (menu, painel, acordeão) informa o estado com `aria-expanded="true"` ou `"false"` e aponta o alvo com `aria-controls`.
+- **Botão que abre ou fecha algo** (menu, painel, acordeão) informa o estado com `aria-expanded="true"` ou `"false"` e aponta o alvo com `aria-controls`. Exemplo funcional:
+
+<Canvas of={ButtonStories.AbreEFecha} />
 - **Mostre o resultado:** depois do acionamento, a pessoa precisa perceber que algo aconteceu, como uma mensagem, uma mudança na tela ou um diálogo.
 
 ---
@@ -330,6 +332,30 @@ Adaptado de *Botão* (Magoo v1.6.1, id `botao`, autor Marcelo Sales). É uma ori
 - **Teclado:** ao chegar com **Tab** num botão habilitado, vejo um foco bem visível. Com **Enter** ou **Espaço**, a ação é executada. Um botão desabilitado não recebe foco e não executa ação.
 - **Leitor de tela no computador** (NVDA, JAWS, VoiceOver): ao focar, ouço que é um **botão**, ouço um nome que descreve a ação e, se ele abre algo, ouço se está aberto ou fechado. Ao acionar, percebo que a ação aconteceu.
 - **Leitor de tela no celular** (TalkBack, VoiceOver): ao deslizar até o botão, ouço o mesmo. Com toque duplo, a ação acontece e eu percebo.
+
+### Revisão com o Magoo
+
+Cada item do checklist de *Botão* (Magoo v1.6.1) foi testado nas stories, no Chrome, com teclado e mouse simulados e com a árvore de acessibilidade, que é o que o leitor de tela recebe. Revisão de novembro de 2026.
+
+| Item do Magoo | Como foi verificado | Resultado |
+|---|---|---|
+| É possível perceber que o botão é acionável | Fundo sólido, cor de ação, cursor `pointer` | ✅ |
+| Desabilitado é percebido como não acionável | Fundo cinza, cursor `not-allowed`, estado `disabled` na árvore de acessibilidade | ✅ |
+| Feedback visual ao passar o mouse | O fundo muda para `--color-action-*-hover` | ✅ |
+| Feedback visual ao clicar ou tocar | O botão desce 1px enquanto pressionado | ✅ |
+| Foco visível no teclado | Anel de 2px, afastado 2px, só com `:focus-visible` | ✅ |
+| Aciona com Enter e com Espaço | Teclas simuladas disparam o clique | ✅ |
+| Desabilitado não recebe foco nem executa ação | O Tab pula o botão; o clique não dispara | ✅ |
+| O leitor de tela anuncia "botão" | Papel `button` na árvore de acessibilidade | ✅ |
+| O leitor de tela anuncia o objetivo | Nome = rótulo; no só ícone, nome = `aria-label` | ✅ |
+| Ícone não atrapalha o nome | SVG com `aria-hidden`: o nome fica só o rótulo | ✅ |
+| Botão que abre algo informa o estado, antes e depois | `aria-expanded` muda de `false` para `true` ao acionar | ✅ |
+| Rótulos sem ambiguidade entre vários botões | Depende do uso: ver "Faça e não faça" e "Rótulos únicos" | Regra de uso |
+| É possível perceber que a ação foi executada | Depende da tela que usa o botão | Regra de uso |
+| Desenhar padrão, hover, pressionado, foco e desabilitado | O componente no Penpot tem só o estado padrão | ⚠️ Falta no design |
+| Contraste do texto (fora do Magoo, WCAG 1.4.3) | Danger e secondary hover abaixo de 4,5:1 | ⚠️ Falta nos tokens |
+
+O teste automatizado cobre o comportamento das stories. Antes de publicar, ainda vale testar com um leitor de tela real (NVDA, VoiceOver ou TalkBack).
 
 ---
 
