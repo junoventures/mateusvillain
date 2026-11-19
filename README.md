@@ -40,7 +40,7 @@ O repo já vem com quatro MCPs configurados para Claude Code (`.mcp.json`), VS C
 | MCP | Como ativar |
 |---|---|
 | **Figma** | Faça login na sua conta do Figma quando a ferramenta pedir |
-| **Penpot** | Rode `npm run mcp:penpot`, abra o arquivo no Penpot, carregue o plugin `http://localhost:4400/manifest.json` e clique em *Connect to MCP server* |
+| **Penpot** | Coloque sua chave em `.env.local`, abra o arquivo no Penpot e clique no botão **MCP**. Passo a passo em [docs/mcps.md](docs/mcps.md#penpot) |
 | **Storybook** | Rode `npm run storybook` (o MCP fica em `http://localhost:6006/mcp`) |
 | **[Magoo](https://magoo.cc/pt-br)** | Nada a fazer: a ferramenta inicia sozinha. Traz diretrizes de interação e acessibilidade para 37 componentes. Precisa de Node.js 20.19 ou superior |
 
@@ -49,3 +49,8 @@ Na primeira vez, a ferramenta pede para aprovar os MCPs do projeto.
 ## Antes de publicar
 
 Troque `@seu-usuario` pelo seu usuário do npm no `package.json`.
+
+## Documentação
+
+- [`docs/`](docs/): como o repositório funciona (fork, sincronização, MCPs) e as regras do projeto.
+- [`wiki/`](wiki/): guias para iniciantes sobre Git, commits, versões e npm.
